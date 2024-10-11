@@ -1,0 +1,23 @@
+Tools:
+Security onion
+Suricata/Snort
+Splunk
+Wazuh
+Elk(Elastic Search, log stash, Kabana)
+Kali Linux
+WireShark/Unencrypted Password
+Function to mimic:
+SIM
+IDS/IPS
+Mapping and Traffic Analysis
+SNMP
+
+Languages:
+UI: QT/qml, C-born, matplotlib, typescript
+ELK(database): SQLite
+C++, Rust, C, Python, shell, saltstack
+Minors languages: 
+
+Know about Linux:
+
+
