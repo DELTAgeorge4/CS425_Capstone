@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--dashboard.html-->  
+<html>
+<head>
+  <title>Dashboard</title>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Internal JavaScript (graph.js) -->
+  <script src="{{ url_for('static', path='js/dashboard/graph.js') }}" defer></script>
+  
+  <!-- CSS References -->
+ <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}"> <!-- Optional Favicon -->
+</head>
+<body>
+
+<!-- Placeholder for Navigation Menu -->
+<div id="nav-placeholder"></div>
+
+<!-- Page Content -->
+<div class="container" id="page-content">
+  <div class="d-flex">
+    <div class="leftpane">
+      <div class="system-status">
+        <span class="status-indicator"></span>
+        <span>All systems are online</span>
+      </div>
+      <div class="admin-activity">
+        <h3>Admin Activity</h3>
+        <p style="font-size: small;">Admin logged in at 10:00 AM</p>
+        <p style="font-size: small;">Admin logged out at 11:00 AM</p>
+        <p style="font-size: small;">Admin logged in at 12:00 PM</p>
+      </div>
+    </div>
+    <div class="rightpane">
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="myDonutChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to Load Navigation Menu and Set Active Link -->
+<script>
+  fetch("/nav")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("nav-placeholder").innerHTML = data;
+
+      const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
+      navLinks.forEach(link => {
+        if (link.pathname === window.location.pathname) {
+          link.classList.add("active");
+        }
+      });
+    })
+    .catch(error => console.error("Error loading navigation:", error));
+</script>
+
+</body>
+</html>

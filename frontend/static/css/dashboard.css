@@ -1,0 +1,74 @@
+/* dashboard.css */
+/* .container {
+  width: 100%;
+  height: 100vh;
+} */
+
+/* .leftpane {
+  width: 20%;
+  background-color: #31363F;
+  border-right: 2px solid;
+  border-color: #76ABAE;
+}
+
+.rightpane {
+  flex-grow: 1;
+  background-color: #31363F;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 20px;
+  height: 100%;
+  width: 100%;
+} */
+
+
+body {
+  margin: 0;
+  overflow-x: hidden; /* Prevents horizontal overflow */
+}
+
+.d-flex {
+  display: flex;
+}
+
+/* #myChart {
+  width: 20%;
+  height: 20%;
+} */
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 15%;
+    background-color: #222831;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+  }
+  
+  li a {
+    display: block;
+    color: #ffffff;
+    padding: 8px 10px;
+    text-decoration: none;
+  }
+  
+  li a.active {
+    background-color: #76ABAE;
+    color: #31363F
+  }
+  
+  li a:hover:not(.active) {
+    background-color: #76ABAE;
+    color: #31363F
+  }
+  #page-content {
+    background-color: #31363F;
+    color: #EEEEEE;
+    margin-left: 15%;
+    padding: 0;
+    /* width: 100vh; */
+    /* height: 100vh; */
+  }
