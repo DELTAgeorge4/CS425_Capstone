@@ -78,7 +78,7 @@ class Rule(BaseModel):
     rule_text: str
 
 # Endpoint to list all available rule files
-@app.get("/rule-files")
+@app.get("/rules")
 def list_rule_files():
     try:
         files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
@@ -101,23 +101,4 @@ def load_suricata_rules(file_name: str):
 def get_rules(file_name: str):
     return load_suricata_rules(file_name)
 
-# Endpoint to update a specific rule in a selected file
-@app.post("/rules/{file_name}/{rule_id}")
-def update_rule(file_name: str, rule_id: int, rule: Rule):
-    file_path = os.path.join(RULES_DIR, file_name)
-    if not os.path.isfile(file_path):
-        raise HTTPException(status_code=404, detail="File not found.")
-    
-    with open(file_path, "r") as file:
-        rules = file.readlines()
 
-    # Ensure rule ID is within range
-    if rule_id < 0 or rule_id >= len(rules):
-        raise HTTPException(status_code=400, detail="Invalid rule ID.")
-
-    # Update the rule and write changes back to the file
-    rules[rule_id] = rule.rule_text + "\n"
-    with open(file_path, "w") as file:
-        file.writelines(rules)
-
-    return {"message": "Rule updated successfully"}
