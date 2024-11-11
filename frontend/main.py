@@ -17,7 +17,8 @@ app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 templates = Jinja2Templates(directory="templates")
 
 # Directory where Suricata rules are stored
-RULES_DIR = "/etc/suricata/rules"
+RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
+# RULES_DIR = "/etc/suricata/rules"  # For Linux
 
 class LoginData(BaseModel):
     username: str
@@ -82,6 +83,7 @@ class Rule(BaseModel):
 def list_rule_files():
     try:
         files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
+        print(files)
         return {"files": files}
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Rules directory not found.")

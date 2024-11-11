@@ -1,17 +1,24 @@
 <!DOCTYPE html>
-<!--ips.html-->
+<!-- ips.html -->
 <html>
 <head>
+  <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/ips/ips.css') }}">
 </head>
 <body>
 
 <!-- Placeholder for Navigation Menu -->
-<div id="nav-placeholder"></div>
+<div id="nav-placeholder"> This shoud be navigation</div>
 
 <!-- Page Content -->
 <div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
-  <h2>This will be the ips</h2>
+  <h1>Available Suricata Rules</h1>
+  <select id="rules-list">
+    <!-- Rules will be dynamically added here -->
+  </select>
+  <button id="show-rules">Show Rule</button>
+  <p id="rules-content">Place holder</p>
 </div>
 
 <!-- JavaScript to Load Navigation Menu and Set Active Link -->
@@ -31,5 +38,8 @@
     })
     .catch(error => console.error("Error loading navigation:", error));
 </script>
+
+<!-- Include app.js -->
+<script src="{{ url_for('static', path='js/ips-settings/app.js') }}"></script>
 </body>
 </html>

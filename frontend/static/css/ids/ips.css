@@ -1,0 +1,7 @@
+#rules-content {
+    max-height: 300px; /* Limit the height */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+    padding: 10px; /* Optional: Add some padding for readability */
+    background-color: #f9f9f9; /* Optional: Background color for better contrast */
+  }
