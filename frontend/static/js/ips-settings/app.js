@@ -6,10 +6,8 @@ function clearContent() {
   rightPageContent.innerHTML = ''; 
 }
 
-
 alertsTab.addEventListener('click', function () {
   clearContent();
-
 
   const header = document.createElement('h1');
   header.textContent = 'Suricata Alerts';
@@ -24,10 +22,8 @@ alertsTab.addEventListener('click', function () {
   rightPageContent.appendChild(exampleAlert);
 });
 
-
 rulesTab.addEventListener('click', function () {
   clearContent();
-
 
   const header = document.createElement('h1');
   header.textContent = 'Available Suricata Rules';
@@ -43,7 +39,6 @@ rulesTab.addEventListener('click', function () {
   rulesList.id = 'rules-list';
   rightPageContent.appendChild(rulesList);
 
-
   fetch('/rules')
     .then(response => response.json())
     .then(data => {
@@ -51,12 +46,16 @@ rulesTab.addEventListener('click', function () {
         const file = data.files[i];
         const parsedFileName = parseFileName(file);
 
-        const header = document.createElement('h2');
-        header.textContent = parsedFileName;
-        rulesList.appendChild(header);
+
+        const collapsible = document.createElement('button');
+        collapsible.textContent = parsedFileName;
+        collapsible.classList.add('collapsible');
+        rulesList.appendChild(collapsible);
+
 
         const ruleContent = document.createElement('div');
         ruleContent.classList.add('rule-content');
+        ruleContent.style.display = 'none'; // Start hidden
 
         fetch(`/rules/${file}`)
           .then(response => response.json())
@@ -79,16 +78,20 @@ rulesTab.addEventListener('click', function () {
               ruleElement.insertAdjacentElement('afterbegin', checkbox);
               ruleContent.appendChild(ruleElement);
             }
-
-            header.insertAdjacentElement('afterend', ruleContent);
           })
           .catch(error => console.error(`Error fetching rules for file ${file}:`, error));
+
+        rulesList.appendChild(ruleContent);
+
+        collapsible.addEventListener('click', function () {
+          const isVisible = ruleContent.style.display === 'block';
+          ruleContent.style.display = isVisible ? 'none' : 'block';
+        });
       }
     })
     .catch(error => console.error('Error fetching rules:', error));
 });
 
-// Helper functions
 function parseFileName(file) {
   return file.replace('.rules', '').replace(/-/g, ' ');
 }

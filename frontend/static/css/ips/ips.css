@@ -58,3 +58,30 @@
   text-align: center;
   cursor: pointer;
 }
+
+
+.collapsible {
+  background-color: transparent; /* Matches the background */
+  color: inherit; /* Inherits the text color from parent */
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none; /* Removes the default border */
+  text-align: left;
+  outline: none; /* Removes the focus outline */
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.collapsible:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Optional: subtle hover effect */
+  color: #6c7ee4; /* Change text color on hover (optional) */
+}
+
+.rule-content {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  border-radius: 5px;
+  background-color: inherit; /* Inherit background from parent */
+}
