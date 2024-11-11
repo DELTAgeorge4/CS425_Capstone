@@ -1,42 +1,120 @@
-fetch('/rules')
-  .then(response => response.json())
-  .then(data => {
-    const rulesList = document.getElementById('rules-list');
-    // console.log("thelength is: " , data.files.length);
-    // console.log("the data is: " , data.files[0]);
-    for (let i = 0; i < data.files.length; i++) {
-        const file = data.files[i];
-        const listItem = document.createElement('option');
-        listItem.textContent = file; 
-        listItem.value = file; 
-        rulesList.appendChild(listItem); 
-    }
+const alertsTab = document.getElementById('ips-alerts');
+const rulesTab = document.getElementById('ips-rules');
+const rightPageContent = document.getElementById('right-page-content');
 
-  })
-  .catch(error => console.error("Error fetching rules:", error));
+function clearContent() {
+  rightPageContent.innerHTML = ''; 
+}
 
-const showRulesButton = document.getElementById('show-rules');
 
-showRulesButton.addEventListener('click', () => {
-    // Clear the previous content
-    const rulesContent = document.getElementById('rules-content');
-    while (rulesContent.firstChild) {
-        rulesContent.removeChild(rulesContent.firstChild);
-        }
-  const rulesList = document.getElementById('rules-list');
-  const selectedRule = rulesList.options[rulesList.selectedIndex].value; // Use value instead of label
-  console.log(`Selected rule file: ${selectedRule}`);
+alertsTab.addEventListener('click', function () {
+  clearContent();
 
-  // Fetch the content of the selected rule file
-  fetch(`/rules/${selectedRule}`)
-    .then(response => response.json()) // Ensure it's parsed as JSON
+
+  const header = document.createElement('h1');
+  header.textContent = 'Suricata Alerts';
+  rightPageContent.appendChild(header);
+
+  const alertContent = document.createElement('p');
+  alertContent.textContent = 'This section will show alerts data from Suricata.';
+  rightPageContent.appendChild(alertContent);
+
+  const exampleAlert = document.createElement('p');
+  exampleAlert.textContent = 'Alert 1: Example alert details.';
+  rightPageContent.appendChild(exampleAlert);
+});
+
+
+rulesTab.addEventListener('click', function () {
+  clearContent();
+
+
+  const header = document.createElement('h1');
+  header.textContent = 'Available Suricata Rules';
+  rightPageContent.appendChild(header);
+
+  const editButton = document.createElement('input');
+  editButton.type = 'button';
+  editButton.id = 'edit-rules';
+  editButton.value = 'Edit Rules';
+  rightPageContent.appendChild(editButton);
+
+  const rulesList = document.createElement('div');
+  rulesList.id = 'rules-list';
+  rightPageContent.appendChild(rulesList);
+
+
+  fetch('/rules')
+    .then(response => response.json())
     .then(data => {
-      console.log(data[0]); // Log the type of the content
-      for (let i = 0; i < data.length; i++) {
-        const listItem = document.createElement('li');
-        listItem.textContent = data[i];
-        document.getElementById('rules-content').appendChild(listItem);
+      for (let i = 0; i < data.files.length; i++) {
+        const file = data.files[i];
+        const parsedFileName = parseFileName(file);
+
+        const header = document.createElement('h2');
+        header.textContent = parsedFileName;
+        rulesList.appendChild(header);
+
+        const ruleContent = document.createElement('div');
+        ruleContent.classList.add('rule-content');
+
+        fetch(`/rules/${file}`)
+          .then(response => response.json())
+          .then(rules => {
+            for (let j = 0; j < rules.length; j++) {
+              const rule = rules[j];
+              const parseRule = parseFileRule(rule);
+
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.id = `ruleCheckbox-${i}-${j}`;
+              checkbox.name = 'ruleCheckbox';
+              checkbox.value = rule;
+              checkbox.checked = !rule.startsWith('#');
+
+              const ruleElement = document.createElement('p');
+              ruleElement.setAttribute('for', `ruleCheckbox-${i}-${j}`);
+              ruleElement.textContent = parseRule;
+
+              ruleElement.insertAdjacentElement('afterbegin', checkbox);
+              ruleContent.appendChild(ruleElement);
+            }
+
+            header.insertAdjacentElement('afterend', ruleContent);
+          })
+          .catch(error => console.error(`Error fetching rules for file ${file}:`, error));
       }
     })
-    .catch(error => console.error("Error fetching rule content:", error));
+    .catch(error => console.error('Error fetching rules:', error));
 });
+
+// Helper functions
+function parseFileName(file) {
+  return file.replace('.rules', '').replace(/-/g, ' ');
+}
+
+function parseFileRule(rule) {
+  const isDisabled = rule.startsWith('#');
+  const status = isDisabled ? 'disabled' : 'active';
+
+  if (isDisabled) {
+    rule = rule.slice(1).trim();
+  }
+
+  const parts = rule.split(' ');
+  const action = parts[0] || 'N/A';
+  const protocol = parts[1] || 'N/A';
+  const srcAddress = parts[2] || 'N/A';
+  const srcPort = parts[3] || 'N/A';
+  const direction = parts[4] || 'N/A';
+  const destAddress = parts[5] || 'N/A';
+  const destPort = parts[6] || 'N/A';
+
+  const optionsStartIndex = rule.indexOf('(');
+  const optionsEndIndex = rule.lastIndexOf(')');
+  const options = optionsStartIndex !== -1 && optionsEndIndex !== -1
+    ? rule.slice(optionsStartIndex + 1, optionsEndIndex)
+    : '';
+
+  return `action:${action}, protocol:${protocol}, src:${srcAddress}:${srcPort}, dest:${destAddress}:${destPort}, state:${status}`;
+}

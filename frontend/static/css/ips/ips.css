@@ -1,0 +1,60 @@
+#page-content {
+  display: flex; /* Use flexbox for left and right content alignment */
+  gap: 15px; /* Add spacing between left and right sections */
+  margin-left: 15%;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+#left-page-content {
+  width: 200px; /* Fixed width for the left section */
+  border: 1px solid #ccc;
+  /* padding: 10px; */
+  border-radius: 5px;
+  flex-shrink: 0; /* Prevent the left content from shrinking */
+  justify-content: center;
+
+}
+
+#left-page-content h2 {
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+}
+#right-page-content {
+  flex: 1; /* Dynamically take the remaining space */
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  overflow: auto; /* Enable vertical scrolling */
+}
+
+#rules-list {
+  margin-top: 10px;
+}
+
+.rule-section {
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.rule-section p {
+  margin: 5px 0;
+}
+
+.rule-section button {
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none;
+}
+
+.ips-tab{
+  padding: 10px;
+  border: #ccc 1px solid; 
+  text-align: center;
+  cursor: pointer;
+}

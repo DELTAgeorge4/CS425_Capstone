@@ -5,20 +5,31 @@
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/ips/ips.css') }}">
+  <style>
+    /* Inline CSS for quick adjustments */
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
 <!-- Placeholder for Navigation Menu -->
-<div id="nav-placeholder"> This shoud be navigation</div>
+<div id="nav-placeholder">This should be navigation</div>
 
 <!-- Page Content -->
-<div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
-  <h1>Available Suricata Rules</h1>
-  <select id="rules-list">
-    <!-- Rules will be dynamically added here -->
-  </select>
-  <button id="show-rules">Show Rule</button>
-  <p id="rules-content">Place holder</p>
+<div id="page-content">
+  <!-- Left Section -->
+  <div id="left-page-content">
+    <h2>IPS</h2>
+    <div class="ips-tab" id="ips-alerts">Alerts</div>
+    <div class="ips-tab" id="ips-rules">Rules</div>
+  </div>
+
+  <!-- Right Section -->
+  <div id="right-page-content">
+
+  </div>
 </div>
 
 <!-- JavaScript to Load Navigation Menu and Set Active Link -->
@@ -30,7 +41,6 @@
 
       const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
       navLinks.forEach(link => {
-        // Compare only the path portions of the URLs
         if (link.pathname === window.location.pathname) {
           link.classList.add("active");
         }
@@ -39,7 +49,6 @@
     .catch(error => console.error("Error loading navigation:", error));
 </script>
 
-<!-- Include app.js -->
 <script src="{{ url_for('static', path='js/ips-settings/app.js') }}"></script>
 </body>
 </html>

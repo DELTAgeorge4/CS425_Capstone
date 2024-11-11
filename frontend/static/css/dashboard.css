@@ -27,7 +27,7 @@
 body {
   margin: 0;
   overflow-x: hidden; /* Prevents horizontal overflow */
-  overflow-y: auto;   //Enables vertical scrolling
+  overflow-y: auto;   /*Enables vertical scrolling */
   background-color: #31363F; /* Match this with your desired background color */
 }
 
