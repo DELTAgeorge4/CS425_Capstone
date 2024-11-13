@@ -17,8 +17,8 @@ app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 templates = Jinja2Templates(directory="templates")
 
 # Directory where Suricata rules are stored
-# RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
-RULES_DIR = "/etc/suricata/rules"  # For Linux
+RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
+#RULES_DIR = "/etc/suricata/rules"  # For Linux
 
 class LoginData(BaseModel):
     username: str
@@ -79,7 +79,7 @@ class Rule(BaseModel):
     rule_text: str
 
 # Endpoint to list all available rule files
-@app.get("/rules")
+@app.get("/rules", dependencies=[Depends(verify_user)])
 def list_rule_files():
     try:
         files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
@@ -88,18 +88,43 @@ def list_rule_files():
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Rules directory not found.")
 
-# Load rules from a specific .rules file
+SURICATA_ACTIONS = {"alert", "drop", "pass", "reject", "log", "activate", "dynamic", "monitor"}
+
 def load_suricata_rules(file_name: str):
     rules = []
     file_path = os.path.join(RULES_DIR, file_name)
+    
     if not os.path.isfile(file_path):
         raise HTTPException(status_code=404, detail="File not found.")
+    
     with open(file_path, "r") as file:
-        rules = [line.strip() for line in file if line.strip() and not line.startswith("#")]
+        for line in file:
+            stripped = line.strip()
+            if not stripped:
+                continue  # Skip empty lines
+            
+            if stripped.startswith("#"):
+                possible_rule = stripped.lstrip("#").strip()
+                print(possible_rule)
+                validChar = ">" in possible_rule or "<" in possible_rule
+                action = possible_rule.split(" ", 1)[0]  # Extract the first word
+                if action in SURICATA_ACTIONS and validChar:
+                    rules.append({"type": "inactive_rule", "content": possible_rule})
+                else:
+                    rules.append({"type": "comment", "content": stripped})
+            else:
+                # Check if the line starts with a valid action
+                action = stripped.split(" ", 1)[0]  # Extract the first word
+                if action in SURICATA_ACTIONS:
+                    rules.append({"type": "active_rule", "action": action, "content": stripped})
+                else:
+                    # If the line doesn't match any action, it may not be a valid rule
+                    rules.append({"type": "unknown", "content": stripped})
+    
     return rules
 
 # Endpoint to get rules from a specific file
-@app.get("/rules/{file_name}")
+@app.get("/rules/{file_name}", dependencies=[Depends(verify_user)])
 def get_rules(file_name: str):
     return load_suricata_rules(file_name)
 

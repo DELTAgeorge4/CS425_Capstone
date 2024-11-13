@@ -71,7 +71,7 @@ body {
     color: #EEEEEE;
     margin-left: 15%;
     padding: 0;
-    overflow: auto;
+    /* overflow: auto; */
     /* width: 100vh; */
     /* height: 100vh; */
   }

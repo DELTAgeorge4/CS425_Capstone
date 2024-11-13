@@ -3,7 +3,7 @@
   gap: 15px; /* Add spacing between left and right sections */
   margin-left: 15%;
   padding: 1px 16px;
-  height: 1000px;
+  height: 100vh;
 }
 
 #left-page-content {
@@ -16,6 +16,27 @@
 
 }
 
+.rule-content {
+  width: 90%; /* Set a fixed width, relative to its container */
+  max-height: 200px; /* Set a fixed height (adjust as needed) */
+  overflow-y: auto; /* Add vertical scrolling if content exceeds height */
+  overflow-x: hidden; /* Prevent horizontal scrolling (optional) */
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  border-radius: 5px;
+  background-color: inherit; /* Inherit background from parent */
+}
+
+.collapsible{
+  width: 20%;
+}
+.file-container{
+/* Content inside this container like buttons will be aligned side by side */
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
 #left-page-content h2 {
   margin: 0;
   padding: 10px;
@@ -26,7 +47,7 @@
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
-  overflow: auto; /* Enable vertical scrolling */
+  overflow: auto; 
 }
 
 #rules-list {
