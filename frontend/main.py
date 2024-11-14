@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
+from typing import List
 import os
 
 app = FastAPI()
@@ -74,6 +75,73 @@ async def nav(request: Request):
 async def fart():
     return {"message": "fart"}
 
+# Class for a list of checkbox data with file name and checked status
+class CheckBoxData(BaseModel):
+    checkBoxList: List[bool]
+
+@app.post("/checkboxes")
+async def checkboxes(data: CheckBoxData):
+    print(data.checkBoxList)
+    files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
+    # print(files)
+    for i, file in enumerate(files):
+        edit_rules(file, data.checkBoxList[i])
+    # edit_rules(files[0], data.checkBoxList[0])
+    return {"checkBoxList": data.checkBoxList}
+
+
+#funciton that opens up the rules files and edits the rules to comment them out if checkbox is not checked
+def edit_rules(file_name: str, isChecked: bool):
+
+    file_path = os.path.join(RULES_DIR, file_name)
+    updated_lines = []
+
+    # Read the file and process each line
+    with open(file_path, "r") as file:
+        lines = file.readlines()
+        for line in lines:
+            stripped = line.strip()
+
+            # Keep empty lines as is
+            if not stripped:
+                updated_lines.append(line)
+                continue
+
+            # Check if the line is a comment
+            if stripped.startswith("#"):
+                possible_rule = stripped.lstrip("#").strip()
+
+                # Validate if it's a commented Suricata rule
+                valid_char = ">" in possible_rule or "<" in possible_rule
+                action = possible_rule.split(" ", 1)[0]  # Extract the first word
+                if action in SURICATA_ACTIONS and valid_char:
+                    # It's a commented rule; uncomment or keep commented based on isChecked
+                    if isChecked:
+                        updated_lines.append(stripped.lstrip("#") + "\n")  # Uncomment
+                    else:
+                        updated_lines.append(line)  # Keep it commented
+                else:
+                    # Regular comment, keep as is
+                    updated_lines.append(line)
+            else:
+                # Active rules: comment out if unchecked, keep as is if checked
+                action = stripped.split(" ", 1)[0]  # Extract the first word
+                if action in SURICATA_ACTIONS:
+                    if not isChecked:
+                        updated_lines.append(f"# {line}")  # Comment out
+                    else:
+                        updated_lines.append(line)  # Keep it uncommented
+                else:
+                    # Unrecognized lines, keep as is
+                    updated_lines.append(line)
+
+    # Write the updated lines back to the file
+    with open(file_path, "w") as file:
+        file.writelines(updated_lines)
+
+    print(f"Updated rules in {file_name} based on checkbox state: {isChecked}")
+
+
 # Class for rule representation
 class Rule(BaseModel):
     rule_text: str
@@ -83,7 +151,7 @@ class Rule(BaseModel):
 def list_rule_files():
     try:
         files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
-        print(files)
+        # print(files)
         return {"files": files}
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Rules directory not found.")
@@ -105,7 +173,7 @@ def load_suricata_rules(file_name: str):
             
             if stripped.startswith("#"):
                 possible_rule = stripped.lstrip("#").strip()
-                print(possible_rule)
+                # print(possible_rule)
                 validChar = ">" in possible_rule or "<" in possible_rule
                 action = possible_rule.split(" ", 1)[0]  # Extract the first word
                 if action in SURICATA_ACTIONS and validChar:
@@ -127,5 +195,3 @@ def load_suricata_rules(file_name: str):
 @app.get("/rules/{file_name}", dependencies=[Depends(verify_user)])
 def get_rules(file_name: str):
     return load_suricata_rules(file_name)
-
-

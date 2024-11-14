@@ -16,6 +16,9 @@
 
 }
 
+.input{
+  cursor: pointer;
+}
 .rule-content {
   width: 90%; /* Set a fixed width, relative to its container */
   max-height: 200px; /* Set a fixed height (adjust as needed) */
