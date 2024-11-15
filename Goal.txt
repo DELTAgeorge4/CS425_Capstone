@@ -1,0 +1,55 @@
+copy security onion to our repo.
+
+See if we can make run on ubuntu
+
+adapt to ubuntu desktop
+
+remove all bloat.
+
+add better user interfaces for suricata (like pfsense)
+
+add better traffic interfaces
+
+
+
+installable packages like pfsense
+Admin control and user interface like pfsense
+modulatiry and overall idea of security onion
+tools implimented like suricata, zeek, snmp, siem
+
+
+
+
+
+
+Notes:
+    HA Kubernetes/docker images
+    https://docs.librenms.org/Installation/Docker/
+    https://docs.librenms.org/Installation/Install-LibreNMS/
+
+Installing:
+    two ways of making, make with github clone, or ova file
+        Github:
+            make
+            install file
+            ports
+            ips
+        OVA:
+            everything pre installed
+            acceess on port 443 of localhost
+
+Dependancies:
+    ubuntu desktop
+    LibreNMS
+    Suricata
+    Netflow/Zeek
+    SIEM??? (next semester)
+
+GUI:
+    SNMP:
+        which hosts would you like to monitor? (enter a single ip or subnet mask)
+    Suricata:
+        Which Rules?
+        Interfaces?
+        Update Policies.
+        Logs.
