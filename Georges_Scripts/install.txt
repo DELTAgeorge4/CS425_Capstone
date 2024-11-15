@@ -81,3 +81,9 @@ psql -U suricata_user -d suricata_logs -h localhost
 
 \dt
 SELECT * FROM your_table_name LIMIT 10;
+
+
+
+#after scripts installed
+chmod +x suricata_to_pg.py
+./suricata_to_pg.py
