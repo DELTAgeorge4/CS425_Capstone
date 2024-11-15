@@ -1,0 +1,111 @@
+#page-content {
+  display: flex; /* Use flexbox for left and right content alignment */
+  gap: 15px; /* Add spacing between left and right sections */
+  margin-left: 15%;
+  padding: 1px 16px;
+  height: 100vh;
+}
+
+#left-page-content {
+  width: 200px; /* Fixed width for the left section */
+  border: 1px solid #ccc;
+  /* padding: 10px; */
+  border-radius: 5px;
+  flex-shrink: 0; /* Prevent the left content from shrinking */
+  justify-content: center;
+
+}
+
+.input{
+  cursor: pointer;
+}
+.rule-content {
+  width: 90%; /* Set a fixed width, relative to its container */
+  max-height: 200px; /* Set a fixed height (adjust as needed) */
+  overflow-y: auto; /* Add vertical scrolling if content exceeds height */
+  overflow-x: hidden; /* Prevent horizontal scrolling (optional) */
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  border-radius: 5px;
+  background-color: inherit; /* Inherit background from parent */
+}
+
+.collapsible{
+  width: 20%;
+}
+.file-container{
+/* Content inside this container like buttons will be aligned side by side */
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+#left-page-content h2 {
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+}
+#right-page-content {
+  flex: 1; /* Dynamically take the remaining space */
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  overflow: auto; 
+}
+
+#rules-list {
+  margin-top: 10px;
+}
+
+.rule-section {
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.rule-section p {
+  margin: 5px 0;
+}
+
+.rule-section button {
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none;
+}
+
+.ips-tab{
+  padding: 10px;
+  border: #ccc 1px solid; 
+  text-align: center;
+  cursor: pointer;
+}
+
+
+.collapsible {
+  background-color: transparent; /* Matches the background */
+  color: inherit; /* Inherits the text color from parent */
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none; /* Removes the default border */
+  text-align: left;
+  outline: none; /* Removes the focus outline */
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.collapsible:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Optional: subtle hover effect */
+  color: #6c7ee4; /* Change text color on hover (optional) */
+}
+
+.rule-content {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  border-radius: 5px;
+  background-color: inherit; /* Inherit background from parent */
+}
