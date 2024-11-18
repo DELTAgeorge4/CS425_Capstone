@@ -1,0 +1,71 @@
+/* Login container styles */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #31363F;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    border: 2px solid #76ABAE;
+}
+
+/* Center and style the form */
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Label styles */
+.login-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #76ABAE;
+    width: 100%; /* Align labels with inputs */
+}
+
+/* Input styles */
+.login-container input {
+    width: calc(100% - 16px); /* Adjusted width to fit within padding */
+    padding: 8px;
+    margin-bottom: 16px; /* Reduced margin for better layout */
+    border: 1px solid #76ABAE;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #31363F;
+}
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #31363F; /* Updated background color */
+    color: #76ABAE; /* Updated text color */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Button styles */
+.button {
+    background-color: #76ABAE; /* Updated button color */
+    color: #31363F; /* Updated button text color */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.button:hover {
+    background-color: #5a8a8c; /* Updated button hover color */
+}
