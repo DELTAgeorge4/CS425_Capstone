@@ -18,8 +18,8 @@ app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 templates = Jinja2Templates(directory="templates")
 
 # Directory where Suricata rules are stored
-RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
-#RULES_DIR = "/etc/suricata/rules"  # For Linux
+#RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
+RULES_DIR = "/etc/suricata/rules"  # For Linux
 
 class LoginData(BaseModel):
     username: str
