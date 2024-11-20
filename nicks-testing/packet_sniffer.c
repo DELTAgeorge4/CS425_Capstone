@@ -1,5 +1,3 @@
-//AI Generated, will be used as reference
-
 #include <stdio.h>
 #include <pcap.h>
 #include <netinet/in.h>
@@ -88,7 +86,7 @@ void my_packet_handler(
     printf("Memory address where payload begins: %p\n\n", payload);
 
     /* Print payload in ASCII */
-    
+    /*  
     if (payload_length > 0) {
         const u_char *temp_pointer = payload;
         int byte_count = 0;
@@ -98,7 +96,7 @@ void my_packet_handler(
         }
         printf("\n");
     }
-    
+    */
 
     return;
 }
