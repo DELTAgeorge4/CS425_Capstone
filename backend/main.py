@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
 from typing import List
 import os
+import subprocess
 
 app = FastAPI()
 
@@ -87,9 +88,14 @@ async def checkboxes(data: CheckBoxData):
     for i, file in enumerate(files):
         edit_rules(file, data.checkBoxList[i])
     # edit_rules(files[0], data.checkBoxList[0])
+    
+    restart_suricata()
     return {"checkBoxList": data.checkBoxList}
 
-
+def restart_suricata():
+    #restartSuricata.sh path in same directory as this file
+    subprocess.run(["./restartSuricata.sh"])
+    
 #funciton that opens up the rules files and edits the rules to comment them out if checkbox is not checked
 def edit_rules(file_name: str, isChecked: bool):
 
