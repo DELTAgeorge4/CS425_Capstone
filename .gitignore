@@ -2,3 +2,5 @@ node_modules/
 frontend/__pycache__/
 frontend/node_modules/
 frontend/venv/
+installation/venv
+backend/__pycache__
