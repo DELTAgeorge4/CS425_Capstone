@@ -5,12 +5,13 @@ import psycopg2
 
 # Connect to PostgreSQL
 conn = psycopg2.connect(
-    dbname="suricata",
-    user="suricata_user",
-    password="password",
+    dbname="suricata_alerts",
+    user="your_pg_user",
+    password="your_pg_password",
     host="localhost"
 )
 cursor = conn.cursor()
+
 # Connect to the Unix socket
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 sock.connect("/var/run/suricata/eve.sock")

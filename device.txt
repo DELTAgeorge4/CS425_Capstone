@@ -1,0 +1,13 @@
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-02 20:44 UTC
+Nmap scan report for _gateway (192.168.14.1)
+Host is up (0.00037s latency).
+MAC Address: 7C:C2:55:E2:FB:B7 (Super Micro Computer)
+Nmap scan report for 192.168.14.11
+Host is up (0.00016s latency).
+MAC Address: BC:24:11:AC:8F:51 (Unknown)
+Nmap scan report for 192.168.14.13
+Host is up (0.00037s latency).
+MAC Address: BC:24:11:9B:48:BF (Unknown)
+Nmap scan report for Testing-VM (192.168.14.14)
+Host is up.
+Nmap done: 256 IP addresses (4 hosts up) scanned in 1.99 seconds
