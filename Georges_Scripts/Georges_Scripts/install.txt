@@ -1,0 +1,89 @@
+sudo apt update
+sudo apt install postgresql suricata
+
+sudo -u postgres psql
+CREATE DATABASE suricata;
+CREATE USER suricata_user WITH ENCRYPTED PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE suricata TO suricata_user;
+CREATE TABLE alerts (
+    id SERIAL PRIMARY KEY,
+    alert JSONB
+);
+\q
+
+
+nano /etc/suricata/suricata.yaml
+#find outputs
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert
+        - http
+        - dns
+        - tls
+
+sudo apt install python3-psycopg2
+
+#!/usr/bin/env python3
+import socket
+import json
+import psycopg2
+
+# Connect to PostgreSQL
+conn = psycopg2.connect(
+    dbname="suricata_alerts",
+    user="your_pg_user",
+    password="your_pg_password",
+    host="localhost"
+)
+cursor = conn.cursor()
+
+# Connect to the Unix socket
+sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+sock.connect("/var/run/suricata/eve.sock")
+
+while True:
+    data = sock.recv(4096)
+    if not data:
+        break
+    try:
+        alert = json.loads(data.decode('utf-8'))
+        cursor.execute("INSERT INTO alerts (alert) VALUES (%s)", [json.dumps(alert)])
+        conn.commit()
+    except json.JSONDecodeError:
+        continue
+
+cursor.close()
+conn.close()
+
+
+
+
+
+
+chmod +x suricata_to_pg.py
+./suricata_to_pg.py
+#Ensure that the Unix socket /var/run/suricata/eve.sock has appropriate permissions so that the script can read from it. You may need to adjust Suricata's user and group settings or modify the socket's permissions accordingly.
+
+
+
+
+
+
+sudo systemctl restart suricata
+
+
+#check database
+psql -U suricata_user -d suricata_logs -h localhost
+
+\dt
+SELECT * FROM your_table_name LIMIT 10;
+
+
+
+#after scripts installed
+chmod +x suricata_to_pg.py
+./suricata_to_pg.py
