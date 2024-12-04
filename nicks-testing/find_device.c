@@ -229,7 +229,7 @@ int main(void) {
     /* Our function to output some info */
     print_packet_info(packet, packet_header);
 
-    pcap_loop(handle, 1, my_packet_handler, NULL);
+    pcap_loop(handle, 100, my_packet_handler, NULL);
     pcap_close(handle);
 
     return 0;
