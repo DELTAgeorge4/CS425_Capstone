@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //Create and appned a status message area
     const statmessage = document.createElement('p');
     statmessage.id = 'statusMessage';
-    statmessage.textContent = '*';
+    statmessage.textContent = ' c[○┬●]כ ';
     rightPageContent.appendChild(statmessage);
     // Create and append rules list container
     const rulesList = document.createElement('div');
@@ -104,12 +104,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           
           statusMessage.textContent = "Suricata restarted successfully!";
-          setTimeout(() => statusMessage.textContent = '', 3000); 
+          setTimeout(() => statusMessage.textContent = ' c[○┬●]כ ', 3000); 
         }
       } catch (error) {
 
         statusMessage.textContent = "Failed to restart Suricata. Please try again later.";
-        setTimeout(() => statusMessage.textContent = '', 5000); 
+        setTimeout(() => statusMessage.textContent = ' c[○┬●]כ ', 5000); 
         console.error('Error restarting Suricata:', error);
       } finally {
         
