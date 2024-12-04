@@ -89,9 +89,14 @@ async def checkboxes(data: CheckBoxData):
         edit_rules(file, data.checkBoxList[i])
     # edit_rules(files[0], data.checkBoxList[0])
     
-    restart_suricata()
+    # restart_suricata()
     return {"checkBoxList": data.checkBoxList}
 
+@app.post("/restart-suricata")
+async def call_restart_suricata():
+    restart_suricata()
+    
+    
 def restart_suricata():
     #restartSuricata.sh path in same directory as this file
     print("suricata restarting")

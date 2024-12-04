@@ -33,6 +33,17 @@ document.addEventListener('DOMContentLoaded', function () {
     saveButton.style.display = 'none';
     rightPageContent.appendChild(saveButton);
 
+    // Create and append restart button
+    const restartSuricataButton = document.createElement('input');
+    restartSuricataButton.type = 'button';
+    restartSuricataButton.id = 'restart-suricata';
+    restartSuricataButton.value = 'Restart Suricata';
+    rightPageContent.appendChild(restartSuricataButton);
+
+    const statmessage = document.createElement('p');
+    statmessage.id = 'statusMessage';
+    statmessage.textContent = '🫃🏻';
+    rightPageContent.appendChild(statmessage);
     // Create and append rules list container
     const rulesList = document.createElement('div');
     rulesList.id = 'rules-list';
@@ -75,6 +86,36 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
+    restartSuricataButton.addEventListener('click', async function() {
+      // Show "Restarting Suricata..." message and disable the button
+      const statusMessage = document.getElementById('statusMessage');
+      statusMessage.textContent = "Restarting Suricata... Please wait.";
+      restartSuricataButton.disabled = true;
+    
+      try {
+        const response = await fetch('/restart-suricata', {
+          method: 'POST',
+        });
+    
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        } else {
+          
+          statusMessage.textContent = "Suricata restarted successfully!";
+          setTimeout(() => statusMessage.textContent = '', 3000); 
+        }
+      } catch (error) {
+
+        statusMessage.textContent = "Failed to restart Suricata. Please try again later.";
+        setTimeout(() => statusMessage.textContent = '', 5000); 
+        console.error('Error restarting Suricata:', error);
+      } finally {
+        
+        restartSuricataButton.disabled = false;
+      }
+    });
+    
     // Fetch the list of rule files
     const filesResponse = await fetch('/rules');
     if (!filesResponse.ok) {

@@ -16,6 +16,12 @@
 
 }
 
+
+#statusMessage{
+  background-color: aliceblue;
+  color: black;
+  width: 100%;
+}
 .input{
   cursor: pointer;
 }
