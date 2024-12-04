@@ -94,6 +94,7 @@ async def checkboxes(data: CheckBoxData):
 
 def restart_suricata():
     #restartSuricata.sh path in same directory as this file
+    print("suricata restarting")
     subprocess.run(["./restartSuricata.sh"])
     
 #funciton that opens up the rules files and edits the rules to comment them out if checkbox is not checked

@@ -1,4 +1,8 @@
+#!/bin/bash
+
 ./install_dependencies.sh
-source venv/bin/activate
+chmod +x ../backend/restartSuricata.sh
+source ./venv/bin/activate  # Ensure the correct path to 'venv/bin/activate'
 cd ../backend
+echo pwd
 fastapi dev
