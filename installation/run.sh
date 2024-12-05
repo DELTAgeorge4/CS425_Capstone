@@ -4,5 +4,5 @@
 chmod +x ../backend/restartSuricata.sh
 source ./venv/bin/activate  # Ensure the correct path to 'venv/bin/activate'
 cd ../backend
-echo pwd
+pwd
 fastapi dev
