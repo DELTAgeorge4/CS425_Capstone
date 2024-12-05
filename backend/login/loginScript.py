@@ -1,5 +1,5 @@
-from db.main import connect, close
-from passwordHashing.hashmypassword import hash_password
+from backend.db.main import connect, close
+from backend.passwordHashing.hashmypassword import hash_password
 
 def login(username, password):
     authenticated = False
