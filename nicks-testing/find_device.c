@@ -173,14 +173,32 @@ void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, co
     }
     printf("\n");
 
+    unsigned char fcs[5];
+    fcs[4] = '\0';
+    unsigned char payload[header->caplen - 17]; // 17 = length of ethernet header - null terminator
+    payload[header->caplen - 16] = '\0';
     printf("Raw packet data:\n");
     for (int i = 0; i < header->caplen; i++) {
         printf("%02x ", packet[i]);
         if ((i + 1) % 16 == 0){
             printf("\n"); // New line every 16 bytes
         }
+
+        // Saving payload and FCS
+        if (i >= 14){
+            if (i >= header->caplen - 4){
+                fcs[i - header->caplen] = packet[i];
+            } else {
+                payload[i - 14] = packet[i];
+            }
+        }
     }
+
     printf("\n");
+    unsigned char network_layer_packet[1024]
+    for (int i = 14; i < header->caplen - 4; i++){
+
+    }
     return;
 }
 
