@@ -98,17 +98,35 @@ void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_he
 
 
 char* find_ethertype(int ethertype_num){
+    //https://en.wikipedia.org/wiki/Ethernet_frame used for info on parsing ethernet frames
     FILE* ether_file = fopen(ETHERTYPES, "r");
     if (!ether_file){
         printf("Error opening file\n");
         return "NULL\0";
     }
+
+    char line[1024];
+    while (fgets(line, 1024, ether_file)){
+        char *ethertype_range = strtok(line, ",");
+        char *range = strchr(ethertype_range, '-');
+        int eth_start;
+        int eth_end;
+        if (range){
+            eth_start = atoi(ethertype_range);
+            eth_end = atoi(range + 1);
+        } else {
+            eth_start = atoi(ethertype_range);
+            eth_end = eth_start;
+        }
+        printf("Start: %d\n", eth_start);
+        printf("End: %d\n", eth_end);
+    }
+
     return "NOT NULL\0";
 }
 
 
 void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, const unsigned char *packet){
-    //https://en.wikipedia.org/wiki/Ethernet_frame used for info on parsing ethernet frames
     struct ether_header *eth_header = (struct ether_header *) packet;
 
     printf("Destination MAC address: ");
