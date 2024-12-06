@@ -9,11 +9,16 @@
 #include <netinet/if_ether.h>
 #include <time.h>
 
+#define ETHERTYPES "ethertype_data.csv"
+
 void display_devices(pcap_if_t*);
 int print_device_info(char*);
 char* select_device(pcap_if_t*);
 void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
 void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, const unsigned char *packet);
+
+
+
 
 void display_devices(pcap_if_t *devices){
     pcap_if_t *current_device = devices;
@@ -91,94 +96,109 @@ void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_he
     printf("Packet total length %d\n", packet_header.len);
 }
 
-void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, const unsigned char *packet){
-    /* First, lets make sure we have an IP packet */
-    struct ether_header *eth_header;
-    eth_header = (struct ether_header *) packet;
-    if (ntohs(eth_header->ether_type) != ETHERTYPE_IP) {
-        printf("Not an IP packet. Skipping...\n\n");
-        return;
+
+void find_ethertype(int ethertype_num, char* eth_name){
+    //https://en.wikipedia.org/wiki/Ethernet_frame used for info on parsing ethernet frames
+    FILE* ether_file = fopen(ETHERTYPES, "r");
+    if (!ether_file){
+        printf("Error opening file\n");
+        strcpy(eth_name, "NULL\0");
     }
 
-    /* The total packet length, including all headers
-       and the data payload is stored in
-       header->len and header->caplen. Caplen is
-       the amount actually available, and len is the
-       total packet length even if it is larger
-       than what we currently have captured. If the snapshot
-       length set with pcap_open_live() is too small, you may
-       not have the whole packet. */
-    printf("Total packet available: %d bytes\n", header->caplen);
-    printf("Expected packet size: %d bytes\n", header->len);
-
-    /* Pointers to start point of various headers */
-    const unsigned char *ip_header;
-    const unsigned char *tcp_header;
-    const unsigned char *payload;
-
-    /* Header lengths in bytes */
-    int ethernet_header_length = 14; /* Doesn't change */
-    int ip_header_length;
-    int tcp_header_length;
-    int payload_length;
-
-    /* Find start of IP header */
-    ip_header = packet + ethernet_header_length;
-    /* The second-half of the first byte in ip_header
-       contains the IP header length (IHL). */
-    ip_header_length = ((*ip_header) & 0x0F);
-    /* The IHL is number of 32-bit segments. Multiply
-       by four to get a byte count for pointer arithmetic */
-    ip_header_length = ip_header_length * 4;
-    printf("IP header length (IHL) in bytes: %d\n", ip_header_length);
-
-    /* Now that we know where the IP header is, we can 
-       inspect the IP header for a protocol number to 
-       make sure it is TCP before going any further. 
-       Protocol is always the 10th byte of the IP header */
-    unsigned char protocol = *(ip_header + 9);
-    if (protocol != IPPROTO_TCP) {
-        printf("Not a TCP packet. Skipping...\n\n");
-        return;
-    }
-
-    /* Add the ethernet and ip header length to the start of the packet
-       to find the beginning of the TCP header */
-    tcp_header = packet + ethernet_header_length + ip_header_length;
-    /* TCP header length is stored in the first half 
-       of the 12th byte in the TCP header. Because we only want
-       the value of the top half of the byte, we have to shift it
-       down to the bottom half otherwise it is using the most 
-       significant bits instead of the least significant bits */
-    tcp_header_length = ((*(tcp_header + 12)) & 0xF0) >> 4;
-    /* The TCP header length stored in those 4 bits represents
-       how many 32-bit words there are in the header, just like
-       the IP header length. We multiply by four again to get a
-       byte count. */
-    tcp_header_length = tcp_header_length * 4;
-    printf("TCP header length in bytes: %d\n", tcp_header_length);
-
-    /* Add up all the header sizes to find the payload offset */
-    int total_headers_size = ethernet_header_length+ip_header_length+tcp_header_length;
-    printf("Size of all headers combined: %d bytes\n", total_headers_size);
-    payload_length = header->caplen -
-        (ethernet_header_length + ip_header_length + tcp_header_length);
-    printf("Payload size: %d bytes\n", payload_length);
-    payload = packet + total_headers_size;
-    printf("Memory address where payload begins: %p\n\n", payload);
-
-    /* Print payload in ASCII */
-      
-    if (payload_length > 0) {
-        const unsigned char *temp_pointer = payload;
-        int byte_count = 0;
-        while (byte_count++ < payload_length) {
-            printf("%c", *temp_pointer);
-            temp_pointer++;
+    char line[1024];
+    //char ethertype_name[200];
+    strcpy(eth_name, "NULL\0");
+    while (fgets(line, 1024, ether_file)){
+        char *ethertype_range = strtok(line, ",");
+        char *ethertype_description = strtok(NULL, ",");
+        char *range = strchr(ethertype_range, '-');
+        int eth_start;
+        int eth_end;
+        if (range){
+            eth_start = atoi(ethertype_range);
+            eth_end = atoi(range + 1);
+        } else {
+            eth_start = atoi(ethertype_range);
+            eth_end = eth_start;
         }
-        printf("\n");
+        /*printf("Start: %d\n", eth_start);
+        printf("End: %d\n", eth_end);
+        printf("Description: %s\n", ethertype_description);*/
+
+        if (ethertype_num >= eth_start){
+            if (ethertype_num <= eth_end){
+                strcpy(eth_name, ethertype_description);
+            }
+        }
     }
-    
+    fclose(ether_file);
+}
+
+
+void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, const unsigned char *packet){
+    struct ether_header *eth_header = (struct ether_header *) packet;
+
+    printf("Destination MAC address: ");
+    for(int i = 0; i < 6; i++){
+        if (i == 5){
+            printf("%02x", eth_header->ether_dhost[i]);
+        } else {
+            printf("%02x:", eth_header->ether_dhost[i]);
+        }
+    }
+    printf("\n");
+
+    printf("Source MAC address: ");
+    for(int i = 0; i < 6; i++){
+        if (i == 5){
+            printf("%02x", eth_header->ether_shost[i]);
+        } else {
+            printf("%02x:", eth_header->ether_shost[i]);
+        }
+    }
+    printf("\n");
+
+    printf("EtherType: "); 
+    printf("0x%04x\n", ntohs(eth_header->ether_type));
+    unsigned int type_or_length = ntohs(eth_header->ether_type);
+    char ethertype_name[200];
+    find_ethertype(type_or_length, ethertype_name);
+    if (type_or_length > 1536){
+        printf("The EtherType value reflects the type of ethernet packet.\n");
+        printf("EtherType: %s", ethertype_name);
+    } else if (type_or_length < 1500){
+        printf("The EtherType value is actually the length of the packet.");
+    } else {
+        printf("The EtherType value is not valid.");
+    }
+    printf("\n");
+
+    unsigned char fcs[5];
+    fcs[4] = '\0';
+    unsigned char payload[header->caplen - 17]; // 17 = length of ethernet header - null terminator
+    payload[header->caplen - 16] = '\0';
+    printf("Raw packet data:\n");
+    for (int i = 0; i < header->caplen; i++) {
+        printf("%02x ", packet[i]);
+        if ((i + 1) % 16 == 0){
+            printf("\n"); // New line every 16 bytes
+        }
+
+        // Saving payload and FCS
+        if (i >= 14){
+            if (i >= header->caplen - 4){
+                fcs[i - header->caplen] = packet[i];
+            } else {
+                payload[i - 14] = packet[i];
+            }
+        }
+    }
+
+    printf("\n");
+    unsigned char network_layer_packet[1024]
+    for (int i = 14; i < header->caplen - 4; i++){
+
+    }
     return;
 }
 
@@ -201,7 +221,7 @@ int main(void) {
     char error_buffer[PCAP_ERRBUF_SIZE];
     int total_packet_count = 200;
     int packet_count_limit = 0;
-    int timeout_limit = 100000; /* In milliseconds */
+    int timeout_limit = 10000; /* In milliseconds */
     pcap_t *handle;
     int snapshot_length = 1024;
     handle = pcap_open_live(

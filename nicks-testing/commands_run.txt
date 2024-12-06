@@ -1,0 +1,5 @@
+gcc -o find_device find_device.c -lpcap # compile code that uses pcaps
+sudo ./find_device # packet capture must be ran with sudo
+
+sudo apt-get install libpq-dev # installs needed library for connecting to postgres
+gcc -I/usr/include/postgresql -o packet_db_upload packet_db_upload.c -lpq # for compiling postgres code
