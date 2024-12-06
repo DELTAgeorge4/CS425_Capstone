@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--devices.html-->
+<html>
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/accounts/style.css') }}">
+</head>
+<body>
+
+<!-- Placeholder for Navigation Menu -->
+<div id="nav-placeholder"></div>
+
+<!-- Page Content -->
+<div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
+  <h2>Accounts</h2>
+</div>
+
+<!-- JavaScript to Load Navigation Menu and Set Active Link -->
+<script>
+  fetch("/nav")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("nav-placeholder").innerHTML = data;
+
+      const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
+      navLinks.forEach(link => {
+        // Compare only the path portions of the URLs
+        if (link.pathname === window.location.pathname) {
+          link.classList.add("active");
+        }
+      });
+    })
+    .catch(error => console.error("Error loading navigation:", error));
+</script>
+
+</body>
+</html>

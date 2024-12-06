@@ -52,6 +52,10 @@ async def loginf(request: Request, data: LoginData):
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/")
+@app.get("/accounts")
+async def accounts(request: Request):
+    return templates.TemplateResponse("accounts.html", {"request": request})
+
 
 @app.get("/home", dependencies=[Depends(verify_user)])
 async def home(request: Request):
