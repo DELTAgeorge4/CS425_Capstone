@@ -5,3 +5,6 @@ frontend/venv/
 installation/venv
 backend/__pycache__/
 venv/
+backend/db/__pycache__
+backend/login/__pycache__
+backend/passwordHashing/__pycache__

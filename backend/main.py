@@ -8,6 +8,9 @@ from typing import List
 import os
 import subprocess
 
+import sys
+sys.path.append("..")
+from backend.login.loginScript import login
 app = FastAPI()
 
 # Serve static files
@@ -36,9 +39,11 @@ async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/login")
-async def login(request: Request, data: LoginData):
+async def loginf(request: Request, data: LoginData):
     # Replace with real user validation
-    if data.username == "testuser" and data.password == "testpass":
+    successfully_authenticated = login(data.username, data.password)
+    print(successfully_authenticated)
+    if successfully_authenticated:
         request.session["authenticated"] = True
         return {"message": "Login successful"}  # JSON response instead of redirect
     raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -47,6 +52,10 @@ async def login(request: Request, data: LoginData):
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/")
+@app.get("/accounts")
+async def accounts(request: Request):
+    return templates.TemplateResponse("accounts.html", {"request": request})
+
 
 @app.get("/home", dependencies=[Depends(verify_user)])
 async def home(request: Request):
