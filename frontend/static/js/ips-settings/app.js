@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //Create and appned a status message area
     const statmessage = document.createElement('p');
     statmessage.id = 'statusMessage';
-    statmessage.textContent = '*';
+    statmessage.textContent = 'Status Message: ';
     rightPageContent.appendChild(statmessage);
     // Create and append rules list container
     const rulesList = document.createElement('div');
@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', function () {
     restartSuricataButton.addEventListener('click', async function() {
       // Show "Restarting Suricata..." message and disable the button
       const statusMessage = document.getElementById('statusMessage');
-      statusMessage.textContent = "Restarting Suricata... Please wait.";
+      statusMessage.textContent = "Status Message: Restarting Suricata... Please wait.";
       restartSuricataButton.disabled = true;
-    
+      editButton.disabled = true;
       try {
         const response = await fetch('/restart-suricata', {
           method: 'POST',
@@ -103,17 +103,18 @@ document.addEventListener('DOMContentLoaded', function () {
           throw new Error(`HTTP error: ${response.status}`);
         } else {
           
-          statusMessage.textContent = "Suricata restarted successfully!";
-          setTimeout(() => statusMessage.textContent = '', 3000); 
+          statusMessage.textContent = "Status Message: Suricata restarted successfully!";
+          setTimeout(() => statusMessage.textContent = 'Status Message: ', 3000); 
         }
       } catch (error) {
 
         statusMessage.textContent = "Failed to restart Suricata. Please try again later.";
-        setTimeout(() => statusMessage.textContent = '', 5000); 
+        setTimeout(() => statusMessage.textContent = 'Status Message: ', 5000); 
         console.error('Error restarting Suricata:', error);
       } finally {
         
         restartSuricataButton.disabled = false;
+        editButton.disabled = false;
       }
     });
     
