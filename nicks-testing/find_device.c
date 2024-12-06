@@ -97,17 +97,20 @@ void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_he
 }
 
 
-char* find_ethertype(int ethertype_num){
+void find_ethertype(int ethertype_num, char* eth_name){
     //https://en.wikipedia.org/wiki/Ethernet_frame used for info on parsing ethernet frames
     FILE* ether_file = fopen(ETHERTYPES, "r");
     if (!ether_file){
         printf("Error opening file\n");
-        return "NULL\0";
+        strcpy(eth_name, "NULL\0");
     }
 
     char line[1024];
+    //char ethertype_name[200];
+    strcpy(eth_name, "NULL\0");
     while (fgets(line, 1024, ether_file)){
         char *ethertype_range = strtok(line, ",");
+        char *ethertype_description = strtok(NULL, ",");
         char *range = strchr(ethertype_range, '-');
         int eth_start;
         int eth_end;
@@ -118,11 +121,17 @@ char* find_ethertype(int ethertype_num){
             eth_start = atoi(ethertype_range);
             eth_end = eth_start;
         }
-        printf("Start: %d\n", eth_start);
+        /*printf("Start: %d\n", eth_start);
         printf("End: %d\n", eth_end);
-    }
+        printf("Description: %s\n", ethertype_description);*/
 
-    return "NOT NULL\0";
+        if (ethertype_num >= eth_start){
+            if (ethertype_num <= eth_end){
+                strcpy(eth_name, ethertype_description);
+            }
+        }
+    }
+    fclose(ether_file);
 }
 
 
@@ -152,9 +161,11 @@ void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, co
     printf("EtherType: "); 
     printf("0x%04x\n", ntohs(eth_header->ether_type));
     unsigned int type_or_length = ntohs(eth_header->ether_type);
+    char ethertype_name[200];
+    find_ethertype(type_or_length, ethertype_name);
     if (type_or_length > 1536){
-        printf("The EtherType value reflects the type of ethernet packet.");
-        printf("%s", find_ethertype(type_or_length));
+        printf("The EtherType value reflects the type of ethernet packet.\n");
+        printf("EtherType: %s", ethertype_name);
     } else if (type_or_length < 1500){
         printf("The EtherType value is actually the length of the packet.");
     } else {
