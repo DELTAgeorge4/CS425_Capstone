@@ -33,7 +33,7 @@ def process_uptime_data(host):
         return None
     output = stdout.decode().split("\n")
     return {
-        "system_uptime": int(output[0].split(" = ")[-1]) / 8640000 # convert to days
+        "system_uptime": f'{(int(output[0].split(" = ")[-1]) / 8640000):.2f}' # convert to days
     }
 
 def process_cpu_usage_data(host):
@@ -68,15 +68,16 @@ def process_ram_usage_data(host):
         if i == 2:
             total_mem = int(output[i].split(" = ")[-1])
     return {
-        "ram_used": (virtal_mem - cached_mem) * mem_conversion,
-        "ram_total": total_mem * mem_conversion,
-        "ram_percent_used": ((virtal_mem - cached_mem) / total_mem) * 100
+        "ram_used": f"{(virtal_mem - cached_mem) * mem_conversion:.2f}",
+        "ram_total": f"{total_mem * mem_conversion:.2f}",
+        "ram_percent_used": f"{((virtal_mem - cached_mem) / total_mem) * 100:.2f}"
     }
         
 
 def process_disk_usage_date(host):
     root_dir_used_storage = ""
     root_dir_total_storage = ""
+    file_desc = -1
     disk_conversion = 4096 / (1000 * 1000 * 1000)
     command = f"snmpbulkwalk -v2c -c public -OQUs -m HOST-RESOURCES-MIB:HOST-RESOURCES-TYPES -M {current_dir}/mibs udp:{host}:161 hrStorageEntry"
     process = subprocess.Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
@@ -85,14 +86,16 @@ def process_disk_usage_date(host):
         print(f"Error: {stderr}")
         return None
     for line in stdout.decode().split("\n"):
-        if "hrStorageUsed.31" in line:
+        if line.split(" = ")[-1] == "/":
+            file_desc = line.split(" = ")[0].split(".")[-1]
+        if file_desc != -1 and f"hrStorageUsed.{file_desc}" in line:
             root_dir_used_storage = int(line.split(" = ")[-1]) * disk_conversion
-        if "hrStorageSize.31" in line:
+        if file_desc != -1 and f"hrStorageSize.{file_desc}" in line:
             root_dir_total_storage = int(line.split(" = ")[-1]) * disk_conversion
     return {
-        "root_dir_used_storage": root_dir_used_storage,
-        "root_dir_total_storage": root_dir_total_storage,
-        "root_dir_percent_used": (root_dir_used_storage / root_dir_total_storage) * 100
+        "root_dir_used_storage": f"{root_dir_used_storage:.2f}",
+        "root_dir_total_storage": f"{root_dir_total_storage:.2f}",
+        "root_dir_percent_used": f"{(root_dir_used_storage / root_dir_total_storage) * 100:.2f}"
     }
 
 # gets cpu, ram, disk usage, and uptime
