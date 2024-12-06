@@ -1,0 +1,10 @@
+Link_Layer_Packet(protocol:varchar(255), destination_mac:varhcar(20), source_mac:varchar(20), network_packet_type:varchar(150), raw_data:int[], timestamp:datetime)
+CREATE TABLE Link_Layer_Packet (
+    protocol VARCHAR(255),
+    destination_mac VARCHAR(20),
+    source_mac VARCHAR(20),
+    network_packet_type VARCHAR(150),
+    raw_data INT[],
+    timestamp TIMESTAMP,
+    PRIMARY KEY (timestamp, raw_data)
+);
