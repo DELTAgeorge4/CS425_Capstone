@@ -9,11 +9,16 @@
 #include <netinet/if_ether.h>
 #include <time.h>
 
+#define ETHERTYPES "ethertype_data.csv"
+
 void display_devices(pcap_if_t*);
 int print_device_info(char*);
 char* select_device(pcap_if_t*);
 void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
 void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, const unsigned char *packet);
+
+
+
 
 void display_devices(pcap_if_t *devices){
     pcap_if_t *current_device = devices;
@@ -91,7 +96,19 @@ void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_he
     printf("Packet total length %d\n", packet_header.len);
 }
 
+
+char* find_ethertype(int ethertype_num){
+    FILE* ether_file = fopen(ETHERTYPES, "r");
+    if (!ether_file){
+        printf("Error opening file\n");
+        return "NULL\0";
+    }
+    return "NOT NULL\0";
+}
+
+
 void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, const unsigned char *packet){
+    //https://en.wikipedia.org/wiki/Ethernet_frame used for info on parsing ethernet frames
     struct ether_header *eth_header = (struct ether_header *) packet;
 
     printf("Destination MAC address: ");
@@ -116,6 +133,16 @@ void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, co
 
     printf("EtherType: "); 
     printf("0x%04x\n", ntohs(eth_header->ether_type));
+    unsigned int type_or_length = ntohs(eth_header->ether_type);
+    if (type_or_length > 1536){
+        printf("The EtherType value reflects the type of ethernet packet.");
+        printf("%s", find_ethertype(type_or_length));
+    } else if (type_or_length < 1500){
+        printf("The EtherType value is actually the length of the packet.");
+    } else {
+        printf("The EtherType value is not valid.");
+    }
+    printf("\n");
 
     printf("Raw packet data:\n");
     for (int i = 0; i < header->caplen; i++) {
