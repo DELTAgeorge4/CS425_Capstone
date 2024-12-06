@@ -1,8 +1,0 @@
-sudo apt install fping
-snmpd.conf
-
-make time command to set right time
-
-fix TARGET_IP in honeypot script to use any ip rather than local host
-	have to incorperate adding a second ip to the network adaptor
-
