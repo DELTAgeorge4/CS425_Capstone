@@ -10,7 +10,14 @@ import subprocess
 
 import sys
 sys.path.append("..")
-from backend.login.loginScript import login
+from .login.loginScript import login
+from .login.signUp import create_user
+from .DB_To_GUI import Get_Honeypot_Info
+
+res = Get_Honeypot_Info()
+print(res)
+# create_user("admin", "admin", "admin")
+# create_user("nick", "password123", "admin")
 app = FastAPI()
 
 # Serve static files
@@ -56,6 +63,9 @@ async def logout(request: Request):
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
+# @app.get("/honeypot")
+# async def accounts(request: Request):
+#     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/home", dependencies=[Depends(verify_user)])
 async def home(request: Request):
@@ -178,6 +188,12 @@ def list_rule_files():
         raise HTTPException(status_code=404, detail="Rules directory not found.")
 
 SURICATA_ACTIONS = {"alert", "drop", "pass", "reject", "log", "activate", "dynamic", "monitor"}
+
+@app.get("/honeypot-logs", dependencies=[Depends(verify_user)])
+def display_honeypot_logs():
+     results = Get_Honeypot_Info()
+     return {"Honeypot": results}
+
 
 def load_suricata_rules(file_name: str):
     rules = []

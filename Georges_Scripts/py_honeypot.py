@@ -5,14 +5,14 @@ import psycopg2
 from datetime import datetime
 
 # Configuration
-TARGET_IP = "192.168.1.100"  # Replace with the target IP address you want to monitor
-PORTS = [80, 443, 3389]  # Ports to listen on and monitor
+TARGET_IP = "192.168.14.14"  # Replace with the target IP address you want to monitor
+PORTS = [443, 8080]  # Ports to listen on and monitor
 
 # PostgreSQL connection details
 DB_HOST = "localhost"
-DB_NAME = "honeypot_db"
-DB_USER = "honeypot_user"
-DB_PASSWORD = "password"
+DB_NAME = "nss"
+DB_USER = "postgres"
+DB_PASSWORD = "password123"
 
 def log_to_database(alert_type, src_ip, dst_ip, port):
     try:
@@ -52,7 +52,7 @@ def create_honeypot_listener(port):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("", port))
     server_socket.listen(5)
-    print(f"Listening for connections on port {port}...")
+    #print(f"Listening for connections on port {port}...")
     
     while True:
         client_socket, addr = server_socket.accept()
