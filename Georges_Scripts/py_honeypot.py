@@ -3,16 +3,20 @@ from scapy.all import sniff
 import threading
 import psycopg2
 from datetime import datetime
+import config
 
 # Configuration
-TARGET_IP = "192.168.14.14"  # Replace with the target IP address you want to monitor
-PORTS = [443, 8080]  # Ports to listen on and monitor
+#TARGET_IP = "192.168.14.14"  # Replace with the target IP address you want to monitor
+#PORTS = [443, 8080]  # Ports to listen on and monitor
+TARGET_IP = config.HONEYPOT_TARGET_IPS
+PORTS = config.HONEYPOT_TARGET_PORTS
 
 # PostgreSQL connection details
-DB_HOST = "localhost"
-DB_NAME = "nss"
-DB_USER = "postgres"
-DB_PASSWORD = "password123"
+DB_HOST = config.DB_HOST
+DB_NAME = config.DB_NAME
+DB_USER = config.DB_USER
+DB_PASSWORD = config.DB_PASSWORD
+
 
 def log_to_database(alert_type, src_ip, dst_ip, port):
     try:

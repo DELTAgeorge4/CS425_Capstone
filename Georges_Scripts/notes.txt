@@ -1,5 +1,16 @@
 clear table program
-
+verify systemd processes
+validata/status program
+impliment snmp, honeypot, suricata in gui
+SetUp.sh Script
+Add hosts to snmp
+easily change variables like
+	snmp: add/modify/delete hosts
+	suricata: interfaces
+	honeypot: target IPs, target ports
+snmp
+	change to run parallel
+	make host ips a global variable
 
 
 CREATE TABLE honeypot (

@@ -4,14 +4,14 @@ from subprocess import PIPE
 import psycopg2
 from psycopg2 import sql
 from datetime import datetime
+import config
 
-# Database configuration
-DB_CONFIG = {
-    "dbname": "nss",
-    "user": "postgres",
-    "password": "password123",
-    "host": "localhost",
-}
+# Database connection details
+DB_HOST = config.DB_HOST
+DB_NAME = config.DB_NAME
+DB_USER = config.DB_USER
+DB_PASSWORD = config.DB_PASSWORD
+
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -101,7 +101,12 @@ def get_host_data(host):
 
 def insert_into_postgres(data):
     try:
-        with psycopg2.connect(**DB_CONFIG) as conn:
+        with psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as conn:
             with conn.cursor() as cur:
                 query = sql.SQL("""
                     INSERT INTO snmp_metrics (

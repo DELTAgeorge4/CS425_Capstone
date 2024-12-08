@@ -2,16 +2,18 @@
 import json
 import psycopg2
 from psycopg2 import sql
+import config
 
 # Database connection details
-DB_HOST = "localhost"
-DB_NAME = "nss"
-DB_USER = "postgres"
-DB_PASSWORD = "password123"
+DB_HOST = config.DB_HOST
+DB_NAME = config.DB_NAME
+DB_USER = config.DB_USER
+DB_PASSWORD = config.DB_PASSWORD
 
 # Path to Suricata logs
 #SURICATA_LOG_FILE = "/var/log/suricata/eve.json"
-SURICATA_LOG_FILE = "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs/suricata_ix1.10027422/eve.json"
+#SURICATA_LOG_FILE = "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs/suricata_ix1.10027422/eve.json"
+SURICATA_LOG_FILE = config.SURICATA_LOG_FILE
 
 def connect_db():
     """Connect to the PostgreSQL database."""
