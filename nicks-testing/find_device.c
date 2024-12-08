@@ -76,7 +76,7 @@ int print_device_info(char* device_name){
 char* select_device(pcap_if_t* devs){
     display_devices(devs);
 
-    printf("Enter the number for the device you would like to get information about: ");
+    printf("Enter the number for the device you would like to get information about: \n");
     fflush(stdout);
     int choice;
     scanf("%d", &choice);
