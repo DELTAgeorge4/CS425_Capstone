@@ -3,12 +3,6 @@ verify systemd processes
 validata/status program
 impliment snmp, honeypot, suricata in gui
 SetUp.sh Script
-Add hosts to snmp
-easily change variables like
-	snmp: add/modify/delete hosts
-snmp
-	change to run parallel
-	make host ips a global variable
 make databases script
 
 
