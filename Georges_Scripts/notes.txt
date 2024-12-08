@@ -4,6 +4,7 @@ validata/status program
 impliment snmp, honeypot, suricata in gui
 SetUp.sh Script
 make databases script
+view info in databases script
 
 
 CREATE TABLE honeypot (
