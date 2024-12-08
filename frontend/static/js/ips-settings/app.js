@@ -190,23 +190,44 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Event listener for the alerts tab
-  alertsTab.addEventListener('click', function () {
+  alertsTab.addEventListener('click', async function () {
     clearContent();
+
     // Create and append header for alerts
     const header = document.createElement('h1');
     header.textContent = 'Suricata Alerts';
     rightPageContent.appendChild(header);
 
-    // Create and append alert content
-    const alertContent = document.createElement('p');
-    alertContent.textContent = 'This section will show alerts data from Suricata.';
-    rightPageContent.appendChild(alertContent);
+    // Fetch Suricata logs
+    try {
+        const suricataResponse = await fetch('/suricata-logs');
+        if (!suricataResponse.ok) {
+            throw new Error('Failed to fetch Suricata logs');
+        }
+         // Use <pre> for formatted JSON
+        const suricata_data = await suricataResponse.json();
+        for(let i = 0; i < suricata_data.Suricata.length; i++){
+          console.log(suricata_data.Suricata[i]);
+          const suricataBox = document.createElement('pre');
+          suricataBox.textContent = suricata_data.Suricata[i];
+        // console.log(suricata_data);
+        // console.log(suricata_string_data);
+        rightPageContent.appendChild(suricataBox);
+        }
+        // Display logs in the content area
 
-    // Create and append example alert
-    const exampleAlert = document.createElement('p');
-    exampleAlert.textContent = 'Alert 1: Example alert details.';
-    rightPageContent.appendChild(exampleAlert);
-  });
+        // suricataBox.textContent = suricata_data.Suricata[0];
+        // console.log(suricata_data);
+        // console.log(suricata_string_data);
+        // rightPageContent.appendChild(suricataBox);
+
+    } catch (error) {
+        console.error(error);
+        const errorMessage = document.createElement('p');
+        errorMessage.textContent = 'Error loading Suricata logs. Please try again later.';
+        rightPageContent.appendChild(errorMessage);
+    }
+});
 
   // Event listener for the rules tab
   rulesTab.addEventListener('click', loadContent);

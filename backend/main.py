@@ -13,9 +13,11 @@ sys.path.append("..")
 from .login.loginScript import login
 from .login.signUp import create_user
 from .DB_To_GUI import Get_Honeypot_Info
+from .DB_To_GUI import Get_SNMP_Info
+from .DB_To_GUI import Get_Suricata_Info
 
-res = Get_Honeypot_Info()
-print(res)
+#res = Get_Honeypot_Info()
+#print(res)
 # create_user("admin", "admin", "admin")
 # create_user("nick", "password123", "admin")
 app = FastAPI()
@@ -193,6 +195,18 @@ SURICATA_ACTIONS = {"alert", "drop", "pass", "reject", "log", "activate", "dynam
 def display_honeypot_logs():
      results = Get_Honeypot_Info()
      return {"Honeypot": results}
+
+@app.get("/snmp-logs", dependencies=[Depends(verify_user)])
+def display_SNMP_logs():
+     results = Get_SNMP_Info()
+     return {"SNMP": results}
+
+@app.get("/suricata-logs", dependencies=[Depends(verify_user)])
+def display_Suricata_logs():
+     results = Get_Suricata_Info()
+     print(len(results))
+     print(type(results))
+     return {"Suricata": results}
 
 
 def load_suricata_rules(file_name: str):
