@@ -7,6 +7,12 @@ SURICATA_LOG_FILE = "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs
 HONEYPOT_TARGET_IPS = "192.168.14.14"
 HONEYPOT_TARGET_PORTS = [443, 8080]
 
+# SNMP Clients
+SNMP_HOSTS = ["192.168.14.14", "192.168.14.11"]
+
+# Secify the amount of threads you want snmp to use.
+SNMP_WORKERS = 25
+
 # Preconfigured Database Info, SHOULD NOT TOUCH UNLESS MANUALLY CHANGED
 DB_HOST = "localhost"
 DB_NAME = "nss"

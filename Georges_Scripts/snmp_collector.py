@@ -5,6 +5,11 @@ import psycopg2
 from psycopg2 import sql
 from datetime import datetime
 import config
+import ipaddress
+import signal
+import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from threading import Event
 
 # Database connection details
 DB_HOST = config.DB_HOST
@@ -12,6 +17,56 @@ DB_NAME = config.DB_NAME
 DB_USER = config.DB_USER
 DB_PASSWORD = config.DB_PASSWORD
 
+# SNMP Clients
+# User-specified configuration for hosts (list of single IPs and/or subnets)
+HOST_CONFIG = config.SNMP_HOSTS
+
+# Maximum number of threads to use for parallel processing
+MAX_WORKERS = config.SNMP_WORKERS  # Adjust this value as needed
+
+shutdown_event = Event()
+
+# Generate a list of hosts from the given configuration
+def generate_hosts(config_list):
+    hosts = set()
+    for config in config_list:
+        try:
+            # Check if it's a single IP
+            ip = ipaddress.ip_address(config)
+            hosts.add(str(ip))
+        except ValueError:
+            # It's a subnet, generate all IPs
+            try:
+                subnet = ipaddress.IPv4Network(config, strict=False)
+                for ip in subnet:
+                    if not ip.is_multicast and not ip.is_reserved and not ip.is_loopback:
+                        hosts.add(str(ip))
+            except ValueError as e:
+                print(f"Invalid configuration '{config}': {e}")
+    return list(hosts)
+
+# Generate the hosts list based on the configuration
+HOSTS = generate_hosts(HOST_CONFIG)
+
+# Handle interrupt signal (Ctrl-C)
+def signal_handler(sig, frame):
+    print("\nInterrupt received. Shutting down gracefully...")
+    shutdown_event.set()  # Signal shutdown
+    sys.exit(0)
+
+# Register the signal handler
+signal.signal(signal.SIGINT, signal_handler)
+
+# Function to process a single host
+def process_host(host):
+    if shutdown_event.is_set():
+        return f"Skipping host: {host} (Shutdown in progress)"
+
+    #print(f"Processing host: {host}")
+    collected_data = get_host_data(host)  # Replace with your actual SNMP data collection logic
+    if collected_data:
+        insert_into_postgres(collected_data)  # Replace with your actual database insertion logic
+    #return f"Completed host: {host}"
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -96,10 +151,19 @@ def get_host_data(host):
         data.update(process_disk_usage_data(host))
         return data
     else:
-        print("Host is not pingable.")
+        #print("Host is not pingable.")
         return None
 
 def insert_into_postgres(data):
+    """
+    Insert collected SNMP data into the PostgreSQL database.
+    Skip insertion if the data contains invalid or None values.
+    """
+    # Check if the data is valid
+    if not data or any(value is None for key, value in data.items() if key != "timestamp"):
+        #print("Invalid or incomplete data. Skipping insertion for this host.")
+        return
+
     try:
         with psycopg2.connect(
             host=DB_HOST,
@@ -120,13 +184,28 @@ def insert_into_postgres(data):
                     data["root_dir_used_storage"], data["root_dir_total_storage"],
                     data["root_dir_percent_used"], datetime.now()
                 ))
-                #print("Data inserted successfully.")
+                #print(f"Data inserted successfully for host: {data['hostname']}")
     except psycopg2.Error as e:
         print(f"Database error: {e}")
 
+# Main block with multithreading
 if __name__ == "__main__":
-    host = "192.168.14.14"
-    collected_data = get_host_data(host)
-    if collected_data:
-        #print(collected_data)
-        insert_into_postgres(collected_data)
+    if not HOSTS:
+        print("No valid hosts to process. Please check the HOST_CONFIG value.")
+    else:
+        try:
+            with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+                futures = {executor.submit(process_host, host): host for host in HOSTS}
+
+                # Process futures as they complete
+                for future in as_completed(futures):
+                    if shutdown_event.is_set():
+                        break  # Stop processing if shutdown is signaled
+                    try:
+                        print(future.result())  # Optionally print the result of each processed host
+                    except Exception as e:
+                        print(f"Error processing host {futures[future]}: {e}")
+        except KeyboardInterrupt:
+            print("\nScanning interrupted by user. Exiting gracefully...")
+        #finally:
+            #print("Shutdown complete.")

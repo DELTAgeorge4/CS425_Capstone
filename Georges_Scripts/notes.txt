@@ -6,11 +6,10 @@ SetUp.sh Script
 Add hosts to snmp
 easily change variables like
 	snmp: add/modify/delete hosts
-	suricata: interfaces
-	honeypot: target IPs, target ports
 snmp
 	change to run parallel
 	make host ips a global variable
+make databases script
 
 
 CREATE TABLE honeypot (

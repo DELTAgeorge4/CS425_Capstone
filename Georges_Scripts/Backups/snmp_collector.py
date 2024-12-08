@@ -4,14 +4,17 @@ from subprocess import PIPE
 import psycopg2
 from psycopg2 import sql
 from datetime import datetime
+import config
 
-# Database configuration
-DB_CONFIG = {
-    "dbname": "nss",
-    "user": "postgres",
-    "password": "password123",
-    "host": "localhost",
-}
+# Database connection details
+DB_HOST = config.DB_HOST
+DB_NAME = config.DB_NAME
+DB_USER = config.DB_USER
+DB_PASSWORD = config.DB_PASSWORD
+
+# SNMP Clients
+#HOSTS = ["192.168.14.14", "192.168.14.11"]
+HOSTS = config.SNMP_HOSTS
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -101,7 +104,12 @@ def get_host_data(host):
 
 def insert_into_postgres(data):
     try:
-        with psycopg2.connect(**DB_CONFIG) as conn:
+        with psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        ) as conn:
             with conn.cursor() as cur:
                 query = sql.SQL("""
                     INSERT INTO snmp_metrics (
@@ -120,8 +128,8 @@ def insert_into_postgres(data):
         print(f"Database error: {e}")
 
 if __name__ == "__main__":
-    host = "192.168.14.14"
-    collected_data = get_host_data(host)
-    if collected_data:
-        #print(collected_data)
-        insert_into_postgres(collected_data)
+    for host in HOSTS:
+        #print(f"Processing host: {host}")
+        collected_data = get_host_data(host)
+        if collected_data:
+            insert_into_postgres(collected_data)

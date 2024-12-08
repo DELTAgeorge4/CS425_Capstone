@@ -16,7 +16,7 @@ DB_CONFIG = {
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 def host_pingable(host):
-    command = f"/usr/bin/fping -q -c 2 -p 500 -t 500 -O 0 {host}"
+    command = f"/usr/bin/fping -q -c 2 -p 500 -t 500 -O 0 {host} > /dev/null 2>&1"
     return os.system(command) == 0
 
 def run_snmp_command(command):
@@ -115,7 +115,7 @@ def insert_into_postgres(data):
                     data["root_dir_used_storage"], data["root_dir_total_storage"],
                     data["root_dir_percent_used"], datetime.now()
                 ))
-                print("Data inserted successfully.")
+                #print("Data inserted successfully.")
     except psycopg2.Error as e:
         print(f"Database error: {e}")
 
@@ -123,5 +123,5 @@ if __name__ == "__main__":
     host = "192.168.14.14"
     collected_data = get_host_data(host)
     if collected_data:
-        print(collected_data)
+        #print(collected_data)
         insert_into_postgres(collected_data)
