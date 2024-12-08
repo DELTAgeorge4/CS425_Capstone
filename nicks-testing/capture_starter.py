@@ -82,24 +82,35 @@ if __name__ == "__main__":
     start_message = line.strip()
     print(start_message)
 
+    line = process.stdout.readline()# packet capture length
+    line = process.stdout.readline()# packet total length
+
     for i in range(10): # 10 is arbitrary, this should eventually be an infinite loop
+        packet = {}
         line = process.stdout.readline()
         print(line.strip()) # Should be destination MAC
+        packet['destination_mac'] = line.strip()[-17:]
 
         line = process.stdout.readline()
         print(line.strip()) # Should be source MAC
+        packet['source_mac'] = line.strip()[-17:]
 
         line = process.stdout.readline()
         print(line.strip()) # Should be ethertype
+        packet['ethertype'] = line.strip()[-6:]
 
         line = process.stdout.readline()
-        print(line.strip()) # Should be first line of ethertype meaning
+        print(line.strip()) # Should be the ethertype meaning
+        packet['ethertype_meaning'] = line.strip()[11:]
+
+        process.stdout.readline() # skip a line containing no useful data
 
         line = process.stdout.readline()
-        print(line.strip()) # Should be should be second line of ethertype meaning(may not exist)
+        print(line.strip()) # Should be the raw packet data
+        packet['raw_packet'] = line.strip()
 
-        line = process.stdout.readline()
-        print(line.strip()) # Should be the raw packet data(will require modifying c program slightly)
+        print(packet)
+    
 
 
 

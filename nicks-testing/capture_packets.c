@@ -101,13 +101,11 @@ void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, co
     char ethertype_name[200];
     find_ethertype(type_or_length, ethertype_name);
     if (type_or_length > 1536){
-        printf("The EtherType value reflects the type of ethernet packet.\n");
-        fflush(stdout);
         printf("EtherType: %s", ethertype_name);
     } else if (type_or_length < 1500){
-        printf("The EtherType value is actually the length of the packet.");
+        printf("EtherType: Length value");
     } else {
-        printf("The EtherType value is not valid.");
+        printf("EtherType: Invalid");
     }
     fflush(stdout);
     printf("\n");
