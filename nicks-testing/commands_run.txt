@@ -1,3 +1,5 @@
+sudo apt-get install libpcap-dev
+
 gcc -o find_device find_device.c -lpcap # compile code that uses pcaps
 sudo ./find_device # packet capture must be ran with sudo
 
