@@ -28,11 +28,10 @@ def connect_db():
         exit(1)
 
 def insert_log(cursor, log_data):
-    """Insert a parsed log entry into the database, avoiding duplicates."""
+    """Insert a parsed log entry into the database."""
     query = sql.SQL("""
         INSERT INTO suricata (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
-        ON CONFLICT (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message) DO NOTHING
     """)
     cursor.execute(query, (
         log_data.get("timestamp"),

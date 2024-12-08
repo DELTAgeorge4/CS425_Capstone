@@ -1,3 +1,7 @@
+clear table program
+
+
+
 CREATE TABLE honeypot (
     id SERIAL PRIMARY KEY,
     timestamp TIMESTAMP NOT NULL,
@@ -8,6 +12,7 @@ CREATE TABLE honeypot (
 );
 
 
+# Old Suricata Table
 CREATE TABLE suricata (
     id SERIAL PRIMARY KEY,
     timestamp TIMESTAMP NOT NULL,
@@ -17,6 +22,19 @@ CREATE TABLE suricata (
     dest_port INT NOT NULL,
     protocol VARCHAR(50) NOT NULL,
     alert_message TEXT NOT NULL
+);
+
+# New Suricata Table
+CREATE TABLE suricata (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    source_ip INET NOT NULL,
+    source_port INT NOT NULL,
+    dest_ip INET NOT NULL,
+    dest_port INT NOT NULL,
+    protocol VARCHAR(50) NOT NULL,
+    alert_message TEXT NOT NULL,
+    UNIQUE (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message)
 );
 
 CREATE TABLE snmp_metrics (

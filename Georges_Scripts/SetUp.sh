@@ -12,4 +12,18 @@ sudo apt full-upgrade -y
 
 # Move files where they need to go
 sudo rm /etc/snmp/snmpd.conf
-sudo cp snmpd.conf /etc/snmp/
+sudo cp Confs/snmpd.conf /etc/snmp/
+sudo cp -r Services/* /etc/systemd/system/
+
+# Reload new systemd services into system
+sudo systemctl daemon-reload
+
+# Enable Services
+sudo systemctl enable snmp_collector.timer
+sudo systemctl enable Suricata_to_DB.timer
+sudo systemctl enable py_honeypot.service
+
+# Start Services
+sudo systemctl start snmp_collector.timer
+sudo systemctl start Suricata_to_DB.timer
+sudo systemctl start py_honeypot.service
