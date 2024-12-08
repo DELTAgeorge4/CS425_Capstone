@@ -107,7 +107,9 @@ if __name__ == "__main__":
 
         line = process.stdout.readline()
         print(line.strip()) # Should be the raw packet data
-        packet['raw_packet'] = line.strip()
+        packet['raw_packet'] = line.strip() # Will need to be converted to int array for processing in database
+
+        packet['protocol'] = "Ethernet"
 
         print(packet)
     
