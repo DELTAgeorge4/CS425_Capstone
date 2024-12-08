@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     subprocess.run(compilation_command, text=True)
 
-    packet_capture_command = ["sudo", "./capture_packets"]
+    packet_capture_command = ["sudo", "./capture_packets", device]
 
     process = subprocess.Popen(
         packet_capture_command,
@@ -77,6 +77,31 @@ if __name__ == "__main__":
         stderr=subprocess.PIPE,
         text=True 
     )
+
+    line = process.stdout.readline()
+    start_message = line.strip()
+    print(start_message)
+
+    for i in range(10): # 10 is arbitrary, this should eventually be an infinite loop
+        line = process.stdout.readline()
+        print(line.strip()) # Should be destination MAC
+
+        line = process.stdout.readline()
+        print(line.strip()) # Should be source MAC
+
+        line = process.stdout.readline()
+        print(line.strip()) # Should be ethertype
+
+        line = process.stdout.readline()
+        print(line.strip()) # Should be first line of ethertype meaning
+
+        line = process.stdout.readline()
+        print(line.strip()) # Should be should be second line of ethertype meaning(may not exist)
+
+        line = process.stdout.readline()
+        print(line.strip()) # Should be the raw packet data(will require modifying c program slightly)
+
+
 
 
 

@@ -122,9 +122,6 @@ void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, co
     for (int i = 0; i < header->caplen; i++) {
         printf("%02x ", packet[i]);
         fflush(stdout);
-        if ((i + 1) % 16 == 0){
-            printf("\n"); // New line every 16 bytes
-        }
 
         // Saving payload and FCS
         /*if (i >= 14){
