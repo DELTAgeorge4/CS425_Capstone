@@ -1,10 +1,9 @@
-clear table program
+clear table program in gui
 verify systemd processes
 validata/status program
 impliment snmp, honeypot, suricata in gui
 SetUp.sh Script
 make databases script
-view info in databases script
 
 
 CREATE TABLE honeypot (
