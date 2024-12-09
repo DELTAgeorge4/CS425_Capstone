@@ -22,8 +22,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable snmp_collector.timer
 sudo systemctl enable Suricata_to_DB.timer
 sudo systemctl enable py_honeypot.service
+sudo systemctl enable SMTP.service
 
 # Start Services
 sudo systemctl start snmp_collector.timer
 sudo systemctl start Suricata_to_DB.timer
 sudo systemctl start py_honeypot.service
+sudo systemctl start SMTP.service

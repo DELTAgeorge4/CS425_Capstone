@@ -3,6 +3,8 @@
 <html>
 <head>
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/honeypot/style.css') }}">
+  
 </head>
 <body>
 
@@ -11,7 +13,7 @@
 
 <!-- Page Content -->
 <div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
-  <h2>This will be the devices</h2>
+  <h2 id = "show-text">Honeypot Logs</h2>
 </div>
 
 <!-- JavaScript to Load Navigation Menu and Set Active Link -->

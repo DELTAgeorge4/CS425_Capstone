@@ -65,9 +65,9 @@ async def logout(request: Request):
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
-# @app.get("/honeypot")
-# async def accounts(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/honeypot-page",name="honeypot-page")
+async def honeypotPage(request: Request):
+    return templates.TemplateResponse("honeypot-page.html", {"request": request})
 
 @app.get("/home", dependencies=[Depends(verify_user)])
 async def home(request: Request):

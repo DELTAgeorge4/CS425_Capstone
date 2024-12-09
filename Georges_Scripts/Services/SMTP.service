@@ -1,0 +1,11 @@
+[Unit]
+Description=SMTP For database tables
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/CS425_Capstone/Georges_Scripts/Email_Notifications.py
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
