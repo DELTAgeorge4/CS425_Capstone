@@ -5,9 +5,7 @@ def read_until_input_needed(process):
     output = []
     while True:
         line = process.stdout.readline()
-        if "Enter the number for the device you would like to get information about:" in line:
-            output.append(line.strip())
-            print(line.strip())
+        if not line:
             break
     
         output.append(line.strip())
@@ -62,8 +60,8 @@ def get_net_device():
 
 
 if __name__ == "__main__":
-    #device = get_net_device()
-    device = "eth0"
+    device = get_net_device()
+    #device = "eth0"
 
     compilation_command = ["gcc", "-o", "capture_packets", "capture_packets.c", "-lpcap"]
 
