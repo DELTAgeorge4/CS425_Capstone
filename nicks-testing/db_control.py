@@ -47,7 +47,7 @@ class ethernet_packet:
 
     def upload_packet(self, packet):
         query = """
-        INSERT INTO Link_Layer_Packet (
+        INSERT INTO "Link_Layer_Packet" (
             protocol, 
             destination_mac, 
             source_mac, 
@@ -80,10 +80,41 @@ class ethernet_packet:
         )
 
         self.database.execute(query, params)
+    
+    def get_packets(self, start_time, end_time):
+        query = """
+        SELECT *
+        FROM "Link_Layer_Packet"
+        WHERE timestamp >= %s
+        AND timestamp <= %s;
+        """
+
+        params = (
+            start_time,
+            end_time
+        )
+
+        self.database.execute(query, params)
+        return self.database.get_query_results()
+
+    def delete_all_packets(self):
+        query = """
+        DELETE FROM "Link_Layer_Packet;
+        """
+
+        self.database.execute(query)
+
+    def delete_all_packets_before(self, time):
+        query = """
+        DELETE FROM "Link_Layer_Packet
+        WHERE "timestamp" <= %s;      
+        """
+
+        params = (time,)
+        self.database.execute(query, params)
 
 
-
-if __name__ == "__main__":
+def setup_db():
     load_dotenv('db_credentials.env')
     db_name = os.getenv('DATABASE_NAME')
     db_host = os.getenv('DATABASE_HOST')
@@ -98,3 +129,44 @@ if __name__ == "__main__":
         user=db_user,
         db_password=db_password
     )
+    return database
+
+
+
+def save_packet(packet):
+    database = setup_db()
+    database.connect()
+
+    packet_entry = ethernet_packet(database=database)
+    packet_entry.upload_packet(packet=packet)
+
+    database.close_connection()
+
+
+def get_packets(start_time=datetime.min, end_time=datetime.max):
+    database = setup_db()
+    database.connect()
+
+    packet_table = ethernet_packet(database=database)
+    packets = packet_table.get_packets(start_time=start_time, end_time=end_time)
+    database.close_connection()
+    
+    return packets
+
+
+def clear_packets():
+    database = setup_db()
+    database.connect()
+
+    packet_table = ethernet_packet(database=database)
+    packet_table.delete_all_packets()
+    database.close_connection()
+
+
+def clear_packets_before(time):
+    database = setup_db()
+    database.connect()
+
+    packet_table = ethernet_packet(database=database)
+    packet_table.delete_all_packets_before(time=time)
+    database.close_connection()
