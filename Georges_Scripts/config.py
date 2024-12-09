@@ -22,6 +22,15 @@ DB_NAME = "nss"
 DB_USER = "postgres"
 DB_PASSWORD = "password123"
 
+# SNMP Settings for email alerts
+SMTP_SERVER = "smtp.gmail.com"  # Use email SMTP server
+SMTP_PORT = 587
+EMAIL_USER = "your_email@example.com"  # Your email address
+EMAIL_PASSWORD = "your_email_password"  # Email password
+EMAIL_RECIPIENTS = ["recipient1@example.com", "recipient2@example.com"]  # Recipients of emails
 
+# More values for email alerts
+RAM_USAGE_THRESHOLD = 90 # Set to None to disable RAM alerts
+DISK_USAGE_THRESHOLD = 75 # Set to None to disable disk alerts
 
 DEBUG_MODE = True
