@@ -47,7 +47,7 @@ class ethernet_packet:
 
     def upload_packet(self, packet):
         query = """
-        INSERT INTO "Link_Layer_Packet" (
+        INSERT INTO "link_layer_packet" (
             protocol, 
             destination_mac, 
             source_mac, 
@@ -67,7 +67,9 @@ class ethernet_packet:
         self.dest = packet['destination_mac']
         self.source = packet['source_mac']
         self.type = packet['ethertype_meaning']
-        self.raw_data = packet['raw_packet'] # needs to be handled as array
+        self.raw_data = []
+        for num in packet['raw_packet'].split(): # needs to be handled as array
+            self.raw_data.append(int(num, 16))
         self.datetime = datetime.now()
 
         params = (
@@ -84,7 +86,7 @@ class ethernet_packet:
     def get_packets(self, start_time, end_time):
         query = """
         SELECT *
-        FROM "Link_Layer_Packet"
+        FROM "link_layer_packet"
         WHERE timestamp >= %s
         AND timestamp <= %s;
         """
@@ -99,14 +101,14 @@ class ethernet_packet:
 
     def delete_all_packets(self):
         query = """
-        DELETE FROM "Link_Layer_Packet;
+        DELETE FROM "link_layer_packet;
         """
 
         self.database.execute(query)
 
     def delete_all_packets_before(self, time):
         query = """
-        DELETE FROM "Link_Layer_Packet
+        DELETE FROM "link_layer_packet
         WHERE "timestamp" <= %s;      
         """
 
@@ -127,7 +129,7 @@ def setup_db():
         host=db_host,
         port=db_port,
         user=db_user,
-        db_password=db_password
+        password=db_password
     )
     return database
 
