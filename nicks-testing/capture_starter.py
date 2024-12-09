@@ -1,4 +1,5 @@
 import subprocess
+import db_control
 
 def read_until_input_needed(process):
     output = []
@@ -112,6 +113,8 @@ if __name__ == "__main__":
         packet['protocol'] = "Ethernet"
 
         print(packet)
+
+        db_control.save_packet(packet)
     
 
 
