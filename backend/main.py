@@ -116,13 +116,36 @@ async def checkboxes(data: CheckBoxData):
 @app.post("/restart-suricata")
 async def call_restart_suricata():
     restart_suricata()
-    
-    
+        
 def restart_suricata():
     #restartSuricata.sh path in same directory as this file
     print("suricata restarting")
     subprocess.run(["./restartSuricata.sh"])
-    
+
+@app.post("/clear-snmp")
+async def call_clear_snmp():
+    clear_snmp()
+
+def clear_snmp():
+    print("Clearing SNMP Table")
+    subprocess.run(["./Clear_SNMP.sh"])
+
+@app.post("/clear-honeypot")
+async def call_clear_honeypot():
+    clear_honeypot()
+
+def clear_honeypot():
+    print("Clearing Honeypot Table")
+    subprocess.run(["./Clear_Honeypot.sh"])
+
+@app.post("/clear-suricata")
+async def call_clear_suricata():
+    clear_suricata()
+
+def clear_suricata():
+    print("Clearing Suricata Table")
+    subprocess.run(["./Clear_Suricata.sh"]) 
+
 #funciton that opens up the rules files and edits the rules to comment them out if checkbox is not checked
 def edit_rules(file_name: str, isChecked: bool):
 
