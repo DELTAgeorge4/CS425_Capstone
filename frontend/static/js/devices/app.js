@@ -1,3 +1,21 @@
+//const pageContent = document.getElementById('page-content');
+//    async function snmp(params) {
+//        snmpBody = document.createElement('div');
+//        const filesResponse = await fetch('/snmp-logs');
+//        if (!filesResponse.ok) {
+//          console.error('Error fetching rule files');
+//          return;
+//        }
+//        const data = await filesResponse.json();
+//        console.log(data.SNMP);
+//        for(let i = 0; i < data.SNMP.length; i++){
+//            const text196 = document.createElement('pre');
+//            text196.textContent = data.SNMP[i];
+//            console.log(data.SNMP[i]);
+//            pageContent.appendChild(text196);
+//        }
+//    }
+//snmp();
 const pageContent = document.getElementById('page-content');
 let sortOrder = {};
 
@@ -137,7 +155,6 @@ function renderTable(data) {
         table.appendChild(dataRow);
     });
 
-    // Append the table after the button and status message
     pageContent.appendChild(table);
 }
 

@@ -1,3 +1,22 @@
+//const pageContent = document.getElementById('page-content');
+//    async function honeypot(params) {
+//        honeypotBody = document.createElement('div');
+//        const filesResponse = await fetch('/honeypot-logs');
+//        if (!filesResponse.ok) {
+//          console.error('Error fetching rule files');
+//          return;
+//        }
+//        const data = await filesResponse.json();
+//        console.log(data.Honeypot);
+//        for(let i = 0; i < data.Honeypot.length; i++){
+//            const text196 = document.createElement('pre');
+//            text196.textContent = data.Honeypot[i];
+//            console.log(data.Honeypot[i]);
+//            pageContent.appendChild(text196);
+//        }
+//
+//    }
+//honeypot();
 const pageContent = document.getElementById('page-content');
 let sortOrder = {};
 
@@ -135,7 +154,7 @@ function renderTable(data) {
 
         rowData.forEach(value => {
             const td = document.createElement('td');
-            td.textContent = value || '-'; // Display '-' if the value is missing
+            td.textContent = value || '-';
             td.style.border = '1px solid #ddd';
             td.style.padding = '8px';
             dataRow.appendChild(td);
@@ -144,7 +163,6 @@ function renderTable(data) {
         table.appendChild(dataRow);
     });
 
-    // Append the table after the button and status message
     pageContent.appendChild(table);
 }
 
