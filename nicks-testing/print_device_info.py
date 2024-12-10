@@ -33,10 +33,7 @@ if __name__ == "__main__":
 
     exit_code = process.wait()
 
-    print("Exit code: " + str(exit_code))
-    if(exit_code == 0):
-        print("Process terminated succesfully")
-    else:
+    if(exit_code != 0):
         print("Error encountered. Process is still running")
         print("Process is being forcibly terminated")
         process.terminate()

@@ -10,7 +10,6 @@ def read_until_input_needed(process):
         output.append(line.strip())
         print(line.strip())
 
-    print("Escaped loop")
     return output
 
 
@@ -28,7 +27,6 @@ if __name__ == "__main__":
         stderr=subprocess.PIPE,
         text=True 
     )
-    print("program running")
     device_info = read_until_input_needed(process)
 
     devices = []
@@ -38,10 +36,7 @@ if __name__ == "__main__":
     
     exit_code = process.wait()
 
-    print("Exit code: " + str(exit_code))
-    if(exit_code == 0):
-        print("Process terminated succesfully")
-    else:
+    if(exit_code != 0):
         print("Error encountered. Process is still running")
         print("Process is being forcibly terminated")
         process.terminate()

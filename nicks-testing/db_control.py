@@ -97,7 +97,7 @@ class ethernet_packet:
         )
 
         self.database.execute(query, params)
-        return self.database.get_query_results()
+        return self.database.get_query_result()
 
     def delete_all_packets(self):
         query = """

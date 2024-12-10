@@ -35,7 +35,7 @@ if __name__ == "__main__":
     line = process.stdout.readline()# packet capture length
     line = process.stdout.readline()# packet total length
 
-    for i in range(10): # 10 is arbitrary, this should eventually be an infinite loop
+    for i in range(2): # 2 is arbitrary, this should eventually be an infinite loop
         packet = {}
         line = process.stdout.readline()
         print(line.strip()) # Should be destination MAC
