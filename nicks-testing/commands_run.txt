@@ -8,3 +8,7 @@ gcc -I/usr/include/postgresql -o packet_db_upload packet_db_upload.c -lpq # for 
 
 gcc -o capture_packets capture_packets.c -lpcap
 sudo ./capture_packets eth0
+
+sudo apt install python3-dotenv
+
+/usr/bin/python3 capture_starter.py

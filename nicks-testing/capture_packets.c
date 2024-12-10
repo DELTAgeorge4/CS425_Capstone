@@ -141,6 +141,15 @@ void my_packet_handler(unsigned char *args, const struct pcap_pkthdr *header, co
 }
 
 int main(int argc, char *argv[]) {
+    if (argc < 2){
+        printf("Not enough arguments provided\n");
+        fflush(stdout);
+        return 1;
+    } else if (argc > 2){
+        printf("Too many arguments provided\n");
+        fflush(stdout);
+        return 1;
+    }
     
     char* device = argv[1]; // device name should be given by user when running program
 
