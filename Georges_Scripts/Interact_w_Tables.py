@@ -10,8 +10,8 @@ DB_PASSWORD = config.DB_PASSWORD
 # Global List of Tables
 TABLES = config.TESTING_TABLES  # Defines tables
 
+# Establishes and returns a database connection
 def get_db_connection():
-    """Establishes and returns a database connection."""
     return psycopg2.connect(
         dbname=DB_NAME,
         user=DB_USER,
@@ -19,8 +19,8 @@ def get_db_connection():
         host=DB_HOST
     )
 
+# Displays the contents of the specified table
 def show_table_contents(table_name):
-    """Displays the contents of the specified table."""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -35,8 +35,8 @@ def show_table_contents(table_name):
         cursor.close()
         conn.close()
 
+# Wipes all contents of the specified table after confirmation
 def wipe_table(table_name):
-    """Wipes all contents of the specified table after confirmation."""
     confirm = input(f"Would you like to wipe the table: '{table_name}'? (y/N): ")
     if confirm.lower() == 'y':
         try:

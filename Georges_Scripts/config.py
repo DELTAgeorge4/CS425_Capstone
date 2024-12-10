@@ -20,7 +20,7 @@ TESTING_TABLES = ["snmp_metrics", "suricata", "honeypot"]
 DB_HOST = "localhost"
 DB_NAME = "nss"
 DB_USER = "postgres"
-DB_PASSWORD = "password123"
+DB_PASSWORD = "password123" # Update with password set up by Make_Tables.py
 
 # SNMP Settings for email alerts
 SMTP_SERVER = "smtp.gmail.com"  # Use email SMTP server

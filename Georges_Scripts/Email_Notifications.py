@@ -35,8 +35,8 @@ last_honeypot_id = 0
 # Polling interval in seconds
 POLL_INTERVAL = 60  # Check for new rows every 60 seconds
 
+# Send an email notification with the given subject and body
 def send_email_alert(subject, body):
-    """Send an email notification with the given subject and body."""
     try:
         msg = MIMEMultipart()
         msg['From'] = EMAIL_USER
@@ -52,8 +52,8 @@ def send_email_alert(subject, body):
     except Exception as e:
         print(f"Error sending email: {e}")
 
+# Fetch rows where a specified metric exceeds the threshold
 def fetch_high_usage(metric, threshold):
-    """Fetch rows where a specified metric exceeds the threshold."""
     if threshold is None:
         return []  # Alerts are disabled for this metric
 
@@ -76,8 +76,8 @@ def fetch_high_usage(metric, threshold):
         print(f"Database error: {e}")
         return []
 
+# Check and send alerts for high RAM and Disk usage.
 def process_snmp_alerts():
-    """Check and send alerts for high RAM and Disk usage."""
     # Check for high RAM usage
     if RAM_USAGE_THRESHOLD is not None:
         ram_rows = fetch_high_usage("ram_percent_used", RAM_USAGE_THRESHOLD)
@@ -106,8 +106,8 @@ def process_snmp_alerts():
             )
             send_email_alert(subject, body)
 
+# Fetch new rows added to a table since the last ID.
 def fetch_new_rows(table, id_column, last_id):
-    """Fetch new rows added to a table since the last ID."""
     try:
         with psycopg2.connect(
             host=DB_HOST,
@@ -123,8 +123,8 @@ def fetch_new_rows(table, id_column, last_id):
         print(f"Database error while fetching from {table}: {e}")
         return []
 
+# Check for new rows in the Suricata table and send alerts.
 def process_suricata_alerts():
-    """Check for new rows in the Suricata table and send alerts."""
     global last_suricata_id
     rows = fetch_new_rows("suricata", "id", last_suricata_id)
     for row in rows:
@@ -141,8 +141,8 @@ def process_suricata_alerts():
         send_email_alert(subject, body)
         last_suricata_id = max(last_suricata_id, row_id)
 
+# Check for new rows in the Honeypot table and send alerts.
 def process_honeypot_alerts():
-    """Check for new rows in the Honeypot table and send alerts."""
     global last_honeypot_id
     rows = fetch_new_rows("honeypot", "id", last_honeypot_id)
     for row in rows:
@@ -159,8 +159,8 @@ def process_honeypot_alerts():
         send_email_alert(subject, body)
         last_honeypot_id = max(last_honeypot_id, row_id)
 
+# Main loop to continuously process alerts.
 def main():
-    """Main loop to continuously process alerts."""
     while True:
         # Process SNMP alerts
         if RAM_USAGE_THRESHOLD is not None or DISK_USAGE_THRESHOLD is not None:

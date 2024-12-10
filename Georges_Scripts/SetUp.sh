@@ -7,8 +7,11 @@ source ~/.bashrc
 
 # Update and install dependancys
 sudo apt update
-sudo apt install fping python3-scapy snmp snmpd libsnmp-dev python3-pysnmp4 postgresql suricata python3-psycopg2 -y
+sudo apt install fping python3-scapy snmp snmpd libsnmp-dev python3-pysnmp4 postgresql suricata python3-psycopg2 python3-watchdog -y
 sudo apt full-upgrade -y
+
+# Run python script to set up databases
+sudo /usr/bin/python3 /home/CS425_Capstone/Georges_Scripts/Make_Tables.py
 
 # Move files where they need to go
 sudo rm /etc/snmp/snmpd.conf

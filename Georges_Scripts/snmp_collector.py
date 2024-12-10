@@ -153,12 +153,9 @@ def get_host_data(host):
     else:
         #print("Host is not pingable.")
         return None
-
+    
+# Insert collected SNMP data into the PostgreSQL database.
 def insert_into_postgres(data):
-    """
-    Insert collected SNMP data into the PostgreSQL database.
-    Skip insertion if the data contains invalid or None values.
-    """
     # Check if the data is valid
     if not data or any(value is None for key, value in data.items() if key != "timestamp"):
         #print("Invalid or incomplete data. Skipping insertion for this host.")

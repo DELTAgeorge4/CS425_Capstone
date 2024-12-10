@@ -1,9 +1,7 @@
 clear table program in gui
 search logs in gui
-SetUp.sh Script
-    make databases script
 test emails
-
+customize smtp service from gui
 
 CREATE TABLE honeypot (
     id SERIAL PRIMARY KEY,
