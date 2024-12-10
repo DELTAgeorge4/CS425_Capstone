@@ -5,7 +5,7 @@ const { spawn } = require('child_process');
 const server = http.createServer((req, res) => {
     if (req.url === '/') {
         // Execute the Python script
-        const pythonProcess = spawn('python3', ['capture_starter.py']);
+        const pythonProcess = spawn('/usr/bin/python3', ['capture_starter.py']);
 
         let output = '';
         pythonProcess.stdout.on('data', (data) => {
