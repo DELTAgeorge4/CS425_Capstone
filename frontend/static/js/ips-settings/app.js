@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     restartSuricataButton.addEventListener('click', async function() {
+      if(confirm("Are you sure you want to restart Suricata") == true){
       // Show "Restarting Suricata..." message and disable the button
       const statusMessage = document.getElementById('statusMessage');
       statusMessage.textContent = "Status Message: Restarting Suricata... Please wait.";
@@ -116,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
         restartSuricataButton.disabled = false;
         editButton.disabled = false;
       }
+    }
     });
     
     // Fetch the list of rule files

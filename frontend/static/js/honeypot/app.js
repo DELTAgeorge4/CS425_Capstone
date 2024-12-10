@@ -52,6 +52,7 @@ async function honeypot() {
 
     // Add event listener to the clear logs button
     clearButton.addEventListener('click', async () => {
+        if(confirm("Are you sure you want to clear logs?") == true){
         statusMessage.textContent = 'Status Message: Clearing Logs... Please wait.';
         clearButton.disabled = true;
 
@@ -71,6 +72,7 @@ async function honeypot() {
         } finally {
             clearButton.disabled = false;
         }
+    }
     });
 
     renderTable(honeypotData);
