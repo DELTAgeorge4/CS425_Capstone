@@ -8,3 +8,4 @@ venv/
 backend/db/__pycache__
 backend/login/__pycache__
 backend/passwordHashing/__pycache__
+Georges_Scripts/Suricata/Suricata_Logs

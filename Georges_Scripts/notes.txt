@@ -1,8 +1,53 @@
-sudo apt install fping
-snmpd.conf
+clear table program in gui
+search logs in gui
+test emails
+customize smtp service from gui
 
-make time command to set right time
+CREATE TABLE honeypot (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    alert_type VARCHAR(255) NOT NULL,
+    src_ip INET NOT NULL,
+    dst_ip INET NOT NULL,
+    port INT NOT NULL
+);
 
-fix TARGET_IP in honeypot script to use any ip rather than local host
-	have to incorperate adding a second ip to the network adaptor
 
+# Old Suricata Table
+CREATE TABLE suricata (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    source_ip INET NOT NULL,
+    source_port INT NOT NULL,
+    dest_ip INET NOT NULL,
+    dest_port INT NOT NULL,
+    protocol VARCHAR(50) NOT NULL,
+    alert_message TEXT NOT NULL
+);
+
+# New Suricata Table
+CREATE TABLE suricata (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    source_ip INET NOT NULL,
+    source_port INT NOT NULL,
+    dest_ip INET NOT NULL,
+    dest_port INT NOT NULL,
+    protocol VARCHAR(50) NOT NULL,
+    alert_message TEXT NOT NULL,
+    UNIQUE (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message)
+);
+
+CREATE TABLE snmp_metrics (
+    id SERIAL PRIMARY KEY,
+    hostname VARCHAR(255),
+    system_uptime DOUBLE PRECISION,
+    cpu_usage DOUBLE PRECISION,
+    ram_used DOUBLE PRECISION,
+    ram_total DOUBLE PRECISION,
+    ram_percent_used DOUBLE PRECISION,
+    root_dir_used_storage DOUBLE PRECISION,
+    root_dir_total_storage DOUBLE PRECISION,
+    root_dir_percent_used DOUBLE PRECISION,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

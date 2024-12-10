@@ -1,0 +1,11 @@
+[Unit]
+Description=SNMP Collector Script
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/CS425_Capstone/Georges_Scripts/snmp_collector.py
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

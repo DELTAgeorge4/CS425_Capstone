@@ -17,7 +17,7 @@ def usernameExists(username):
 def connect():
     try:
         conn = psycopg2.connect(
-            dbname="capstone425",  # Ensure this matches your database name
+            dbname="nss",  # Ensure this matches your database name
             user="postgres",
             password="password123",  # Use the password you set
             host="localhost"

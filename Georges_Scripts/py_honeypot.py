@@ -3,16 +3,20 @@ from scapy.all import sniff
 import threading
 import psycopg2
 from datetime import datetime
+import config
 
 # Configuration
-TARGET_IP = "192.168.1.100"  # Replace with the target IP address you want to monitor
-PORTS = [80, 443, 3389]  # Ports to listen on and monitor
+#TARGET_IP = "192.168.14.14"  # Replace with the target IP address you want to monitor
+#PORTS = [443, 8080]  # Ports to listen on and monitor
+TARGET_IP = config.HONEYPOT_TARGET_IPS
+PORTS = config.HONEYPOT_TARGET_PORTS
 
 # PostgreSQL connection details
-DB_HOST = "localhost"
-DB_NAME = "honeypot_db"
-DB_USER = "honeypot_user"
-DB_PASSWORD = "password"
+DB_HOST = config.DB_HOST
+DB_NAME = config.DB_NAME
+DB_USER = config.DB_USER
+DB_PASSWORD = config.DB_PASSWORD
+
 
 def log_to_database(alert_type, src_ip, dst_ip, port):
     try:
@@ -52,7 +56,7 @@ def create_honeypot_listener(port):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("", port))
     server_socket.listen(5)
-    print(f"Listening for connections on port {port}...")
+    #print(f"Listening for connections on port {port}...")
     
     while True:
         client_socket, addr = server_socket.accept()

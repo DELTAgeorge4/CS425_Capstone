@@ -1,0 +1,11 @@
+[Unit]
+Description=Suricata to Database Script
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/CS425_Capstone/Georges_Scripts/Suricata_to_DB.py
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,6 @@
 #login.signup.py
-from db.main import connect, close, usernameExists
-from passwordHashing.hashmypassword import hash_password
+from backend.db.main import connect, close, usernameExists
+from backend.passwordHashing.hashmypassword import hash_password
 
 def create_user(username, password, role):
     if usernameExists(username):
@@ -13,6 +13,5 @@ def create_user(username, password, role):
     close(conn, cur)
     print(f"User '{username}' created successfully!")
     
-create_user("admin", "admin", "admin")
 
 #command to run sign up  PYTHONPATH=./backend python3 -m login.signUp
