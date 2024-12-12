@@ -6,4 +6,4 @@ def Get_Suricata_Info():
     cur.execute("SELECT * FROM suricata")
     result = cur.fetchall()
     close(conn, cur)
-    return result
+    return result 
