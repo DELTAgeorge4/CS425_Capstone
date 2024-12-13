@@ -1,3 +1,5 @@
+//Developed by Nicholas Katsaros
+
 const http = require('http');
 const fs = require('fs');
 const { spawn } = require('child_process');

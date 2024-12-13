@@ -1,3 +1,4 @@
+# Developed by Nicholas Katsaros
 import db_control
 import sys
 

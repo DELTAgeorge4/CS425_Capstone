@@ -1,3 +1,4 @@
+# Developed by Nicholas Katsaros
 import subprocess
 
 def read_until_input_needed(process):

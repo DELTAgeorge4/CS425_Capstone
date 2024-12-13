@@ -1,3 +1,5 @@
+// Code directly copied and not significantly modified from code on https://www.devdungeon.com/content/using-libpcap-c
+
 #include <stdio.h>
 #include <pcap.h>
 

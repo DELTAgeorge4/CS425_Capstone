@@ -1,3 +1,4 @@
+# Developed by Nicholas Katsaros
 #!/bin/bash
 
 # Variables
