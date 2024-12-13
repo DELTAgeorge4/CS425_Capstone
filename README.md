@@ -28,4 +28,4 @@ def clear_suricata():
 ```
 
 # James Contributions 
-Everything in `./backend/db/`, `./backend/login/`, `./backend/passwordHashing/`, `./installation/`, most functions in `./backend/main.py` except for George's stuff most of Javascript files in `./frontend/static/js/` except for `honeypot/` and `devices`
+Everything in `./backend/db/`, `./backend/login/`, `./backend/passwordHashing/`, `./installation/`, most functions in `./backend/main.py` except for George's stuff most of Javascript files in `./frontend/static/js/` except for `./frontend/static/js/honeypot/` and `./frontend/static/js/devices/`
