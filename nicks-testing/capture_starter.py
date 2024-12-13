@@ -1,3 +1,5 @@
+# Developed by Nicholas Katsaros
+
 import subprocess
 import db_control
 import sys

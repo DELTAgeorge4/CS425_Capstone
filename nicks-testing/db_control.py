@@ -1,3 +1,4 @@
+# Developed by Nicholas Katsaros
 import psycopg2
 from dotenv import load_dotenv
 import os
@@ -114,6 +115,17 @@ class ethernet_packet:
 
         params = (time,)
         self.database.execute(query, params)
+
+    def get_all_packet_types(self):
+        query = """
+        SELECT "network_packet_type"
+        FROM "link_layer_packet";
+        """
+
+        self.database.execute(query)
+        return self.database.get_query_results()
+    
+    
 
 
 def setup_db():
