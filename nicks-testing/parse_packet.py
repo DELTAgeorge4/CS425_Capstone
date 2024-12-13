@@ -1,3 +1,20 @@
+# Packet info from https://www.geeksforgeeks.org/tcp-ip-packet-format/
+
+def interpret_tcp(packet):
+    src_port = packet[0]*255 + packet[1]
+    dest_port = packet[2]*255 + packet[3]
+
+    sequence_num = packet[4] * 255 * 255 * 255 + packet[5] * 255 * 255 + packet[6] * 255 + packet[7]
+    ack_num = packet[8] * 255 * 255 * 255 + packet[9] * 255 * 255 + packet[10] * 255 + packet[11]
+
+    data_offset = int(packet[12] / 16)
+
+
+    print("Source Port: " + str(src_port))
+    print("Destination Port: " + str(dest_port))
+    print("Sequence Number: " + str(sequence_num))
+    print("Acknowledgement Number: " + str(data_offset))
+
 if __name__ == "__main__":
     # example IPv4 packet
     raw_data_hex = ["00", "15", "5d", "f8", "51", "88", "00", "15", "5d", "f8", "54", "0e", "08", "00", "45", "00", "00", "3c", "f5", "a4", "40", "00", "6a", "06", "fd", "4f", "0d", "59", "b3", "09", "ac", "1b", "b1", "49", "01", "bb", "b3", "30", "31", "ae", "36", "11", "0c", "a3", "6b", "01", "a0", "12", "ff", "ff", "c6", "e5", "00", "00", "02", "04", "05", "66", "01", "03", "03", "08", "04", "02", "08", "0a", "0f", "e0", "c6", "9b", "41", "08", "b7", "bc"]
@@ -32,6 +49,13 @@ if __name__ == "__main__":
 
         protocol = raw_data[9]
 
+        if protocol == 6:
+            protocol_name = "Transmission Control Protocol (TCP)"
+        elif protocol == 17:
+            protocol_name = "User Datagram Protocol (UDP)"
+        else:
+            protocol_name = "Unknown"
+
         header_checksum = raw_data[10]*255 + raw_data[11]
 
         source_ip = str(raw_data[12]) + "."
@@ -44,8 +68,13 @@ if __name__ == "__main__":
         dest_ip = dest_ip + str(raw_data[18]) + "."
         dest_ip = dest_ip + str(raw_data[19])
 
+        options = header_len_bytes != 20
+
+        payload = raw_data[20:]
+
+
         print("Version: " + str(version))
-        print("Header Length: " + str(header_len))
+        print("Header Length: " + str(header_len_bytes))
         print("Type of service: " + str(type_of_service))
         print("Total packet length: " + str(total_len_bytes))
         print("Packet ID: " + str(packet_id))
@@ -54,7 +83,14 @@ if __name__ == "__main__":
         print("More fragments? " + str(more_fragments))
         print("Fragment offset: " + str(fragment_offset))
         print("Time to live: " + str(time_to_live))
-        print("Protocol: " + str(protocol))
+        print("Protocol value: " + str(protocol))
+        print("Protocol name: " + protocol_name)
         print("Checksum: " + str(header_checksum))
         print("Source IP: " + source_ip)
         print("Dest IP: " + dest_ip)
+        print("Options? " + str(options))
+
+        print("Payload: " + str(payload))
+
+        if protocol == 6:
+            interpret_tcp(payload)
