@@ -124,9 +124,9 @@ const server = http.createServer((req, res) => {
         });
 
         req.on('end', () => {
-            const { startTime, endTime } = JSON.parse(body);
+            const { startTime, endTime, protocol } = JSON.parse(body);
 
-            const pythonProcess = spawn('/usr/bin/python3', ['get_packets.py', startTime, endTime]);
+            const pythonProcess = spawn('/usr/bin/python3', ['get_packets.py', startTime, endTime, protocol]);
 
             let output = '';
             pythonProcess.stdout.on('data', (data) => {

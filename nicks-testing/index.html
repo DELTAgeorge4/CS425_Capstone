@@ -15,6 +15,9 @@
     <input type="datetime-local" id="start_time" />
     <label for="end_time">End Time:</label>
     <input type="datetime-local" id="end_time" />
+    <br><br>
+    <label for="protocol">Protocol:</label>
+    <input type="text" id="protocol" placeholder="Enter a protocol (e.g., TCP)" />
     <pre id="output"></pre>
 
     <script>
@@ -84,8 +87,9 @@
             document.getElementById('get_packets').addEventListener('click', () => {
                 const startTime = document.getElementById('start_time').value || 'None';
                 const endTime = document.getElementById('end_time').value || 'None';
+                const protocol = document.getElementById('protocol').value || 'None';
 
-                executeScript('/packets', { startTime, endTime });
+                executeScript('/packets', { startTime, endTime, protocol });
             });
         });
     </script>
