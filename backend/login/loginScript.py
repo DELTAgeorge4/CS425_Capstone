@@ -22,3 +22,17 @@ def login(username, password):
         
     return authenticated
         
+def getUserRole(username):
+    conn, cur = connect()
+    try: 
+        cur.execute("SELECT role FROM users WHERE username = %s;", (username,))
+        result = cur.fetchone()
+        role = result[0]
+    except psycopg2.Error as e:
+        print(f"Error: {e}")
+    finally:
+        close(conn,cur)
+        
+    print(role)
+    print(type(role))
+    return role

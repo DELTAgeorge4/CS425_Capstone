@@ -40,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
     restartSuricataButton.value = 'Restart Suricata';
     rightPageContent.appendChild(restartSuricataButton);
 
+    const createRuleButton = document.createElement('input');
+    createRuleButton.type = 'button';
+    createRuleButton.id = 'create-rules';
+    createRuleButton.value = 'Create New Rule';
+    // createRuleButton.style.display = 'none';
+    rightPageContent.appendChild(createRuleButton);
+
     //Create and appned a status message area
     const statmessage = document.createElement('p');
     statmessage.id = 'statusMessage';

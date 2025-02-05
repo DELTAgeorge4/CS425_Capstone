@@ -49,5 +49,7 @@ def test_connection():
     finally:
         close(conn, cur)
 
+
 # Call the test function
-test_connection()
+# test_connection()
+# getUserRole("admin")

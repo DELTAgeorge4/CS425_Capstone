@@ -10,7 +10,7 @@ import subprocess
 
 import sys
 sys.path.append("..")
-from .login.loginScript import login
+from .login.loginScript import login, getUserRole
 from .login.signUp import create_user
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
@@ -19,9 +19,11 @@ from .DB_To_GUI import Get_Suricata_Info
 #res = Get_Honeypot_Info()
 #print(res)
 # create_user("admin", "admin", "admin")
+# create_user("guest", "guest", "guest")
+
 # create_user("nick", "password123", "admin")
 app = FastAPI()
-
+#create_user("admin","admin","admin")
 # Serve static files
 app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
 
@@ -43,6 +45,9 @@ def verify_user(request: Request):
     if not request.session.get("authenticated"):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+def verify_admin(request: Request):
+    if request.session.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="forbidden")
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -54,14 +59,17 @@ async def loginf(request: Request, data: LoginData):
     print(successfully_authenticated)
     if successfully_authenticated:
         request.session["authenticated"] = True
+        request.session["username"] = data.username
+        request.session["role"] = getUserRole(data.username)
         return {"message": "Login successful"}  # JSON response instead of redirect
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/logout")
 async def logout(request: Request):
+    print(request.session["role"])
     request.session.clear()
     return RedirectResponse(url="/")
-@app.get("/accounts")
+@app.get("/accounts", dependencies=[Depends(verify_admin)])
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
@@ -101,8 +109,9 @@ async def fart():
 class CheckBoxData(BaseModel):
     checkBoxList: List[bool]
 
-@app.post("/checkboxes")
-async def checkboxes(data: CheckBoxData):
+@app.post("/checkboxes", dependencies=[Depends(verify_admin)])
+async def checkboxes(data: CheckBoxData, request:Request):
+
     print(data.checkBoxList)
     files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
     # print(files)
@@ -111,35 +120,37 @@ async def checkboxes(data: CheckBoxData):
     # edit_rules(files[0], data.checkBoxList[0])
     
     # restart_suricata()
+
     return {"checkBoxList": data.checkBoxList}
 
-@app.post("/restart-suricata")
-async def call_restart_suricata():
+@app.post("/restart-suricata", dependencies=[Depends(verify_admin)])
+async def call_restart_suricata(request: Request):  
     restart_suricata()
+ 
         
 def restart_suricata():
     #restartSuricata.sh path in same directory as this file
-    print("suricata restarting")
     subprocess.run(["./restartSuricata.sh"])
 
-@app.post("/clear-snmp")
-async def call_clear_snmp():
+@app.post("/clear-snmp", dependencies=[Depends(verify_admin)])
+async def call_clear_snmp(request: Request):
     clear_snmp()
 
 def clear_snmp():
     print("Clearing SNMP Table")
     subprocess.run(["./Clear_SNMP.sh"])
 
-@app.post("/clear-honeypot")
-async def call_clear_honeypot():
+@app.post("/clear-honeypot", dependencies=[Depends(verify_admin)])
+async def call_clear_honeypot(request: Request):
+
     clear_honeypot()
 
 def clear_honeypot():
     print("Clearing Honeypot Table")
     subprocess.run(["./Clear_Honeypot.sh"])
 
-@app.post("/clear-suricata")
-async def call_clear_suricata():
+@app.post("/clear-suricata", dependencies=[Depends(verify_admin)])
+async def call_clear_suricata(request: Request):
     clear_suricata()
 
 def clear_suricata():
