@@ -64,7 +64,7 @@ async def loginf(request: Request, data: LoginData):
         return {"message": "Login successful"}  # JSON response instead of redirect
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
-@app.get("/logout")
+@app.get("/logout", dependencies=[Depends(verify_user)])
 async def logout(request: Request):
     print(request.session["role"])
     request.session.clear()
@@ -108,6 +108,13 @@ async def fart():
 # Class for a list of checkbox data with file name and checked status
 class CheckBoxData(BaseModel):
     checkBoxList: List[bool]
+
+
+@app.get("/role", dependencies=[Depends(verify_user)])
+def getRole(request:Request):
+    role = getUserRole(request.session.get("username"))
+    return {"Role": role}
+
 
 @app.post("/checkboxes", dependencies=[Depends(verify_admin)])
 async def checkboxes(data: CheckBoxData, request:Request):
