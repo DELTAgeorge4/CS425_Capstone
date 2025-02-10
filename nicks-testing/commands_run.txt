@@ -1,3 +1,5 @@
+//This is documentation of what commands will need to be run be an installation script
+
 sudo apt-get install libpcap-dev
 
 gcc -o find_device find_device.c -lpcap # compile code that uses pcaps
@@ -12,3 +14,6 @@ sudo ./capture_packets eth0
 sudo apt install python3-dotenv
 
 /usr/bin/python3 capture_starter.py
+
+sudo pip install psycopg2
+sudo pip install python-dotenv

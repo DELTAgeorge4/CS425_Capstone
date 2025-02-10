@@ -1,3 +1,5 @@
+//Developed by Nicholas Katsaros
+
 const http = require('http');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -43,8 +45,7 @@ const server = http.createServer((req, res) => {
                 res.end('Failed to execute Python script');
             }
         });
-    } else if ((req.url === '/device' || req.url === '/capture') && req.method === 'POST') {
-        // Handle device selection and execute the corresponding Python script
+    } else if (req.url === '/device' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
@@ -60,8 +61,7 @@ const server = http.createServer((req, res) => {
                 return;
             }
 
-            const scriptName = req.url === '/device' ? 'print_device_info.py' : 'capture_starter.py';
-            const pythonProcess = spawn('/usr/bin/python3', [scriptName, deviceName]);
+            const pythonProcess = spawn('/usr/bin/python3', ['print_device_info.py', deviceName]);
 
             let output = '';
             pythonProcess.stdout.on('data', (data) => {
@@ -78,31 +78,76 @@ const server = http.createServer((req, res) => {
                     res.end(output);
                 } else {
                     res.writeHead(500);
-                    res.end(`Failed to execute ${scriptName}`);
+                    res.end('Failed to execute print_device_info.py');
+                }
+            });
+        });
+    } else if (req.url === '/capture' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+            const { deviceNumber } = JSON.parse(body);
+            const deviceName = deviceList[deviceNumber - 1];
+
+            if (!deviceName) {
+                res.writeHead(400);
+                res.end('Invalid device number');
+                return;
+            }
+
+            const pythonProcess = spawn('/usr/bin/python3', ['capture_starter.py', deviceName]);
+
+            let output = '';
+            pythonProcess.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (err) => {
+                console.error(`Error: ${err}`);
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code === 0) {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    res.end(output);
+                } else {
+                    res.writeHead(500);
+                    res.end('Failed to execute capture_starter.py');
                 }
             });
         });
     } else if (req.url === '/packets' && req.method === 'POST') {
-        // Execute the get_packets.py script
-        const pythonProcess = spawn('/usr/bin/python3', ['get_packets.py']);
-
-        let output = '';
-        pythonProcess.stdout.on('data', (data) => {
-            output += data.toString();
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
         });
 
-        pythonProcess.stderr.on('data', (err) => {
-            console.error(`Error: ${err}`);
-        });
+        req.on('end', () => {
+            const { startTime, endTime, protocol } = JSON.parse(body);
 
-        pythonProcess.on('close', (code) => {
-            if (code === 0) {
-                res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end(output);
-            } else {
-                res.writeHead(500);
-                res.end('Failed to execute get_packets.py');
-            }
+            const pythonProcess = spawn('/usr/bin/python3', ['get_packets.py', startTime, endTime, protocol]);
+
+            let output = '';
+            pythonProcess.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (err) => {
+                console.error(`Error: ${err}`);
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code === 0) {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    res.end(output);
+                } else {
+                    res.writeHead(500);
+                    res.end('Failed to execute get_packets.py');
+                }
+            });
         });
     } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
