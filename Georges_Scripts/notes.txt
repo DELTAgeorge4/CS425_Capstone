@@ -1,7 +1,11 @@
-clear table program in gui
-search logs in gui
+GUI
+    Clear Table
+    Search Logs
+    Select how many logs to display
+    customize smtp service
 test emails
-customize smtp service from gui
+
+
 
 CREATE TABLE honeypot (
     id SERIAL PRIMARY KEY,
