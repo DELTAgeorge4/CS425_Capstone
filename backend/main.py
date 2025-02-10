@@ -93,6 +93,10 @@ async def settings(request: Request):
 async def nav(request: Request):
     return templates.TemplateResponse("nav.html", {"request": request})
 
+@app.get("/sniffer", dependencies=[Depends(verify_user)])
+async def sniffer(request: Request):
+    return templates.TemplateResponse("sniffer.html", {"request": request})
+
 @app.get("/fart")
 async def fart():
     return {"message": "fart"}

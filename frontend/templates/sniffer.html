@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!-- Developed by Nicholas Katsaros -->
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/snffer/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Capture Utility</title>
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
+        <input type="text" id="device_selection_box" placeholder="Enter the device #" />
+        <button id="get_device_info">Get Device Info</button>
+        <button id="start_capture">Start Capture</button>
+        <button id="get_packets">Get Packets</button>
+        <br><br>
+        <label for="start_time">Start Time:</label>
+        <input type="datetime-local" id="start_time" />
+        <label for="end_time">End Time:</label>
+        <input type="datetime-local" id="end_time" />
+        <br><br>
+        <label for="protocol">Protocol:</label>
+        <input type="text" id="protocol" placeholder="Enter a protocol (e.g., TCP)" />
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        fetch("/nav")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+
+            const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
+            navLinks.forEach(link => {
+            if (link.pathname === window.location.pathname) {
+                link.classList.add("active");
+            }
+            });
+        })
+        .catch(error => console.error("Error loading navigation:", error));
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const output = document.getElementById('output');
+            let deviceListOutput = ''; // To preserve the output of find_device.py
+            
+            // Load the device list when the page loads
+            try {
+                const response = await fetch('/run');
+                if (response.ok) {
+                    deviceListOutput = await response.text(); // Store device list output
+                    output.textContent = deviceListOutput; // Display device list
+                } else {
+                    output.textContent = 'Error loading device list';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                output.textContent = 'Error fetching devices';
+            }
+
+            // Function to send a POST request with data
+            const executeScript = async (endpoint, body = null) => {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.text();
+                        output.textContent = `${deviceListOutput}\n\n${result}`;
+                    } else {
+                        output.textContent = `${deviceListOutput}\n\nError executing the script`;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    output.textContent = `${deviceListOutput}\n\nError sending request`;
+                }
+            };
+
+            // Handle button click for print_device_info.py
+            document.getElementById('get_device_info').addEventListener('click', () => {
+                const deviceNumber = document.getElementById('device_selection_box').value;
+                if (!deviceNumber || isNaN(deviceNumber)) {
+                    output.textContent = `${deviceListOutput}\n\nPlease enter a valid device number.`;
+                    return;
+                }
+                executeScript('/device', { deviceNumber: parseInt(deviceNumber, 10) });
+            });
+
+            // Handle button click for capture_starter.py
+            document.getElementById('start_capture').addEventListener('click', () => {
+                const deviceNumber = document.getElementById('device_selection_box').value;
+
+                if (!deviceNumber || isNaN(deviceNumber)) {
+                    output.textContent = `${deviceListOutput}\n\nPlease enter a valid device number.`;
+                    return;
+                }
+                executeScript('/capture', { deviceNumber: parseInt(deviceNumber, 10) });
+            });
+
+            // Handle button click for get_packets.py
+            document.getElementById('get_packets').addEventListener('click', () => {
+                const startTime = document.getElementById('start_time').value || 'None';
+                const endTime = document.getElementById('end_time').value || 'None';
+                const protocol = document.getElementById('protocol').value || 'None';
+
+                executeScript('/packets', { startTime, endTime, protocol });
+            });
+        });
+    </script>
+</body>
+</html>
