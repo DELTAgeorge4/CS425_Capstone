@@ -10,7 +10,7 @@ import subprocess
 
 import sys
 sys.path.append("..")
-from .login.loginScript import login, getUserRole
+from .login.loginScript import login, getUserRole, changePassword
 from .login.signUp import create_user
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
@@ -20,6 +20,7 @@ from .DB_To_GUI import Get_Suricata_Info
 #print(res)
 # create_user("admin", "admin", "admin")
 # create_user("guest", "guest", "guest")
+# changePassword("admin", "admin", "password123")
 
 # create_user("nick", "password123", "admin")
 app = FastAPI()
@@ -79,6 +80,7 @@ async def honeypotPage(request: Request):
 
 @app.get("/home", dependencies=[Depends(verify_user)])
 async def home(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
 @app.get("/topology", dependencies=[Depends(verify_user)])
@@ -113,7 +115,7 @@ class CheckBoxData(BaseModel):
 @app.get("/role", dependencies=[Depends(verify_user)])
 def getRole(request:Request):
     role = getUserRole(request.session.get("username"))
-    return {"Role": role}
+    return {"Role": role, "Username": request.session.get("username")}
 
 
 @app.post("/checkboxes", dependencies=[Depends(verify_admin)])
