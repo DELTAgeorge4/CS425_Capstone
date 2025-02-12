@@ -3,16 +3,16 @@ document.addEventListener('DOMContentLoaded', async function () {
   const alertsTab = document.getElementById('ips-alerts');
   const rulesTab = document.getElementById('ips-rules');
   const rightPageContent = document.getElementById('right-page-content');
+
+  
   const roleDataResponse = await fetch("/role", {method: "GET"});
 
   const roleData = await roleDataResponse.json();
 
   const userRole = roleData.Role;
-  console.log("Role Data: ", roleData);
 
 
 
-  console.log(roleData.Role);
   // Function to clear the content area
   function clearContent() {
     rightPageContent.innerHTML = '';

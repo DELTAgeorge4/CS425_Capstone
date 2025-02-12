@@ -22,18 +22,12 @@ let sortOrder = {};
 async function snmp() {
     const filesResponse = await fetch('/snmp-logs');
 
-    if (!filesResponse.ok) {
-        console.error('Error fetching SNMP data');
-        return;
-    }
+    const roleDataResponse = await fetch("/role", { method: "GET" });
 
-    const data = await filesResponse.json();
-    let snmpData = data.SNMP;
+    const roleData = await roleDataResponse.json();
 
-    if (!Array.isArray(snmpData) || snmpData.length === 0) {
-        console.error('No SNMP data available');
-        return;
-    }
+    const userRole = roleData.Role;
+
 
     // Create and append the clear logs button
     const clearButton = document.createElement('input');
@@ -49,29 +43,50 @@ async function snmp() {
     statusMessage.style.marginBottom = '20px';
     pageContent.appendChild(statusMessage);
 
+    if (userRole === "admin") {
+        clearButton.style.display = "inline-block";
+    } else {
+        clearButton.style.display = "none";
+    }
+
+    if (!filesResponse.ok) {
+        console.error('Error fetching SNMP data');
+        return;
+    }
+
+    const data = await filesResponse.json();
+    let snmpData = data.SNMP;
+
+    if (!Array.isArray(snmpData) || snmpData.length === 0) {
+        console.error('No SNMP data available');
+        return;
+    }
+
+
+
     // Add event listener to the clear logs button
     clearButton.addEventListener('click', async () => {
-        if(confirm("Are you sure you want to clear logs?") == true){
-        statusMessage.textContent = 'Status Message: Clearing Logs... Please wait.';
-        clearButton.disabled = true;
+        if (confirm("Are you sure you want to clear logs?") == true) {
+            statusMessage.textContent = 'Status Message: Clearing Logs... Please wait.';
+            clearButton.disabled = true;
 
-        try {
-            const response = await fetch('/clear-snmp', { method: 'POST' });
+            try {
+                const response = await fetch('/clear-snmp', { method: 'POST' });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+
+                statusMessage.textContent = 'Status Message: Logs Cleared Successfully!';
+                setTimeout(() => (statusMessage.textContent = 'Status Message: '), 3000);
+            } catch (error) {
+                console.error('Error Clearing Logs:', error);
+                statusMessage.textContent = 'Failed to clear logs. Please try again later.';
+                setTimeout(() => (statusMessage.textContent = 'Status Message: '), 5000);
+            } finally {
+                clearButton.disabled = false;
             }
-
-            statusMessage.textContent = 'Status Message: Logs Cleared Successfully!';
-            setTimeout(() => (statusMessage.textContent = 'Status Message: '), 3000);
-        } catch (error) {
-            console.error('Error Clearing Logs:', error);
-            statusMessage.textContent = 'Failed to clear logs. Please try again later.';
-            setTimeout(() => (statusMessage.textContent = 'Status Message: '), 5000);
-        } finally {
-            clearButton.disabled = false;
         }
-    }
     });
 
     renderTable(snmpData);
