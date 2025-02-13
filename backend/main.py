@@ -70,7 +70,7 @@ async def logout(request: Request):
     print(request.session["role"])
     request.session.clear()
     return RedirectResponse(url="/")
-@app.get("/accounts", dependencies=[Depends(verify_admin)])
+@app.get("/accounts", dependencies=[Depends(verify_user)])
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
