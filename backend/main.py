@@ -10,7 +10,7 @@ import subprocess
 
 import sys
 sys.path.append("..")
-from .login.loginScript import login, getUserRole, changePassword
+from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers
 from .login.signUp import create_user
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
@@ -22,7 +22,7 @@ from .DB_To_GUI import Get_Suricata_Info
 # create_user("guest", "guest", "guest")
 # changePassword("admin", "admin", "password123")
 
-# create_user("nick", "password123", "admin")
+# create_user("james", "password123", "admin")
 app = FastAPI()
 #create_user("admin","admin","admin")
 # Serve static files
@@ -70,7 +70,9 @@ async def logout(request: Request):
     print(request.session["role"])
     request.session.clear()
     return RedirectResponse(url="/")
-@app.get("/accounts", dependencies=[Depends(verify_admin)])
+
+
+@app.get("/accounts", dependencies=[Depends(verify_user)])
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
@@ -106,6 +108,42 @@ async def nav(request: Request):
 @app.get("/fart")
 async def fart():
     return {"message": "fart"}
+
+@app.get("/users", dependencies=[Depends(verify_admin)])
+async def users(request: Request):
+    users = getUsers()
+    return {"users": users}
+
+class passwordResetData (BaseModel):
+    username: str
+    newPassword: str
+
+class changePasswordData (BaseModel):
+    oldPassword: str
+    newPassword: str
+    
+@app.post("/reset-user-password")
+async def reset_user_password(data: passwordResetData, request: Request, dependencies=[Depends(verify_admin)]):
+    print("reset_user_password called", data)
+    
+    successful = resetPassword(request.session.get("username"), data.username, data.newPassword)
+
+    if not successful:
+        raise HTTPException(status_code=401, detail="Password reset unsuccessful")
+    return {"message": "Password reset successful"}
+
+@app.post("/change-password")
+async def change_password(data: changePasswordData, request: Request, dependencies=[Depends(verify_user)]):
+    print("Parsed Data:", data)  
+    successful = changePassword(request.session.get("username"), data.oldPassword, data.newPassword)
+    # return {"message": "Password change successful"}
+    # return an error message if the password change was unsuccessful
+    if not successful:
+        raise HTTPException(status_code=401, detail="Password change unsuccessful")
+    return {"message": "Password change successful"}
+
+
+
 
 # Class for a list of checkbox data with file name and checked status
 class CheckBoxData(BaseModel):
@@ -289,3 +327,5 @@ def load_suricata_rules(file_name: str):
 @app.get("/rules/{file_name}", dependencies=[Depends(verify_user)])
 def get_rules(file_name: str):
     return load_suricata_rules(file_name)
+
+

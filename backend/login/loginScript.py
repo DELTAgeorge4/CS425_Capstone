@@ -82,3 +82,15 @@ def resetPassword(adminUsername, userUsername, newPassword):
         return True
     else:
         return False
+    
+def getUsers():
+    conn, cur = connect()
+    try: 
+        cur.execute("SELECT username, role FROM users;")
+        result = cur.fetchall()
+    except psycopg2.Error as e:
+        print(f"Error: {e}")
+    finally:
+        close(conn,cur)
+        
+    return result

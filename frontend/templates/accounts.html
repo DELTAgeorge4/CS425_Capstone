@@ -12,10 +12,65 @@
 
 <!-- Page Content -->
 <div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
+
+  <div id="change-password-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Change Password</h2>
+        <form id="change-password-form">
+            <label for="changeOldPassword">Old Password:</label>
+            <input type="password" id="changeOldPassword" name="oldPassword" required>
+
+            <label for="changeNewPassword">New Password:</label>
+            <input type="password" id="changeNewPassword" name="newPassword" required>
+
+            <label for="changeConfirmPassword">Confirm New Password:</label>
+            <input type="password" id="changeConfirmPassword" name="confirmPassword" required>
+
+            <button type="submit">Change Password</button>
+            <p id="message"></p>
+        </form>
+    </div>
+</div>
+
+<div id="reset-password-modal" class="modal">
+  <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Reset User Password</h2>
+      <form id="reset-password-form">
+          <h3>Reset Password for <span id="reset-password-username"></span></h3>
+          <label for="resetNewPassword">New Password:</label>
+          <input type="password" id="resetNewPassword" name="newPassword" required>
+
+          <label for="resetConfirmPassword">Confirm New Password:</label>
+          <input type="password" id="resetConfirmPassword" name="confirmPassword" required>
+
+          <button type="submit">Reset Password</button>
+          <p id="reset-message"></p>
+      </form>
+  </div>
+</div>
+
+
+
+  <div id= "account-information-container">
   <h2>Account Information</h2>
   <p id="username-indicator">Username:</p>
   <p id="role-indicator">Role:</p>
+  </div>
+  <div id="account-management-actions">
   <button id="change-password-button">Change Password</button> 
+  <button id="delete-account-button">Delete Account</button>
+</div>
+<div  class="hidden">
+  <table id="user-table">
+    <tr>
+      <th>Username</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+  </table>
+</div>
 </div>
 
 <!-- JavaScript to Load Navigation Menu and Set Active Link -->
