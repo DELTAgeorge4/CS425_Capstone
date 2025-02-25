@@ -11,7 +11,7 @@ import subprocess
 import sys
 sys.path.append("..")
 from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers
-from .login.signUp import create_user
+from .login.signUp import create_user, check_role_exists
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
 from .DB_To_GUI import Get_Suricata_Info
@@ -22,7 +22,7 @@ from .DB_To_GUI import Get_Suricata_Info
 # create_user("guest", "guest", "guest")
 # changePassword("admin", "admin", "password123")
 
-# create_user("james", "password123", "admin")
+# create_user("james2", "password123", "admin")
 app = FastAPI()
 #create_user("admin","admin","admin")
 # Serve static files
@@ -49,6 +49,8 @@ def verify_user(request: Request):
 def verify_admin(request: Request):
     if request.session.get("role") != "admin":
         raise HTTPException(status_code=403, detail="forbidden")
+    
+
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -121,6 +123,26 @@ class passwordResetData (BaseModel):
 class changePasswordData (BaseModel):
     oldPassword: str
     newPassword: str
+    
+    
+class createUserData (BaseModel):
+    username: str
+    newPassword: str
+    newUserRole: str
+    
+@app.post("/create-user")
+async def fcreate_user(data: createUserData, request: Request, dependencies=[Depends(verify_admin)]):
+    # print("create_user called", data)
+    
+    role = data.newUserRole
+    if not check_role_exists(role):
+        raise HTTPException(status_code=401, detail="Role does not exist")
+    
+    successful = create_user(data.username, data.newPassword, data.newUserRole)
+    if not successful:
+        raise HTTPException(status_code=401, detail="User creation unsuccessful")
+    return {"message": "User creation successful"}
+    
     
 @app.post("/reset-user-password")
 async def reset_user_password(data: passwordResetData, request: Request, dependencies=[Depends(verify_admin)]):

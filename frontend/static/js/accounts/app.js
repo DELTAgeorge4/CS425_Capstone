@@ -7,6 +7,10 @@ async function loadAccountInfo() {
         const changePasswordModal = document.getElementById("change-password-modal");
         const resetPasswordModal = document.getElementById("reset-password-modal");
 
+        const createAccountButton = document.getElementById("create-account-button");
+        const createAccountModal = document.getElementById("create-account-modal");
+
+
         // const resetPasswordForm = document.getElementById("reset-password-form");
 
 
@@ -18,13 +22,16 @@ async function loadAccountInfo() {
         const changePasswordButton = document.getElementById("change-password-button");
 
 
-
+        createAccountButton.style.display = "none";
 
         changePasswordButton.addEventListener("click", () => {
             changePasswordModal.style.display = "block";
         });
 
 
+        createAccountButton.addEventListener("click", () => {
+            createAccountModal.style.display = "block";
+        });
 
 
 
@@ -35,6 +42,9 @@ async function loadAccountInfo() {
 
             if (event.target === resetPasswordModal) {
                 resetPasswordModal.style.display = "none";
+            }
+            if(event.target === createAccountModal){
+                createAccountModal.style.display = "none";
             }
         });
 
@@ -52,6 +62,7 @@ async function loadAccountInfo() {
 
         // load other user data if admin
         if (roleData.Role === "admin") {
+            createAccountButton.style.display = "inline";
             const userDataResponse = await fetch("/users", { method: "GET" });
 
             if (!userDataResponse.ok) {
@@ -72,6 +83,7 @@ async function loadAccountInfo() {
             usersData.users.forEach((user) => {
                 console.log(user);
 
+                if(roleData.Username != user[0]){
                 //create table row with user name, role, and action buttons
                 const row = document.createElement("tr");
                 const username = document.createElement("td");
@@ -96,7 +108,7 @@ async function loadAccountInfo() {
                 //calls the delete user function still needs to be implemented
                 deleteButton.addEventListener("click", async () => {
                     console.log("Delete button clicked", user[0]);
-
+    
                 });
 
                 //calls the reset password function
@@ -219,7 +231,7 @@ async function loadAccountInfo() {
 
                     
                 });
-
+            }
         
             });
         }
@@ -228,6 +240,7 @@ async function loadAccountInfo() {
             btn.addEventListener("click", () => {
                 changePasswordModal.style.display = "none";
                 resetPasswordModal.style.display = "none";
+                createAccountModal.style.display = "none"
             });
         });
         //get form data from modal
@@ -284,6 +297,68 @@ async function loadAccountInfo() {
             console.log("Form submitted");
         });
 
+            const createAccountForm = document.getElementById("create-account-form");
+            createAccountForm.addEventListener("submit", async (event)=>{
+
+                event.preventDefault();
+
+                const username = document.getElementById("createAccountUsername").value;
+                const newPassword = document.getElementById("createAccountPassword").value;
+                const confirmPassword = document.getElementById("createAccountConfirmPassword").value;
+                const newUserRole = document.getElementById("roles").value;
+                const message = document.getElementById("create-message");
+
+
+                console.log(username, newPassword, confirmPassword, newUserRole);
+
+                if (newPassword !== confirmPassword) {
+                    message.textContent = "New passwords do not match!";
+                    message.style.color = "red";
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    message.textContent = "New password must be at least 8 characters long!";
+                    message.style.color = "red";
+                    return;
+                }
+
+
+
+                const createAccountResponse = await fetch("/create-user", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username,
+                        newPassword,
+                        newUserRole,
+                    }),
+                });
+
+                if (!createAccountResponse.ok) {
+                    const errorMessage = await createAccountResponse.json();
+                    // errorMessage = await JSON.parse(errorMessage);
+
+                    // const eMessage = await changePasswordResponse.json();
+                    message.textContent = errorMessage.detail;
+
+                    console.log(errorMessage);
+                    message.style.color = "red";
+                    return;
+                }
+
+                message.textContent = "Account created successfully!";
+                message.style.color = "green";
+
+
+                // refreshe the page to show the new user
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+                
+            });
         
 
 

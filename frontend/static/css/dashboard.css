@@ -85,7 +85,7 @@ body {
     color: white;
   }
 
-  button, input:not(#changeOldPassword,#changeNewPassword,#changeConfirmPassword,#resetOldPassword,#resetNewPassword,#resetConfirmPassword) {
+  button, input:not(.text-entry) {
     background-color: #76ABAE;
     color: white;
     border: none;
