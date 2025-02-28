@@ -55,3 +55,15 @@ CREATE TABLE snmp_metrics (
     root_dir_percent_used DOUBLE PRECISION,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE siem_logs (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ NOT NULL,
+    source TEXT NOT NULL,
+    event_type TEXT,
+    severity TEXT,
+    message TEXT,
+    agent_info JSONB,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
