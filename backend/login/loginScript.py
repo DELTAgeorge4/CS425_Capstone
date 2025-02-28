@@ -7,7 +7,7 @@ def login(username, password):
     cur.execute("SELECT password_hash, salt FROM users WHERE username = %s", (username,))
     result = cur.fetchone()
     close(conn, cur)
-    print(result)
+    # print(result)
     if not result:
         print(f"Username '{username}' does not exist.")
         return authenticated

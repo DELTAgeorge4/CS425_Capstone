@@ -70,7 +70,7 @@ async def root(request: Request):
 async def loginf(request: Request, data: LoginData):
     # Replace with real user validation
     successfully_authenticated = login(data.username, data.password)
-    print(successfully_authenticated)
+    # print(successfully_authenticated)
     if successfully_authenticated:
         request.session["authenticated"] = True
         request.session["username"] = data.username
@@ -194,7 +194,7 @@ def getRole(request:Request):
 @app.post("/checkboxes", dependencies=[Depends(verify_admin)])
 async def checkboxes(data: CheckBoxData, request:Request):
     ruleCheckboxChanged = True
-    print(data.checkBoxList)
+    # print(data.checkBoxList)
     files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
     # print(files)
     for i, file in enumerate(files):
@@ -288,7 +288,7 @@ def edit_rules(file_name: str, isChecked: bool):
     with open(file_path, "w") as file:
         file.writelines(updated_lines)
 
-    print(f"Updated rules in {file_name} based on checkbox state: {isChecked}")
+    # print(f"Updated rules in {file_name} based on checkbox state: {isChecked}")
 
 
 # Class for rule representation
@@ -320,8 +320,8 @@ def display_SNMP_logs():
 @app.get("/suricata-logs", dependencies=[Depends(verify_user)])
 def display_Suricata_logs():
      results = Get_Suricata_Info()
-     print(len(results))
-     print(type(results))
+    #  print(len(results))
+    #  print(type(results))
      return {"Suricata": results}
 
 

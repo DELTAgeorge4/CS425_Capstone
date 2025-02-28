@@ -11,7 +11,7 @@ def create_user(username, password, role):
     cur.execute("INSERT INTO users (username, password_hash, salt, role) VALUES (%s, %s, %s,%s)", (username, hashed_password, salty, role))
     conn.commit()
     close(conn, cur)
-    print(f"User '{username}' created successfully!")
+    # print(f"User '{username}' created successfully!")
     return True
     
     
