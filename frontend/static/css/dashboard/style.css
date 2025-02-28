@@ -51,9 +51,10 @@ body, html {
 .status-indicator {
   width: 10px;
   height: 10px;
-  background-color: green;
+  background-color: red;
   border-radius: 50%;
   margin-right: 10px;
+  color: red;
 }
 
 /* Admin activity section styling */

@@ -24,8 +24,9 @@ from .DB_To_GUI import Get_Suricata_Info
 # create_user("guest", "guest", "guest")
 # changePassword("admin", "admin", "password123")
 
-# create_user("james2", "password123", "admin")
-app = FastAPI()
+# create_user("nick", "password123", "admin")
+
+app = FastAPI(docs_url=None)
 #create_user("admin","admin","admin")
 # Serve static files
 static_dir = os.path.join(os.path.dirname(__file__), "../frontend/static")
@@ -43,6 +44,9 @@ templates = Jinja2Templates(directory=templates_dir)
 # Directory where Suricata rules are stored
 #RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
 RULES_DIR = "/etc/suricata/rules"  # For Linux
+
+# ruleCheckboxChanged = False
+# globalRules = get_rules()
 
 class LoginData(BaseModel):
     username: str
@@ -79,8 +83,6 @@ async def logout(request: Request):
     print(request.session["role"])
     request.session.clear()
     return RedirectResponse(url="/")
-
-
 @app.get("/accounts", dependencies=[Depends(verify_user)])
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
@@ -191,7 +193,7 @@ def getRole(request:Request):
 
 @app.post("/checkboxes", dependencies=[Depends(verify_admin)])
 async def checkboxes(data: CheckBoxData, request:Request):
-
+    ruleCheckboxChanged = True
     print(data.checkBoxList)
     files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
     # print(files)
