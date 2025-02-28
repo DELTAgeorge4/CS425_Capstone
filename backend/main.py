@@ -28,12 +28,17 @@ from .DB_To_GUI import Get_Suricata_Info
 app = FastAPI()
 #create_user("admin","admin","admin")
 # Serve static files
-app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
+static_dir = os.path.join(os.path.dirname(__file__), "../frontend/static")
+templates_dir = os.path.join(os.path.dirname(__file__), "../frontend/templates")
+
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Middleware for session management
 app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 
-templates = Jinja2Templates(directory="../frontend/templates")
+
+templates = Jinja2Templates(directory=templates_dir)
 
 # Directory where Suricata rules are stored
 #RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
