@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Navigation</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+</head>
+<body>
+
+    <!-- Persistent Navigation Bar -->
+    <div id="nav-placeholder">
+        {% include 'nav.html' %}
+    </div>
+
+    <!-- Page Content (Dynamically Loaded) -->
+    <div id="content-container">
+        <h2>Loading...</h2>
+    </div>
+
+    <!-- Load JavaScript -->
+    <script src="{{ url_for('static', path='js/navigation.js') }}" defer></script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Navigation</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+</head>
+<body>
+
+    <!-- Persistent Navigation Bar -->
+    <div id="nav-placeholder">
+        {% include 'nav.html' %}
+    </div>
+
+    <!-- Page Content (Dynamically Loaded) -->
+    <div id="content-container">
+        <h2>Loading...</h2>
+    </div>
+
+    <!-- Load JavaScript -->
+    <script src="{{ url_for('static', path='js/navigation.js') }}" defer></script>
+
+</body>
+</html>

@@ -1,8 +1,17 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
   // Get references to the tabs and content area
   const alertsTab = document.getElementById('ips-alerts');
   const rulesTab = document.getElementById('ips-rules');
   const rightPageContent = document.getElementById('right-page-content');
+
+  
+  const roleDataResponse = await fetch("/role", {method: "GET"});
+
+  const roleData = await roleDataResponse.json();
+
+  const userRole = roleData.Role;
+
+
 
   // Function to clear the content area
   function clearContent() {
@@ -19,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     rightPageContent.appendChild(header);
 
     // Create and append edit button
+
     const editButton = document.createElement('input');
     editButton.type = 'button';
     editButton.id = 'edit-rules';
@@ -39,6 +49,13 @@ document.addEventListener('DOMContentLoaded', function () {
     restartSuricataButton.id = 'restart-suricata';
     restartSuricataButton.value = 'Restart Suricata';
     rightPageContent.appendChild(restartSuricataButton);
+
+    const createRuleButton = document.createElement('input');
+    createRuleButton.type = 'button';
+    createRuleButton.id = 'create-rules';
+    createRuleButton.value = 'Create New Rule';
+    // createRuleButton.style.display = 'none';
+    rightPageContent.appendChild(createRuleButton);
 
     //Create and appned a status message area
     const statmessage = document.createElement('p');
@@ -119,6 +136,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
     });
+    if (userRole === "admin") {  
+      editButton.style.display = "inline-block";
+      createRuleButton.style.display = "inline-block";
+      restartSuricataButton.style.display = "inline-block";
+    } else {  
+      editButton.style.display = "none";
+      createRuleButton.style.display = "none";
+      restartSuricataButton.style.display = "none";
+    }
     
     // Fetch the list of rule files
     const filesResponse = await fetch('/rules');

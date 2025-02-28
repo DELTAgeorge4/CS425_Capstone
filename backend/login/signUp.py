@@ -13,5 +13,10 @@ def create_user(username, password, role):
     close(conn, cur)
     print(f"User '{username}' created successfully!")
     
+    
+    
+    
 
 #command to run sign up  PYTHONPATH=./backend python3 -m login.signUp
+if __name__ == "__main__":
+    create_user("guest", "guest", "guest")

@@ -12,7 +12,10 @@
 
 <!-- Page Content -->
 <div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
-  <h2>Accounts</h2>
+  <h2>Account Information</h2>
+  <p id="username-indicator">Username:</p>
+  <p id="role-indicator">Role:</p>
+  <button id="change-password-button">Change Password</button> 
 </div>
 
 <!-- JavaScript to Load Navigation Menu and Set Active Link -->
@@ -32,6 +35,8 @@
     })
     .catch(error => console.error("Error loading navigation:", error));
 </script>
+<script src="{{ url_for('static', path='js/accounts/app.js') }}" defer></script>
+
 
 </body>
 </html>

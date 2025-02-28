@@ -1,18 +1,16 @@
 /* Basic container and layout styling */
-/* style.css */
 .container {
   width: 100%;
   display: flex;
+  height: 100vh; /* Ensures it takes up the full viewport height */
 }
 
-.leftpane{
+/* Left pane */
+.leftpane {
   flex: 1; /* Ensures both panes take up equal space */
-  /* background-color: #31363F;
-   */
   background-color: #31363F;
-  width: 20%;
   padding: 20px;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
   color: #ffffff;
   overflow-y: auto;
@@ -20,31 +18,27 @@
   flex-direction: column;
 }
 
-
+/* Right pane */
 .rightpane {
   flex: 1; /* Ensures both panes take up equal space */
-  /* background-color: #31363F;
-   */
   background-color: #31363F;
-
   padding: 20px;
-  width: 80%;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
   color: #ffffff;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  align-items: center; /* Centers the charts */
+  justify-content: center; /* Ensures proper spacing */
 }
-body {
+
+/* Ensures the body and HTML take full height */
+body, html {
   margin: 0;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100%;
 }
-
-/* Separate the right pane visually
-.rightpane {
-  border-left: 2px solid #31363F;
-} */
 
 /* System status indicator styling */
 .system-status {
@@ -57,9 +51,10 @@ body {
 .status-indicator {
   width: 10px;
   height: 10px;
-  background-color: green;
+  background-color: red;
   border-radius: 50%;
   margin-right: 10px;
+  color: red;
 }
 
 /* Admin activity section styling */
@@ -95,13 +90,13 @@ body {
   width: 100%;
   max-width: 600px; /* Limits the max width for readability */
   margin: 20px 0; /* Adds spacing between stacked charts */
+  display: flex;
+  justify-content: center; /* Centering the charts */
 }
 
-#myDonutChart {
-  width: 60%; /* Full width within container */
-  height: 30px; /* Ensures sufficient height for data visibility */
-}
-
-#myChart {
-  height: 200px; /* Adjusted height for line chart */
+/* Make sure charts properly resize */
+#myChart, #myDonutChart {
+  width: 100% !important; /* Ensure they take full width */
+  height: auto !important; /* Allow height to adjust */
+  max-height: 300px; /* Prevent it from growing too large */
 }

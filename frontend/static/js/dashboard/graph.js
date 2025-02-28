@@ -1,7 +1,24 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
+    const leftPaneContent = document.getElementById("leftpane-content");
+
+    const roleDataResponse = await fetch("/role", {method: "GET"});
+
+    const roleData = await roleDataResponse.json();
+
+    console.log("Role Data: ", roleData);
+
+
+
+    console.log(roleData.Role);
+
+    const UserRoleHeader = document.createElement('H1');
+    UserRoleHeader.textContent = "User Role: " + roleData.Role;
+
+
+    leftPaneContent.append(UserRoleHeader);
     const ctx = document.getElementById('myChart').getContext('2d');
     const ctxDonut = document.getElementById('myDonutChart').getContext('2d');
-  
+    
     const data = {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         datasets: [{
