@@ -7,7 +7,7 @@ def login(username, password):
     cur.execute("SELECT password_hash, salt FROM users WHERE username = %s", (username,))
     result = cur.fetchone()
     close(conn, cur)
-    print(result)
+    # print(result)
     if not result:
         print(f"Username '{username}' does not exist.")
         return authenticated
@@ -82,3 +82,15 @@ def resetPassword(adminUsername, userUsername, newPassword):
         return True
     else:
         return False
+    
+def getUsers():
+    conn, cur = connect()
+    try: 
+        cur.execute("SELECT username, role FROM users;")
+        result = cur.fetchall()
+    except psycopg2.Error as e:
+        print(f"Error: {e}")
+    finally:
+        close(conn,cur)
+        
+    return result

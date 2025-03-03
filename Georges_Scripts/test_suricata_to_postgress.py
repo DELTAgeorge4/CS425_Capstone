@@ -4,7 +4,7 @@ import json
 import Suricata_to_DB
 
 # Run with:
-# python -m unittest test_suricata_to_postgress.py
+# sudo python3 -m unittest test_suricata_to_postgress.py
 
 class TestSuricataToPostgress(unittest.TestCase):
     def test_insert_log_with_alert(self):

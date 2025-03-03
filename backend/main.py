@@ -10,9 +10,11 @@ import subprocess
 from fastapi.responses import JSONResponse
 
 import sys
+
+
 sys.path.append("..")
-from .login.loginScript import login, getUserRole, changePassword
-from .login.signUp import create_user
+from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers
+from .login.signUp import create_user, check_role_exists
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
 from .DB_To_GUI import Get_Suricata_Info
@@ -30,12 +32,17 @@ from .DB_To_GUI import protocol_counter
 app = FastAPI(docs_url=None)
 #create_user("admin","admin","admin")
 # Serve static files
-app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
+static_dir = os.path.join(os.path.dirname(__file__), "../frontend/static")
+templates_dir = os.path.join(os.path.dirname(__file__), "../frontend/templates")
+
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Middleware for session management
 app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 
-templates = Jinja2Templates(directory="../frontend/templates")
+
+templates = Jinja2Templates(directory=templates_dir)
 
 # Directory where Suricata rules are stored
 #RULES_DIR = "C:\\Program Files\\Suricata\\rules" # For Windows
@@ -56,6 +63,8 @@ def verify_user(request: Request):
 def verify_admin(request: Request):
     if request.session.get("role") != "admin":
         raise HTTPException(status_code=403, detail="forbidden")
+    
+
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -64,7 +73,7 @@ async def root(request: Request):
 async def loginf(request: Request, data: LoginData):
     # Replace with real user validation
     successfully_authenticated = login(data.username, data.password)
-    print(successfully_authenticated)
+    # print(successfully_authenticated)
     if successfully_authenticated:
         request.session["authenticated"] = True
         request.session["username"] = data.username
@@ -118,6 +127,62 @@ async def sniffer(request: Request):
 async def fart():
     return {"message": "fart"}
 
+@app.get("/users", dependencies=[Depends(verify_admin)])
+async def users(request: Request):
+    users = getUsers()
+    return {"users": users}
+
+class passwordResetData (BaseModel):
+    username: str
+    newPassword: str
+
+class changePasswordData (BaseModel):
+    oldPassword: str
+    newPassword: str
+    
+    
+class createUserData (BaseModel):
+    username: str
+    newPassword: str
+    newUserRole: str
+    
+@app.post("/create-user")
+async def fcreate_user(data: createUserData, request: Request, dependencies=[Depends(verify_admin)]):
+    # print("create_user called", data)
+    
+    role = data.newUserRole
+    if not check_role_exists(role):
+        raise HTTPException(status_code=401, detail="Role does not exist")
+    
+    successful = create_user(data.username, data.newPassword, data.newUserRole)
+    if not successful:
+        raise HTTPException(status_code=401, detail="User creation unsuccessful")
+    return {"message": "User creation successful"}
+    
+    
+@app.post("/reset-user-password")
+async def reset_user_password(data: passwordResetData, request: Request, dependencies=[Depends(verify_admin)]):
+    print("reset_user_password called", data)
+    
+    successful = resetPassword(request.session.get("username"), data.username, data.newPassword)
+
+    if not successful:
+        raise HTTPException(status_code=401, detail="Password reset unsuccessful")
+    return {"message": "Password reset successful"}
+
+@app.post("/change-password")
+async def change_password(data: changePasswordData, request: Request, dependencies=[Depends(verify_user)]):
+    print("Parsed Data:", data)  
+    successful = changePassword(request.session.get("username"), data.oldPassword, data.newPassword)
+    # return {"message": "Password change successful"}
+    # return an error message if the password change was unsuccessful
+    if not successful:
+        raise HTTPException(status_code=401, detail="Password change unsuccessful")
+    return {"message": "Password change successful"}
+
+
+
+
 # Class for a list of checkbox data with file name and checked status
 class CheckBoxData(BaseModel):
     checkBoxList: List[bool]
@@ -132,7 +197,7 @@ def getRole(request:Request):
 @app.post("/checkboxes", dependencies=[Depends(verify_admin)])
 async def checkboxes(data: CheckBoxData, request:Request):
     ruleCheckboxChanged = True
-    print(data.checkBoxList)
+    # print(data.checkBoxList)
     files = [f for f in os.listdir(RULES_DIR) if f.endswith(".rules")]
     # print(files)
     for i, file in enumerate(files):
@@ -226,7 +291,7 @@ def edit_rules(file_name: str, isChecked: bool):
     with open(file_path, "w") as file:
         file.writelines(updated_lines)
 
-    print(f"Updated rules in {file_name} based on checkbox state: {isChecked}")
+    # print(f"Updated rules in {file_name} based on checkbox state: {isChecked}")
 
 
 # Class for rule representation
@@ -258,8 +323,8 @@ def display_SNMP_logs():
 @app.get("/suricata-logs", dependencies=[Depends(verify_user)])
 def display_Suricata_logs():
      results = Get_Suricata_Info()
-     print(len(results))
-     print(type(results))
+    #  print(len(results))
+    #  print(type(results))
      return {"Suricata": results}
 
 

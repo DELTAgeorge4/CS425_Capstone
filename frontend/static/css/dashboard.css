@@ -75,3 +75,26 @@ body {
     /* width: 100vh; */
     /* height: 100vh; */
   }
+
+  .hidden {
+    display: none;
+  }
+
+
+  h2 {
+    color: white;
+  }
+
+  button, input:not(.text-entry) {
+    background-color: #76ABAE;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
