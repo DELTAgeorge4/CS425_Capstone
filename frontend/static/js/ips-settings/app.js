@@ -4,14 +4,9 @@ document.addEventListener('DOMContentLoaded', async function () {
   const rulesTab = document.getElementById('ips-rules');
   const rightPageContent = document.getElementById('right-page-content');
 
-  
-  const roleDataResponse = await fetch("/role", {method: "GET"});
-
+  const roleDataResponse = await fetch("/role", { method: "GET" });
   const roleData = await roleDataResponse.json();
-
   const userRole = roleData.Role;
-
-
 
   // Function to clear the content area
   function clearContent() {
@@ -28,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     rightPageContent.appendChild(header);
 
     // Create and append edit button
-
     const editButton = document.createElement('input');
     editButton.type = 'button';
     editButton.id = 'edit-rules';
@@ -57,11 +51,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     // createRuleButton.style.display = 'none';
     rightPageContent.appendChild(createRuleButton);
 
-    //Create and appned a status message area
+    // Create and append status message area
     const statmessage = document.createElement('p');
     statmessage.id = 'statusMessage';
     statmessage.textContent = 'Status Message: ';
     rightPageContent.appendChild(statmessage);
+
     // Create and append rules list container
     const rulesList = document.createElement('div');
     rulesList.id = 'rules-list';
@@ -105,37 +100,33 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     restartSuricataButton.addEventListener('click', async function() {
-      if(confirm("Are you sure you want to restart Suricata") == true){
-      // Show "Restarting Suricata..." message and disable the button
-      const statusMessage = document.getElementById('statusMessage');
-      statusMessage.textContent = "Status Message: Restarting Suricata... Please wait.";
-      restartSuricataButton.disabled = true;
-      editButton.disabled = true;
-      try {
-        const response = await fetch('/restart-suricata', {
-          method: 'POST',
-        });
-    
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        } else {
-          
-          statusMessage.textContent = "Status Message: Suricata restarted successfully!";
-          setTimeout(() => statusMessage.textContent = 'Status Message: ', 3000); 
+      if (confirm("Are you sure you want to restart Suricata") == true) {
+        // Show "Restarting Suricata..." message and disable the button
+        const statusMessage = document.getElementById('statusMessage');
+        statusMessage.textContent = "Status Message: Restarting Suricata... Please wait.";
+        restartSuricataButton.disabled = true;
+        editButton.disabled = true;
+        try {
+          const response = await fetch('/restart-suricata', {
+            method: 'POST',
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          } else {
+            statusMessage.textContent = "Status Message: Suricata restarted successfully!";
+            setTimeout(() => statusMessage.textContent = 'Status Message: ', 3000);
+          }
+        } catch (error) {
+          statusMessage.textContent = "Failed to restart Suricata. Please try again later.";
+          setTimeout(() => statusMessage.textContent = 'Status Message: ', 5000);
+          console.error('Error restarting Suricata:', error);
+        } finally {
+          restartSuricataButton.disabled = false;
+          editButton.disabled = false;
         }
-      } catch (error) {
-
-        statusMessage.textContent = "Failed to restart Suricata. Please try again later.";
-        setTimeout(() => statusMessage.textContent = 'Status Message: ', 5000); 
-        console.error('Error restarting Suricata:', error);
-      } finally {
-        
-        restartSuricataButton.disabled = false;
-        editButton.disabled = false;
       }
-    }
     });
+
     if (userRole === "admin") {  
       editButton.style.display = "inline-block";
       createRuleButton.style.display = "inline-block";
@@ -145,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       createRuleButton.style.display = "none";
       restartSuricataButton.style.display = "none";
     }
-    
+
     // Fetch the list of rule files
     const filesResponse = await fetch('/rules');
     if (!filesResponse.ok) {
@@ -217,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   }
 
-  // Event listener for the alerts tab
+  // Updated alertsTab event listener to display Suricata Alerts as a table with sorting, pagination, and multi-filtering.
   alertsTab.addEventListener('click', async function () {
     clearContent();
 
@@ -226,36 +217,250 @@ document.addEventListener('DOMContentLoaded', async function () {
     header.textContent = 'Suricata Alerts';
     rightPageContent.appendChild(header);
 
-    // Fetch Suricata logs
-    try {
-        const suricataResponse = await fetch('/suricata-logs');
-        if (!suricataResponse.ok) {
-            throw new Error('Failed to fetch Suricata logs');
-        }
-         // Use <pre> for formatted JSON
-        const suricata_data = await suricataResponse.json();
-        for(let i = 0; i < suricata_data.Suricata.length; i++){
-          console.log(suricata_data.Suricata[i]);
-          const suricataBox = document.createElement('pre');
-          suricataBox.textContent = suricata_data.Suricata[i];
-        // console.log(suricata_data);
-        // console.log(suricata_string_data);
-        rightPageContent.appendChild(suricataBox);
-        }
-        // Display logs in the content area
+    // Create container for alerts table and controls
+    const container = document.createElement('div');
+    container.id = 'alerts-container';
+    rightPageContent.appendChild(container);
 
-        // suricataBox.textContent = suricata_data.Suricata[0];
-        // console.log(suricata_data);
-        // console.log(suricata_string_data);
-        // rightPageContent.appendChild(suricataBox);
+    // Global state for alerts table
+    let suricataData = [];
+    let sortOrderAlerts = {};
+    let currentPageAlerts = 1;
+    let rowsPerPageAlerts = 32;
+    let filtersAlerts = [];
 
-    } catch (error) {
-        console.error(error);
-        const errorMessage = document.createElement('p');
-        errorMessage.textContent = 'Error loading Suricata logs. Please try again later.';
-        rightPageContent.appendChild(errorMessage);
+    // Define headers for alerts table
+    const alertsHeaders = [
+      'ID',
+      'Timestamp',
+      'Source IP',
+      'Source Port',
+      'Destination IP',
+      'Destination Port',
+      'Protocol',
+      'Alert Message'
+    ];
+
+    // Mapping from header to value extractor for alerts
+    const alertsFilterMapping = {
+      "ID": entry => entry[0],
+      "Timestamp": entry => entry[1],
+      "Source IP": entry => entry[2],
+      "Source Port": entry => entry[3],
+      "Destination IP": entry => entry[4],
+      "Destination Port": entry => entry[5],
+      "Protocol": entry => entry[6],
+      "Alert Message": entry => entry[7]
+    };
+
+    // Multi-Filter UI for alerts
+    const filtersContainer = document.createElement('div');
+    filtersContainer.id = 'alerts-filters-container';
+    filtersContainer.style.marginBottom = '20px';
+    filtersContainer.style.border = '1px solid #ccc';
+    filtersContainer.style.padding = '10px';
+    const filtersTitle = document.createElement('h4');
+    filtersTitle.textContent = 'Filters:';
+    filtersContainer.appendChild(filtersTitle);
+    const filterRowsContainer = document.createElement('div');
+    filterRowsContainer.id = 'alerts-filter-rows-container';
+    filtersContainer.appendChild(filterRowsContainer);
+    const addFilterButton = document.createElement('button');
+    addFilterButton.textContent = 'Add Filter';
+    filtersContainer.appendChild(addFilterButton);
+    const applyFiltersButton = document.createElement('button');
+    applyFiltersButton.textContent = 'Apply Filters';
+    filtersContainer.appendChild(applyFiltersButton);
+    const clearFiltersButton = document.createElement('button');
+    clearFiltersButton.textContent = 'Clear Filters';
+    filtersContainer.appendChild(clearFiltersButton);
+    container.appendChild(filtersContainer);
+
+    function addAlertFilterRow() {
+      const row = document.createElement('div');
+      row.style.marginBottom = '5px';
+      row.style.display = 'flex';
+      row.style.alignItems = 'center';
+      row.style.gap = '5px';
+      const select = document.createElement('select');
+      alertsHeaders.forEach(header => {
+        const option = document.createElement('option');
+        option.value = header;
+        option.textContent = header;
+        select.appendChild(option);
+      });
+      row.appendChild(select);
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Enter filter text...';
+      row.appendChild(input);
+      const removeButton = document.createElement('button');
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', () => {
+        row.remove();
+      });
+      row.appendChild(removeButton);
+      filterRowsContainer.appendChild(row);
     }
-});
+
+    // Initially add one filter row
+    addAlertFilterRow();
+    addFilterButton.addEventListener('click', () => {
+      addAlertFilterRow();
+    });
+    applyFiltersButton.addEventListener('click', () => {
+      filtersAlerts = [];
+      const rows = filterRowsContainer.querySelectorAll('div');
+      rows.forEach(row => {
+        const select = row.querySelector('select');
+        const input = row.querySelector('input');
+        const column = select.value;
+        const query = input.value.trim();
+        if (query !== "") {
+          filtersAlerts.push({ column, query });
+        }
+      });
+      currentPageAlerts = 1;
+      renderAlertsTable(suricataData);
+    });
+    clearFiltersButton.addEventListener('click', () => {
+      filterRowsContainer.innerHTML = "";
+      filtersAlerts = [];
+      currentPageAlerts = 1;
+      renderAlertsTable(suricataData);
+      addAlertFilterRow();
+    });
+
+    function renderAlertsTable(data) {
+      let filteredData = data;
+      if (filtersAlerts.length > 0) {
+        filteredData = data.filter(entry => {
+          return filtersAlerts.every(f => {
+            const value = alertsFilterMapping[f.column](entry) || "";
+            return value.toString().toLowerCase().includes(f.query.toLowerCase());
+          });
+        });
+      }
+      const existingTable = container.querySelector('table');
+      if (existingTable) existingTable.remove();
+      const existingPagination = container.querySelector('.pagination');
+      if (existingPagination) existingPagination.remove();
+      const totalPages = Math.ceil(filteredData.length / rowsPerPageAlerts) || 1;
+      if (currentPageAlerts > totalPages) currentPageAlerts = totalPages;
+      if (currentPageAlerts < 1) currentPageAlerts = 1;
+      const startIndex = (currentPageAlerts - 1) * rowsPerPageAlerts;
+      const endIndex = startIndex + rowsPerPageAlerts;
+      const pageData = filteredData.slice(startIndex, endIndex);
+      const table = document.createElement('table');
+      table.style.borderCollapse = 'collapse';
+      table.style.width = '100%';
+      table.style.margin = '20px 0';
+      table.style.border = '1px solid #ddd';
+      const headerRow = document.createElement('tr');
+      alertsHeaders.forEach((header, index) => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        th.style.border = '1px solid #ddd';
+        th.style.padding = '8px';
+        th.style.textAlign = 'left';
+        th.style.backgroundColor = '#000';
+        th.style.color = '#fff';
+        th.style.cursor = 'pointer';
+        th.addEventListener('click', () => {
+          const isAscending = sortOrderAlerts[index] !== true;
+          sortOrderAlerts[index] = isAscending;
+          currentPageAlerts = 1;
+          suricataData.sort((a, b) => {
+            const valueA = a[index] || '';
+            const valueB = b[index] || '';
+            if (typeof valueA === 'number' && typeof valueB === 'number') {
+              return isAscending ? valueA - valueB : valueB - valueA;
+            }
+            return isAscending
+              ? String(valueA).localeCompare(String(valueB))
+              : String(valueB).localeCompare(String(valueA));
+          });
+          renderAlertsTable(suricataData);
+        });
+        if (sortOrderAlerts[index] !== undefined) {
+          th.textContent += sortOrderAlerts[index] ? ' ↑' : ' ↓';
+        }
+        headerRow.appendChild(th);
+      });
+      table.appendChild(headerRow);
+      pageData.forEach(entry => {
+        const row = document.createElement('tr');
+        entry.forEach(value => {
+          const td = document.createElement('td');
+          td.textContent = value || '-';
+          td.style.border = '1px solid #ddd';
+          td.style.padding = '8px';
+          row.appendChild(td);
+        });
+        table.appendChild(row);
+      });
+      container.appendChild(table);
+      const paginationContainer = document.createElement('div');
+      paginationContainer.classList.add('pagination');
+      paginationContainer.style.display = 'flex';
+      paginationContainer.style.justifyContent = 'space-between';
+      paginationContainer.style.alignItems = 'center';
+      paginationContainer.style.margin = '20px 0';
+      const rowsPerPageSelect = document.createElement('select');
+      [32, 64, 96].forEach(num => {
+        const option = document.createElement('option');
+        option.value = num;
+        option.textContent = num;
+        if (num === rowsPerPageAlerts) option.selected = true;
+        rowsPerPageSelect.appendChild(option);
+      });
+      rowsPerPageSelect.addEventListener('change', (e) => {
+        rowsPerPageAlerts = parseInt(e.target.value, 10);
+        currentPageAlerts = 1;
+        renderAlertsTable(suricataData);
+      });
+      paginationContainer.appendChild(rowsPerPageSelect);
+      const prevButton = document.createElement('button');
+      prevButton.textContent = 'Previous';
+      prevButton.disabled = currentPageAlerts === 1;
+      prevButton.addEventListener('click', () => {
+        if (currentPageAlerts > 1) {
+          currentPageAlerts--;
+          renderAlertsTable(suricataData);
+        }
+      });
+      paginationContainer.appendChild(prevButton);
+      const pageIndicator = document.createElement('span');
+      pageIndicator.textContent = `Page ${currentPageAlerts} of ${totalPages} (Filtered ${filteredData.length} rows)`;
+      paginationContainer.appendChild(pageIndicator);
+      const nextButton = document.createElement('button');
+      nextButton.textContent = 'Next';
+      nextButton.disabled = currentPageAlerts === totalPages;
+      nextButton.addEventListener('click', () => {
+        if (currentPageAlerts < totalPages) {
+          currentPageAlerts++;
+          renderAlertsTable(suricataData);
+        }
+      });
+      paginationContainer.appendChild(nextButton);
+      container.appendChild(paginationContainer);
+    }
+
+    try {
+      const suricataResponse = await fetch('/suricata-logs');
+      if (!suricataResponse.ok) {
+        throw new Error('Failed to fetch Suricata logs');
+      }
+      const suricataJson = await suricataResponse.json();
+      suricataData = suricataJson.Suricata;
+      renderAlertsTable(suricataData);
+    } catch (error) {
+      console.error(error);
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = 'Error loading Suricata alerts. Please try again later.';
+      container.appendChild(errorMessage);
+    }
+  });
 
   // Event listener for the rules tab
   rulesTab.addEventListener('click', loadContent);
@@ -270,7 +475,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     const isDisabled = rule.type === 'inactive_rule';
     const ruleContent = rule.content;
     const parts = ruleContent.split(' ');
-
     const action = parts[0] || 'N/A';
     const protocol = parts[1] || 'N/A';
     const srcAddress = parts[2] || 'N/A';
@@ -278,7 +482,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     const direction = parts[4] || 'N/A';
     const destAddress = parts[5] || 'N/A';
     const destPort = parts[6] || 'N/A';
-
     return `Action:${action}, Protocol:${protocol}, Source Address:${srcAddress}, Source Port:${srcPort}, Destination Address:${destAddress}, Destination Port:${destPort}, Status:${isDisabled ? 'Disabled' : 'Enabled'}`;
   }
 });
