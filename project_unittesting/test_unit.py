@@ -1,10 +1,12 @@
 import unittest
 from fastapi.testclient import TestClient
-from backend.main import app
+from backend.main import app, create_user
 
 client = TestClient(app)
 
 class TestFastAPI(unittest.TestCase):
+    
+    
     
     # test the root endpoint
     def test_root_endpoint(self):
