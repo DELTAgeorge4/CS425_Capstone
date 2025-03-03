@@ -1,15 +1,33 @@
+//const pageContent = document.getElementById('page-content');
+//    async function honeypot(params) {
+//        honeypotBody = document.createElement('div');
+//        const filesResponse = await fetch('/honeypot-logs');
+//        if (!filesResponse.ok) {
+//          console.error('Error fetching rule files');
+//          return;
+//        }
+//        const data = await filesResponse.json();
+//        console.log(data.Honeypot);
+//        for(let i = 0; i < data.Honeypot.length; i++){
+//            const text196 = document.createElement('pre');
+//            text196.textContent = data.Honeypot[i];
+//            console.log(data.Honeypot[i]);
+//            pageContent.appendChild(text196);
+//        }
+//
+//    }
+//honeypot();
 const pageContent = document.getElementById('page-content');
 let sortOrder = {};
 
-async function snmp() {
-    const filesResponse = await fetch('/snmp-logs');
+async function honeypot() {
+    const filesResponse = await fetch('/honeypot-logs');
 
     const roleDataResponse = await fetch("/role", { method: "GET" });
 
     const roleData = await roleDataResponse.json();
 
     const userRole = roleData.Role;
-
 
     // Create and append the clear logs button
     const clearButton = document.createElement('input');
@@ -32,18 +50,17 @@ async function snmp() {
     }
 
     if (!filesResponse.ok) {
-        console.error('Error fetching SNMP data');
+        console.error('Error fetching honeypot logs');
         return;
     }
 
     const data = await filesResponse.json();
-    let snmpData = data.SNMP;
+    const honeypotData = data.Honeypot;
 
-    if (!Array.isArray(snmpData) || snmpData.length === 0) {
-        console.error('No SNMP data available');
+    if (!Array.isArray(honeypotData) || honeypotData.length === 0) {
+        console.error('No honeypot data available');
         return;
     }
-
 
 
     // Add event listener to the clear logs button
@@ -53,15 +70,14 @@ async function snmp() {
             clearButton.disabled = true;
 
             try {
-                const response = await fetch('/clear-snmp', { method: 'POST' });
+                const response = await fetch('/clear-honeypot', { method: 'POST' });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error: ${response.status}`);
                 }
 
                 statusMessage.textContent = 'Status Message: Logs Cleared Successfully!';
-                // Automatically refresh the page after a short delay (e.g., 1 second)
-                setTimeout(() => window.location.reload(), 1000);
+                setTimeout(() => (statusMessage.textContent = 'Status Message: '), 3000);
             } catch (error) {
                 console.error('Error Clearing Logs:', error);
                 statusMessage.textContent = 'Failed to clear logs. Please try again later.';
@@ -72,7 +88,7 @@ async function snmp() {
         }
     });
 
-    renderTable(snmpData);
+    renderTable(honeypotData);
 }
 
 function renderTable(data) {
@@ -91,16 +107,13 @@ function renderTable(data) {
     const headerRow = document.createElement('tr');
     const headers = [
         'ID',
-        'Hostname',
-        'System Uptime',
-        'CPU Usage',
-        'RAM Used',
-        'RAM Total',
-        'RAM % Used',
-        'Root Dir Used Storage',
-        'Root Dir Total Storage',
-        'Root Dir % Used',
-        'Timestamp'
+        'Timestamp',
+        'Source IP',
+        'Source Port',
+        'Destination IP',
+        'Destination Port',
+        'Protocol',
+        'Alert Message'
     ];
 
     headers.forEach((header, index) => {
@@ -113,7 +126,6 @@ function renderTable(data) {
         th.style.color = '#FFFFFF';
         th.style.cursor = 'pointer';
 
-        // Event listener for sorting
         th.addEventListener('click', () => {
             const isAscending = sortOrder[index] !== true;
             sortOrder[index] = isAscending;
@@ -144,7 +156,18 @@ function renderTable(data) {
     data.forEach(entry => {
         const dataRow = document.createElement('tr');
 
-        entry.forEach(value => {
+        const rowData = [
+            entry[0],              // ID
+            entry[1],              // Timestamp
+            entry[3],              // Source IP
+            '',                    // Source Port (Not provided in array)
+            entry[4],              // Destination IP
+            entry[5],              // Destination Port
+            'TCP/UDP',             // Protocol (Placeholder, adjust as needed)
+            entry[2]               // Alert Message
+        ];
+
+        rowData.forEach(value => {
             const td = document.createElement('td');
             td.textContent = value || '-';
             td.style.border = '1px solid #ddd';
@@ -158,4 +181,4 @@ function renderTable(data) {
     pageContent.appendChild(table);
 }
 
-snmp();
+honeypot();

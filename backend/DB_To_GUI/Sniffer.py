@@ -4,6 +4,12 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 
+DATABASE_NAME='nss'
+DATABASE_HOST='localhost'
+DATABASE_PORT=5432
+DATABASE_USER='postgres'
+DATABASE_PASSWORD='password123'
+
 class Database:
     def __init__(self, dbname=None, user=None, password=None, host=None, port=None):
         self.conn = None
@@ -129,12 +135,17 @@ class ethernet_packet:
 
 
 def setup_db():
-    load_dotenv('db_credentials.env')
+    """load_dotenv('db_credentials.env')
     db_name = os.getenv('DATABASE_NAME')
     db_host = os.getenv('DATABASE_HOST')
     db_port = os.getenv('DATABASE_PORT')
     db_user = os.getenv('DATABASE_USER')
-    db_password = os.getenv('DATABASE_PASSWORD')
+    db_password = os.getenv('DATABASE_PASSWORD')"""
+    db_name = DATABASE_NAME
+    db_host = DATABASE_HOST
+    db_port = DATABASE_PORT
+    db_user = DATABASE_USER
+    db_password = DATABASE_PASSWORD
 
     database = Database(
         dbname=db_name,
