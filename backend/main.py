@@ -7,6 +7,7 @@ from fastapi.responses import RedirectResponse
 from typing import List
 import os
 import subprocess
+from fastapi.responses import JSONResponse
 
 import sys
 sys.path.append("..")
@@ -15,6 +16,8 @@ from .login.signUp import create_user
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
 from .DB_To_GUI import Get_Suricata_Info
+from .DB_To_GUI import Sniffer
+from .DB_To_GUI import protocol_counter
 
 #res = Get_Honeypot_Info()
 #print(res)
@@ -297,3 +300,74 @@ def load_suricata_rules(file_name: str):
 @app.get("/rules/{file_name}", dependencies=[Depends(verify_user)])
 def get_rules(file_name: str):
     return load_suricata_rules(file_name)
+
+class ChartData(BaseModel):
+    net_chart_data: dict
+    transport_chart_data: dict
+    application_chart_data: dict
+
+@app.get("/get_chart_data", response_model=ChartData)
+async def get_chart_data():
+    # Example data with labels as keys
+    protocol_data = protocol_counter.get_protocol_counts()
+    net_data = protocol_data['network_layer']
+    transport_data = protocol_data['transport_layer']
+    application_data = protocol_data['application_layer']
+    
+    return JSONResponse(content={
+        "net_chart_data": net_data,
+        "transport_chart_data": transport_data,
+        "application_chart_data": application_data
+    })
+
+
+def read_until_input_needed(process):
+    output = []
+    while True:
+        line = process.stdout.readline()
+        if not line:
+            break
+        output.append(line.strip())
+    return output
+
+@app.get("/get_device_list")
+async def get_device_list():
+    try:
+        # Compile the C program
+        compilation_command = ["gcc", "-o", "find_device", "../nicks-testing/find_device.c", "-lpcap"]
+        subprocess.run(compilation_command, text=True, check=True)  # Ensure error on failure
+        
+        device_finder_path = "./find_device"
+
+        # Start the process
+        process = subprocess.Popen(
+            device_finder_path,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True 
+        )
+        
+        # Read output from the process
+        device_info = read_until_input_needed(process)
+
+        # Parse the devices from the output
+        devices = []
+        for row in device_info:
+            if "Device name" in row:
+                devices.append(row.split(":")[-1].strip())
+
+        # Wait for the process to complete
+        exit_code = process.wait()
+
+        if exit_code != 0:
+            raise HTTPException(status_code=500, detail="Error encountered during device search")
+
+        # Format the devices as a numbered list
+        numbered_devices = "\n".join([f"{i+1}. {device}" for i, device in enumerate(devices)])
+
+        # Return the formatted list
+        return JSONResponse(content={"devices": numbered_devices})
+    
+    except subprocess.CalledProcessError:
+        raise HTTPException(status_code=500, detail="Compilation failed or process encountered an error")

@@ -68,17 +68,16 @@ async function honeypot() {
         if (confirm("Are you sure you want to clear logs?") == true) {
             statusMessage.textContent = 'Status Message: Clearing Logs... Please wait.';
             clearButton.disabled = true;
-    
+
             try {
                 const response = await fetch('/clear-honeypot', { method: 'POST' });
-    
+
                 if (!response.ok) {
                     throw new Error(`HTTP error: ${response.status}`);
                 }
-    
+
                 statusMessage.textContent = 'Status Message: Logs Cleared Successfully!';
-                // Automatically refresh the page after a short delay (e.g., 1 second)
-                setTimeout(() => window.location.reload(), 1000);
+                setTimeout(() => (statusMessage.textContent = 'Status Message: '), 3000);
             } catch (error) {
                 console.error('Error Clearing Logs:', error);
                 statusMessage.textContent = 'Failed to clear logs. Please try again later.';
@@ -87,7 +86,7 @@ async function honeypot() {
                 clearButton.disabled = false;
             }
         }
-    });    
+    });
 
     renderTable(honeypotData);
 }
