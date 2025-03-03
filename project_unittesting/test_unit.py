@@ -20,7 +20,7 @@ class TestFastAPI(unittest.TestCase):
 
     # simulate a successful login
     def test_login_success(self):
-        login_data = {"username": "james2", "password": "password123"}
+        login_data = {"username": "admin", "password": "admin"}
         response = client.post("/login", json=login_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"message": "Login successful"})
