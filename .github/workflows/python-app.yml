@@ -24,8 +24,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Debug working directory
+      run: |
+        pwd
+        ls -la
+
     - name: Run unit tests
-      working-directory: CS425_Capstone
       run: |
         python -m unittest discover -s project_unittesting -t .
 
