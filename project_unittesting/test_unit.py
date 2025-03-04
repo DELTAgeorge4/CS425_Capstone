@@ -36,5 +36,5 @@ class TestFastAPI(unittest.TestCase):
         
 
 if __name__ == "__main__":
-    # to run be in root directory ~/CS425_Capstone and run `python -m unittest discover -s project_unittesting`
+    # to run be in root directory ~/CS425_Capstone and run `./run_test.sh`
     unittest.main()
