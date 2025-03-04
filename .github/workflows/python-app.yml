@@ -132,16 +132,6 @@ jobs:
           PGPASSWORD: password123
           PGDATABASE: nss
         run: psql -c "\dt"
-
-      - name: Seed database with admin credentials
-        env:
-          PGHOST: localhost
-          PGUSER: postgres
-          PGPASSWORD: password123
-          PGDATABASE: nss
-        run: |
-          psql -c "INSERT INTO users (role, username, password_hash, salt) VALUES ('admin', 'admin', 'hash_value', 'salt_value') ON CONFLICT DO NOTHING;"
-
       - name: Run unit tests
         env:
           DATABASE_HOST: localhost
