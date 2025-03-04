@@ -4,6 +4,7 @@ from backend.main import app, create_user
 
 client = TestClient(app)
 
+create_user("admin", "admin", "admin")
 class TestFastAPI(unittest.TestCase):
     
     
