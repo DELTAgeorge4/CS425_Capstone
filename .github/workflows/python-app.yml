@@ -17,13 +17,13 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: testdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password123
+          POSTGRES_DB: nss
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U testuser" 
+          --health-cmd "pg_isready -U postgres" 
           --health-interval 10s 
           --health-timeout 5s 
           --health-retries 5
@@ -54,11 +54,11 @@ jobs:
       - name: Create database schema
         env:
           PGHOST: localhost
-          PGUSER: testuser
-          PGPASSWORD: testpass
-          PGDATABASE: testdb
+          PGUSER: postgres
+          PGPASSWORD: password123
+          PGDATABASE: nss
         run: |
-          cat <<'EOF' > schema.sql
+          cat <<-EOF > schema.sql
           -- Table: public.honeypot
           CREATE TABLE IF NOT EXISTS public.honeypot (
             id integer NOT NULL DEFAULT nextval('honeypot_id_seq'::regclass),
@@ -128,17 +128,17 @@ jobs:
       - name: List tables after schema creation
         env:
           PGHOST: localhost
-          PGUSER: testuser
-          PGPASSWORD: testpass
-          PGDATABASE: testdb
+          PGUSER: postgres
+          PGPASSWORD: password123
+          PGDATABASE: nss
         run: psql -c "\dt"
 
       - name: Seed database with admin credentials
         env:
           PGHOST: localhost
-          PGUSER: testuser
-          PGPASSWORD: testpass
-          PGDATABASE: testdb
+          PGUSER: postgres
+          PGPASSWORD: password123
+          PGDATABASE: nss
         run: |
           psql -c "INSERT INTO public.users (role, username, password_hash, salt) VALUES ('admin', 'admin', 'hash_value', 'salt_value') ON CONFLICT DO NOTHING;"
 
@@ -146,9 +146,9 @@ jobs:
         env:
           DATABASE_HOST: localhost
           DATABASE_PORT: 5432
-          DATABASE_USER: testuser
-          DATABASE_PASSWORD: testpass
-          DATABASE_NAME: testdb
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: password123
+          DATABASE_NAME: nss
         run: |
           python -m unittest discover -s project_unittesting -t .
 
