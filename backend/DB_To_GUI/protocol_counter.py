@@ -57,7 +57,6 @@ def analyze_packets(packets_list):
 def get_protocol_counts(): # give this and next line time parameters later
     packets = Sniffer.get_packets()
     raw_packet_data = [row[4] for row in packets]
-    print(raw_packet_data)
     return analyze_packets(raw_packet_data)
 
 if __name__ == '__main__':
