@@ -29,122 +29,130 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Python 3.12.3
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.12.3"
+      - name: Set up Python 3.12.3
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12.3"
 
-    - name: Install PostgreSQL client
-      run: |
-        sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Debug working directory
-      run: |
-        pwd
-        ls -la
+      - name: Debug working directory
+        run: |
+          pwd
+          ls -la
 
-    - name: Create database schema
-      env:
-        PGHOST: localhost
-        PGUSER: testuser
-        PGPASSWORD: testpass
-        PGDATABASE: testdb
-      run: |
-        cat <<'EOF' > schema.sql
-        -- Table: public.honeypot
-        CREATE TABLE IF NOT EXISTS public.honeypot (
-          id integer NOT NULL DEFAULT nextval('honeypot_id_seq'::regclass),
-          timestamp timestamp NOT NULL,
-          alert_type character varying(255) NOT NULL,
-          src_ip inet NOT NULL,
-          dst_ip inet NOT NULL,
-          port integer NOT NULL
-        );
-        ALTER TABLE public.honeypot ADD CONSTRAINT honeypot_pkey PRIMARY KEY (id);
+      - name: Create database schema
+        env:
+          PGHOST: localhost
+          PGUSER: testuser
+          PGPASSWORD: testpass
+          PGDATABASE: testdb
+        run: |
+          cat <<'EOF' > schema.sql
+          -- Table: public.honeypot
+          CREATE TABLE IF NOT EXISTS public.honeypot (
+            id integer NOT NULL DEFAULT nextval('honeypot_id_seq'::regclass),
+            timestamp timestamp NOT NULL,
+            alert_type character varying(255) NOT NULL,
+            src_ip inet NOT NULL,
+            dst_ip inet NOT NULL,
+            port integer NOT NULL
+          );
+          ALTER TABLE public.honeypot ADD CONSTRAINT honeypot_pkey PRIMARY KEY (id);
 
-        -- Table: public.link_layer_packet
-        CREATE TABLE IF NOT EXISTS public.link_layer_packet (
-          protocol character varying(255),
-          destination_mac character varying(20),
-          source_mac character varying(20),
-          network_packet_type character varying(150),
-          raw_data integer[] NOT NULL,
-          timestamp timestamp NOT NULL
-        );
-        ALTER TABLE public.link_layer_packet ADD CONSTRAINT link_layer_packet_pkey PRIMARY KEY (timestamp, raw_data);
+          -- Table: public.link_layer_packet
+          CREATE TABLE IF NOT EXISTS public.link_layer_packet (
+            protocol character varying(255),
+            destination_mac character varying(20),
+            source_mac character varying(20),
+            network_packet_type character varying(150),
+            raw_data integer[] NOT NULL,
+            timestamp timestamp NOT NULL
+          );
+          ALTER TABLE public.link_layer_packet ADD CONSTRAINT link_layer_packet_pkey PRIMARY KEY (timestamp, raw_data);
 
-        -- Table: public.snmp_metrics
-        CREATE TABLE IF NOT EXISTS public.snmp_metrics (
-          id integer NOT NULL DEFAULT nextval('snmp_metrics_id_seq'::regclass),
-          hostname character varying(255),
-          system_uptime double precision,
-          cpu_usage double precision,
-          ram_used double precision,
-          ram_total double precision,
-          ram_percent_used double precision,
-          root_dir_used_storage double precision,
-          root_dir_total_storage double precision,
-          root_dir_percent_used double precision,
-          timestamp timestamp DEFAULT CURRENT_TIMESTAMP
-        );
-        ALTER TABLE public.snmp_metrics ADD CONSTRAINT snmp_metrics_pkey PRIMARY KEY (id);
+          -- Table: public.snmp_metrics
+          CREATE TABLE IF NOT EXISTS public.snmp_metrics (
+            id integer NOT NULL DEFAULT nextval('snmp_metrics_id_seq'::regclass),
+            hostname character varying(255),
+            system_uptime double precision,
+            cpu_usage double precision,
+            ram_used double precision,
+            ram_total double precision,
+            ram_percent_used double precision,
+            root_dir_used_storage double precision,
+            root_dir_total_storage double precision,
+            root_dir_percent_used double precision,
+            timestamp timestamp DEFAULT CURRENT_TIMESTAMP
+          );
+          ALTER TABLE public.snmp_metrics ADD CONSTRAINT snmp_metrics_pkey PRIMARY KEY (id);
 
-        -- Table: public.suricata
-        CREATE TABLE IF NOT EXISTS public.suricata (
-          id integer NOT NULL DEFAULT nextval('suricata_id_seq'::regclass),
-          timestamp timestamp NOT NULL,
-          source_ip inet NOT NULL,
-          source_port integer NOT NULL,
-          dest_ip inet NOT NULL,
-          dest_port integer NOT NULL,
-          protocol character varying(50) NOT NULL,
-          alert_message text NOT NULL
-        );
-        ALTER TABLE public.suricata ADD CONSTRAINT suricata_pkey PRIMARY KEY (id);
-        ALTER TABLE public.suricata ADD CONSTRAINT unique_log_entry UNIQUE (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message);
+          -- Table: public.suricata
+          CREATE TABLE IF NOT EXISTS public.suricata (
+            id integer NOT NULL DEFAULT nextval('suricata_id_seq'::regclass),
+            timestamp timestamp NOT NULL,
+            source_ip inet NOT NULL,
+            source_port integer NOT NULL,
+            dest_ip inet NOT NULL,
+            dest_port integer NOT NULL,
+            protocol character varying(50) NOT NULL,
+            alert_message text NOT NULL
+          );
+          ALTER TABLE public.suricata ADD CONSTRAINT suricata_pkey PRIMARY KEY (id);
+          ALTER TABLE public.suricata ADD CONSTRAINT unique_log_entry UNIQUE (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message);
 
-        -- Table: public.users
-        CREATE TABLE IF NOT EXISTS public.users (
-          id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
-          role character varying(50) NOT NULL,
-          username character varying(100) NOT NULL,
-          password_hash text NOT NULL,
-          salt text NOT NULL
-        );
-        ALTER TABLE public.users ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-        ALTER TABLE public.users ADD CONSTRAINT users_username_key UNIQUE (username);
-        EOF
+          -- Table: public.users
+          CREATE TABLE IF NOT EXISTS public.users (
+            id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
+            role character varying(50) NOT NULL,
+            username character varying(100) NOT NULL,
+            password_hash text NOT NULL,
+            salt text NOT NULL
+          );
+          ALTER TABLE public.users ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+          ALTER TABLE public.users ADD CONSTRAINT users_username_key UNIQUE (username);
+          EOF
 
-        psql -f schema.sql
+          psql -f schema.sql
 
-    - name: Seed database with admin credentials
-      env:
-        PGHOST: localhost
-        PGUSER: testuser
-        PGPASSWORD: testpass
-        PGDATABASE: testdb
-      run: |
-        psql -c "INSERT INTO public.users (role, username, password_hash, salt) VALUES ('admin', 'admin', 'hash_value', 'salt_value') ON CONFLICT DO NOTHING;"
+      - name: List tables after schema creation
+        env:
+          PGHOST: localhost
+          PGUSER: testuser
+          PGPASSWORD: testpass
+          PGDATABASE: testdb
+        run: psql -c "\dt"
 
-    - name: Run unit tests
-      env:
-        DATABASE_HOST: localhost
-        DATABASE_PORT: 5432
-        DATABASE_USER: testuser
-        DATABASE_PASSWORD: testpass
-        DATABASE_NAME: testdb
-      run: |
-        python -m unittest discover -s project_unittesting -t .
+      - name: Seed database with admin credentials
+        env:
+          PGHOST: localhost
+          PGUSER: testuser
+          PGPASSWORD: testpass
+          PGDATABASE: testdb
+        run: |
+          psql -c "INSERT INTO public.users (role, username, password_hash, salt) VALUES ('admin', 'admin', 'hash_value', 'salt_value') ON CONFLICT DO NOTHING;"
 
-    - name: Lint with flake8
-      run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Run unit tests
+        env:
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: testuser
+          DATABASE_PASSWORD: testpass
+          DATABASE_NAME: testdb
+        run: |
+          python -m unittest discover -s project_unittesting -t .
+
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
