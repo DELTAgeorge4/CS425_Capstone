@@ -135,5 +135,6 @@ jobs:
           DATABASE_PASSWORD: password123
           DATABASE_NAME: nss
         run: |
-          python -m unittest discover -s project_unittesting -t .
+         python -m unittest discover -s project_unittesting -t . -v
+
 
