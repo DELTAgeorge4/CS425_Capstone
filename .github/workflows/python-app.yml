@@ -59,8 +59,8 @@ jobs:
           PGDATABASE: nss
         run: |
           cat <<-EOF > schema.sql
-          -- Table: public.honeypot
-          CREATE TABLE IF NOT EXISTS public.honeypot (
+          -- Table: honeypot
+          CREATE TABLE IF NOT EXISTS honeypot (
             id integer NOT NULL DEFAULT nextval('honeypot_id_seq'::regclass),
             timestamp timestamp NOT NULL,
             alert_type character varying(255) NOT NULL,
@@ -68,10 +68,10 @@ jobs:
             dst_ip inet NOT NULL,
             port integer NOT NULL
           );
-          ALTER TABLE public.honeypot ADD CONSTRAINT honeypot_pkey PRIMARY KEY (id);
+          ALTER TABLE honeypot ADD CONSTRAINT honeypot_pkey PRIMARY KEY (id);
 
-          -- Table: public.link_layer_packet
-          CREATE TABLE IF NOT EXISTS public.link_layer_packet (
+          -- Table: link_layer_packet
+          CREATE TABLE IF NOT EXISTS link_layer_packet (
             protocol character varying(255),
             destination_mac character varying(20),
             source_mac character varying(20),
@@ -79,10 +79,10 @@ jobs:
             raw_data integer[] NOT NULL,
             timestamp timestamp NOT NULL
           );
-          ALTER TABLE public.link_layer_packet ADD CONSTRAINT link_layer_packet_pkey PRIMARY KEY (timestamp, raw_data);
+          ALTER TABLE link_layer_packet ADD CONSTRAINT link_layer_packet_pkey PRIMARY KEY (timestamp, raw_data);
 
-          -- Table: public.snmp_metrics
-          CREATE TABLE IF NOT EXISTS public.snmp_metrics (
+          -- Table: snmp_metrics
+          CREATE TABLE IF NOT EXISTS snmp_metrics (
             id integer NOT NULL DEFAULT nextval('snmp_metrics_id_seq'::regclass),
             hostname character varying(255),
             system_uptime double precision,
@@ -95,10 +95,10 @@ jobs:
             root_dir_percent_used double precision,
             timestamp timestamp DEFAULT CURRENT_TIMESTAMP
           );
-          ALTER TABLE public.snmp_metrics ADD CONSTRAINT snmp_metrics_pkey PRIMARY KEY (id);
+          ALTER TABLE snmp_metrics ADD CONSTRAINT snmp_metrics_pkey PRIMARY KEY (id);
 
-          -- Table: public.suricata
-          CREATE TABLE IF NOT EXISTS public.suricata (
+          -- Table: suricata
+          CREATE TABLE IF NOT EXISTS suricata (
             id integer NOT NULL DEFAULT nextval('suricata_id_seq'::regclass),
             timestamp timestamp NOT NULL,
             source_ip inet NOT NULL,
@@ -108,19 +108,19 @@ jobs:
             protocol character varying(50) NOT NULL,
             alert_message text NOT NULL
           );
-          ALTER TABLE public.suricata ADD CONSTRAINT suricata_pkey PRIMARY KEY (id);
-          ALTER TABLE public.suricata ADD CONSTRAINT unique_log_entry UNIQUE (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message);
+          ALTER TABLE suricata ADD CONSTRAINT suricata_pkey PRIMARY KEY (id);
+          ALTER TABLE suricata ADD CONSTRAINT unique_log_entry UNIQUE (timestamp, source_ip, source_port, dest_ip, dest_port, protocol, alert_message);
 
-          -- Table: public.users
-          CREATE TABLE IF NOT EXISTS public.users (
+          -- Table: users
+          CREATE TABLE IF NOT EXISTS users (
             id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
             role character varying(50) NOT NULL,
             username character varying(100) NOT NULL,
             password_hash text NOT NULL,
             salt text NOT NULL
           );
-          ALTER TABLE public.users ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-          ALTER TABLE public.users ADD CONSTRAINT users_username_key UNIQUE (username);
+          ALTER TABLE users ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+          ALTER TABLE users ADD CONSTRAINT users_username_key UNIQUE (username);
           EOF
 
           psql -f schema.sql
@@ -140,7 +140,7 @@ jobs:
           PGPASSWORD: password123
           PGDATABASE: nss
         run: |
-          psql -c "INSERT INTO public.users (role, username, password_hash, salt) VALUES ('admin', 'admin', 'hash_value', 'salt_value') ON CONFLICT DO NOTHING;"
+          psql -c "INSERT INTO users (role, username, password_hash, salt) VALUES ('admin', 'admin', 'hash_value', 'salt_value') ON CONFLICT DO NOTHING;"
 
       - name: Run unit tests
         env:
