@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--devices.html-->
-<html>
+<html lang="en" data-theme="light">
 <head>
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/honeypot/style.css') }}">
@@ -34,5 +34,8 @@
     .catch(error => console.error("Error loading navigation:", error));
 </script>
 <script src="{{ url_for('static', path='js/honeypot/app.js') }}" defer></script>
+<script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
+
 </body>
+
 </html>

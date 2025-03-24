@@ -1,49 +1,33 @@
 <!DOCTYPE html>
-<!-- ips.html -->
-<html>
+<html lang="en" data-theme="light" data-font="medium">
 <head>
-  <!-- CSS Stylesheet -->
   <link rel="icon" type="image/x-icon" href="https://i.ytimg.com/vi/YzabKuRnESo/sddefault.jpg">
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/ips/ips.css') }}">
   <style>
-    /* Inline CSS for quick adjustments */
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
 
-<!-- Placeholder for Navigation Menu -->
 <div id="nav-placeholder">This should be navigation</div>
 
-<!-- Page Content -->
 <div id="page-content">
-  <!-- Left Section -->
-
-
-
-
   <div id="left-page-content">
     <h2>IPS</h2>
-    <div tabindex = 11 class="ips-tab" id="ips-alerts">Alerts</div>
-    <div tabindex = 12 class="ips-tab" id="ips-rules">Rules</div>
+    <div tabindex="11" class="ips-tab" id="ips-alerts">Alerts</div>
+    <div tabindex="12" class="ips-tab" id="ips-rules">Rules</div>
   </div>
-
-  <!-- Right Section -->
   <div id="right-page-content">
-  
+    <!-- Your IPS content goes here -->
   </div>
 </div>
 
-<!-- JavaScript to Load Navigation Menu and Set Active Link -->
 <script>
   fetch("/nav")
     .then(response => response.text())
     .then(data => {
       document.getElementById("nav-placeholder").innerHTML = data;
-
       const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
       navLinks.forEach(link => {
         if (link.pathname === window.location.pathname) {
@@ -55,5 +39,6 @@
 </script>
 
 <script src="{{ url_for('static', path='js/ips-settings/app.js') }}" defer></script>
+<script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
 </body>
 </html>

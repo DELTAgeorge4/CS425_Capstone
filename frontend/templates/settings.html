@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<!-- settings.html -->
-<html lang="en">
+<html lang="en" data-theme="light" data-font="medium">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/settings/style.css') }}">
 </head>
@@ -21,16 +23,13 @@
     </div>
     <div class="div2">
       <div id="firewall">
-        <!-- Firewall Settings -->
         <h3>Firewall Settings</h3>
 
-        <!-- Enable/Disable Firewall -->
         <div class="setting">
           <label for="firewall-toggle">Enable Firewall:</label>
           <input type="checkbox" id="firewall-toggle" checked> Enable
         </div>
 
-        <!-- Firewall Mode -->
         <div class="setting">
           <label for="firewall-mode">Firewall Mode:</label>
           <select id="firewall-mode">
@@ -40,103 +39,63 @@
           </select>
         </div>
 
-        <!-- Port Blocking -->
         <div class="setting">
           <label for="blocked-ports">Blocked Ports (comma-separated):</label>
           <input type="text" id="blocked-ports" placeholder="e.g., 80, 443, 8080">
         </div>
 
-        <!-- IP Whitelisting -->
         <div class="setting">
           <label for="whitelisted-ips">Whitelisted IPs:</label>
           <input type="text" id="whitelisted-ips" placeholder="Enter IP addresses, separated by commas">
         </div>
 
-        <!-- IP Blacklisting -->
         <div class="setting">
           <label for="blacklisted-ips">Blacklisted IPs:</label>
           <input type="text" id="blacklisted-ips" placeholder="Enter IP addresses, separated by commas">
         </div>
 
-        <!-- Traffic Logging -->
         <div class="setting">
           <label for="traffic-logging">Traffic Logging:</label>
           <input type="checkbox" id="traffic-logging"> Enable
         </div>
 
-        <!-- Intrusion Detection -->
         <div class="setting">
           <label for="intrusion-detection">Intrusion Detection System:</label>
           <input type="checkbox" id="intrusion-detection"> Enable
         </div>
 
-        <!-- Custom Firewall Rules -->
         <div class="setting">
           <label for="firewall-rules">Custom Firewall Rules:</label>
           <textarea id="firewall-rules" rows="4" placeholder="Define custom rules in the format: allow/deny IP port protocol"></textarea>
         </div>
 
+        <!-- User Theme & Font Settings -->
         <div>
-          <input type="range" id="volume" name="volume" min="0" max="50" />
-          <label for="volume">Font Size</label>
+          <label for="theme">Theme:</label>
+          <select id="theme">
+              <option value="light">Regular Light Mode</option>
+              <option value="dark">Regular Dark Mode</option>
+              <option value="high-contrast-light">High Contrast Light Mode</option>
+              <option value="high-contrast-dark">High Contrast Dark Mode</option>
+          </select>
+          
+          <label for="font-selector">Font Size:</label>
+          <select id="font-selector">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+              <option value="x-large">Extra Large</option>
+          </select>
+          
+          <button id="save-settings">Save Settings</button>
         </div>
 
-        <!-- Save Settings Button -->
-        <button onclick="saveFirewallSettings()">Save Settings</button>
+        <button id="save-firewall">Save Firewall Settings</button>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-  // Fetch navigation bar
-  fetch("/nav")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("nav-placeholder").innerHTML = data;
-
-      const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-      navLinks.forEach(link => {
-        if (window.location.pathname === link.pathname) {
-          link.classList.add("active");
-        }
-      });
-    })
-    .catch(error => console.error("Error loading navigation:", error));
-
-  // Function to set active setting option
-  function setActive(element) {
-    const options = document.querySelectorAll('.set-option');
-    options.forEach(option => {
-      option.classList.remove('active');
-    });
-    element.classList.add('active');
-  }
-
-  // Function to save firewall settings
-  function saveFirewallSettings() {
-    const firewallEnabled = document.getElementById("firewall-toggle").checked;
-    const firewallMode = document.getElementById("firewall-mode").value;
-    const blockedPorts = document.getElementById("blocked-ports").value.split(',');
-    const whitelistedIps = document.getElementById("whitelisted-ips").value.split(',');
-    const blacklistedIps = document.getElementById("blacklisted-ips").value.split(',');
-    const trafficLogging = document.getElementById("traffic-logging").checked;
-    const intrusionDetection = document.getElementById("intrusion-detection").checked;
-    const customRules = document.getElementById("firewall-rules").value;
-
-    console.log({
-      firewallEnabled,
-      firewallMode,
-      blockedPorts,
-      whitelistedIps,
-      blacklistedIps,
-      trafficLogging,
-      intrusionDetection,
-      customRules
-    });
-    // Code to save settings can be added here, such as an API call to persist the settings
-  }
-</script>
-
+<script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
 </body>
 </html>
