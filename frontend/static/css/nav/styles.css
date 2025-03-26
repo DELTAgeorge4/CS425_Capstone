@@ -1,0 +1,41 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+/* Ensure the main container takes up full viewport height */
+#main-page-content {
+    height: 100vh;
+    width: 83%;
+}
+/* Make all iframes fill their container */
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+}
+/* Style for the navigation menu */
+#nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    width: 15%;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    border-right: 1px solid var(--border-color);
+}
+#nav-menu li a {
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: calc(var(--font-size) + 2px);
+}
+/* Highlight active link */
+#nav-menu li a.active {
+    background-color: var(--accent);
+    color: var(--background);
+}

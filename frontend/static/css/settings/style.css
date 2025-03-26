@@ -1,6 +1,7 @@
 #page-content {
-    margin-left: 15%;
+   margin: 0;
     /* padding: 1px 16px; */
+    
     height: 100vh;
 }
 
@@ -8,6 +9,11 @@
     display: flex;
 }
 
+#right-page-content {
+    width: 90%;
+    padding: 10px;
+    box-sizing: border-box;
+}
 .div1 {
     /* background-color: #31363F; */
     text-align: center;
@@ -33,11 +39,11 @@
 }
 
 .set-option:hover {
-    background-color: #76ABAE;
-    color: #fff;
+    background-color: var(--accent);
+    color: var(--button-text);
 }
 
 .set-option.active {
-    background-color: #76ABAE;
-    color: #fff;
+    background-color: var(--accent);
+    color: var(--button-text);
 }

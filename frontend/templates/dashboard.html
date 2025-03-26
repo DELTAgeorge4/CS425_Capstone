@@ -17,8 +17,6 @@
 </head>
 <body>
 
-<!-- Placeholder for Navigation Menu -->
-<div id="nav-placeholder"></div>
 
 <!-- Page Content -->
 <div class="container" id="page-content">
@@ -47,21 +45,7 @@
 </div>
 
 <!-- JavaScript to Load Navigation Menu and Set Active Link -->
-<script>
-  fetch("/nav")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("nav-placeholder").innerHTML = data;
 
-      const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-      navLinks.forEach(link => {
-        if (link.pathname === window.location.pathname) {
-          link.classList.add("active");
-        }
-      });
-    })
-    .catch(error => console.error("Error loading navigation:", error));
-</script>
 <script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
 
 </body>

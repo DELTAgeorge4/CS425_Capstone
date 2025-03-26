@@ -10,7 +10,6 @@
 </head>
 <body>
 
-<div id="nav-placeholder">This should be navigation</div>
 
 <div id="page-content">
   <div id="left-page-content">
@@ -23,20 +22,7 @@
   </div>
 </div>
 
-<script>
-  fetch("/nav")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("nav-placeholder").innerHTML = data;
-      const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-      navLinks.forEach(link => {
-        if (link.pathname === window.location.pathname) {
-          link.classList.add("active");
-        }
-      });
-    })
-    .catch(error => console.error("Error loading navigation:", error));
-</script>
+
 
 <script src="{{ url_for('static', path='js/ips-settings/app.js') }}" defer></script>
 <script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>

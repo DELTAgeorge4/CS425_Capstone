@@ -243,10 +243,9 @@ async function loadAccountInfo() {
                 createAccountModal.style.display = "none"
             });
         });
-        //get form data from modal
+
         const changePasswordForm = document.getElementById("change-password-form");
         changePasswordForm.addEventListener("submit", async (event) => {
-            //simple debug to check if the form is being submitted
 
             event.preventDefault();
 

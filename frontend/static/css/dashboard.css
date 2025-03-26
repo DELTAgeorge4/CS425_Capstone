@@ -43,7 +43,7 @@
   --accent: #FF0000;
   --link-color: #0000FF;
   --button-bg: #FF0000;
-  --button-text: #000000;
+  --button-text: #FFFF00 ;
   --border-color: #000;
 }
 
@@ -60,6 +60,8 @@
 /* Ensure the root element uses the font-size variable */
 html {
   font-size: var(--font-size);
+  width: 100%;
+  height: 100%;
 }
 
 body {
@@ -114,12 +116,12 @@ li a {
 
 li a.active {
   background-color: var(--accent);
-  color: var(--background);
+  color: var(--text-color);
 }
 
 li a:hover:not(.active) {
   background-color: var(--accent);
-  color: var(--background);
+  color: var(--text-color);
 }
 
 /* ============================= */
@@ -130,6 +132,8 @@ li a:hover:not(.active) {
   padding: 16px;
   background-color: var(--background);
   color: var(--text-color);
+  width: 100%;
+  height: 100%;
 }
 
 /* ============================= */
@@ -181,6 +185,10 @@ input::placeholder {
   gap: 10px;
 }
 
+#page-content {
+width: 100%;
+height: 100%;
+}
 select, input[type="text"] {
   padding: 5px;
   font-size: var(--font-size);
@@ -264,4 +272,9 @@ tr:nth-child(even) {
   #page-content {
     margin-left: 0;
   }
+}
+
+.iframes {
+ width: 100%;
+  height: 100%;
 }

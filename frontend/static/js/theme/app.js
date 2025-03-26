@@ -14,29 +14,32 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Load Navigation Bar
-function loadNavigation() {
-    fetch("/nav")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("nav-placeholder").innerHTML = data;
-            const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-            navLinks.forEach(link => {
-                if (window.location.pathname === link.pathname) {
-                    link.classList.add("active");
-                }
-            });
-        })
-        .catch(error => console.error("Error loading navigation:", error));
-}
+// function loadNavigation() {
+//     fetch("/nav")
+//         .then(response => response.text())
+//         .then(data => {
+//             const navPlaceholder = document.getElementById("nav-placeholder");
+//             if (navPlaceholder) {
+//                 navPlaceholder.innerHTML = data;
+//                 const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
+//                 navLinks.forEach(link => {
+//                     if (window.location.pathname === link.pathname) {
+//                         link.classList.add("active");
+//                     }
+//                 });
+//             }
+//         })
+//         .catch(error => console.error("Error loading navigation:", error));
+// }
 
-// Load user settings (theme & font size)
+
 function loadUserSettings() {
     fetch("/user-settings")
         .then(response => response.json())
         .then(data => {
             if (data.theme) {
                 document.documentElement.setAttribute("data-theme", data.theme);
-                // If theme selector exists, update its value
+
                 const themeSelect = document.getElementById("theme");
                 if (themeSelect) {
                     themeSelect.value = data.theme;
@@ -44,7 +47,7 @@ function loadUserSettings() {
             }
             if (data.font_size) {
                 document.documentElement.setAttribute("data-font", data.font_size);
-                // If font selector exists, update its value
+
                 const fontSelect = document.getElementById("font-selector");
                 if (fontSelect) {
                     fontSelect.value = data.font_size;
@@ -54,12 +57,12 @@ function loadUserSettings() {
         .catch(error => console.error("Error loading user settings:", error));
 }
 
-// Save user settings (theme & font size)
+// Save user settings (theme & font size) with complete page reload
 function saveUserSettings() {
     const themeSelect = document.getElementById("theme");
     const fontSelect = document.getElementById("font-selector");
 
-    // Only proceed if these elements exist
+
     if (!themeSelect || !fontSelect) return;
 
     const theme = themeSelect.value;
@@ -72,14 +75,35 @@ function saveUserSettings() {
     })
     .then(response => response.json())
     .then(() => {
+        // Apply settings to the current document
         document.documentElement.setAttribute("data-theme", theme);
         document.documentElement.setAttribute("data-font", fontSize);
+        
         alert("Settings saved successfully!");
+        
+
+        let topWindow = window;
+        while (topWindow.parent !== topWindow) {
+            try {
+                // Try to access the parent - will throw error if cross-origin
+                topWindow = topWindow.parent;
+            } catch (e) {
+                break;
+            }
+        }
+        
+        // Force a complete refresh of the top window (like Ctrl+F5)
+        setTimeout(() => {
+            // Using location.href forces a full page reload instead of using cache
+            topWindow.location.href = topWindow.location.href.split('#')[0] + 
+                '?reload=' + new Date().getTime();
+        }, 100);
     })
     .catch(error => console.error("Error saving settings:", error));
+
+    return false; 
 }
 
-// Optional: Mapping function if needed for direct style changes (not used here)
 function getFontSizeValue(fontSize) {
     const fontSizes = {
         "small": "10px",

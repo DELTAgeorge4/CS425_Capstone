@@ -8,8 +8,6 @@
 </head>
 <body>
 
-<!-- Placeholder for Navigation Menu -->
-<div id="nav-placeholder"></div>
 
 <!-- Page Content -->
 <div id="page-content" style="margin-left:15%; padding:1px 16px; height:1000px;">
@@ -19,19 +17,6 @@
 
 <!-- JavaScript to Load Navigation Menu, Set Active Link, and Display Graph -->
 <script>
-  fetch("/nav")
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById("nav-placeholder").innerHTML = data;
-
-    const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-    navLinks.forEach(link => {
-      if (link.pathname === window.location.pathname) {
-        link.classList.add("active");
-      }
-    });
-  })
-  .catch(error => console.error("Error loading navigation:", error));
 
   // Define nodes and edges for the graph
   const nodes = new vis.DataSet([

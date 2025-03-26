@@ -29,7 +29,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         if (response.ok) {
             document.getElementById("message").innerText = data.message || "Login successful";
             console.log("Login successful");
-            window.location.href = "/home";  
+            window.location.href = "/dashboard";  
             console.log("WeniehutJR");
         } else {
             document.getElementById("message").innerText = data.detail || "Login failed";

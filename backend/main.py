@@ -95,34 +95,89 @@ async def logout(request: Request):
     print(request.session["role"])
     request.session.clear()
     return RedirectResponse(url="/")
-@app.get("/accounts", dependencies=[Depends(verify_user)])
+
+
+# ======================== Pages ========================
+
+@app.get("/f/accounts", dependencies=[Depends(verify_user)])
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
-@app.get("/honeypot-page",name="honeypot-page")
+@app.get("/f/honeypot-page", dependencies=[Depends(verify_user)], name="honeypot-page")
 async def honeypotPage(request: Request):
     return templates.TemplateResponse("honeypot-page.html", {"request": request})
 
-@app.get("/home", dependencies=[Depends(verify_user)])
+@app.get("/f/dashboard", dependencies=[Depends(verify_user)])
 async def home(request: Request):
     # return templates.TemplateResponse("base.html", {"request": request})
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
-@app.get("/topology", dependencies=[Depends(verify_user)])
+@app.get("/f/layout", dependencies=[Depends(verify_user)])
+async def layout(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+
+@app.get("/f/topology", dependencies=[Depends(verify_user)])
 async def topology(request: Request):
     return templates.TemplateResponse("topology.html", {"request": request})
 
-@app.get("/devices", dependencies=[Depends(verify_user)])
+@app.get("/f/devices", dependencies=[Depends(verify_user)])
 async def devices(request: Request):
     return templates.TemplateResponse("devices.html", {"request": request})
 
-@app.get("/ips", dependencies=[Depends(verify_user)])
+@app.get("/f/ips", dependencies=[Depends(verify_user)])
 async def ips(request: Request):
     return templates.TemplateResponse("ips.html", {"request": request})
 
-@app.get("/settings", dependencies=[Depends(verify_user)])
+@app.get("/f/settings", dependencies=[Depends(verify_user)])
 async def settings(request: Request):
     return templates.TemplateResponse("settings.html", {"request": request})
+
+@app.get("/f/sniffer", dependencies=[Depends(verify_user)])
+async def sniffer(request: Request):
+    return templates.TemplateResponse("sniffer.html", {"request": request})
+
+
+
+@app.get("/accounts", dependencies=[Depends(verify_user)])
+async def accounts(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/honeypot-page", dependencies=[Depends(verify_user)], name="honeypot-page")
+async def honeypotPage(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/dashboard", dependencies=[Depends(verify_user)])
+async def home(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/layout", dependencies=[Depends(verify_user)])
+async def layout(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+
+@app.get("/topology", dependencies=[Depends(verify_user)])
+async def topology(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/devices", dependencies=[Depends(verify_user)])
+async def devices(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/ips", dependencies=[Depends(verify_user)])
+async def ips(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/settings", dependencies=[Depends(verify_user)])
+async def settings(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/sniffer", dependencies=[Depends(verify_user)])
+async def sniffer(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
 
 
 @app.get("/user-settings", dependencies=[Depends(verify_user)])
@@ -150,9 +205,6 @@ async def set_user_settings(data: UserSettings, request: Request):
 async def nav(request: Request):
     return templates.TemplateResponse("nav.html", {"request": request})
 
-@app.get("/sniffer", dependencies=[Depends(verify_user)])
-async def sniffer(request: Request):
-    return templates.TemplateResponse("sniffer.html", {"request": request})
 
 @app.get("/fart")
 async def fart():
