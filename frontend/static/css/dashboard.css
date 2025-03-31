@@ -1,100 +1,330 @@
-/* dashboard.css */
-/* .container {
-  width: 100%;
-  height: 100vh;
-} */
+/* ============================= */
+/* 🌎 GLOBAL THEME & FONT SETTINGS */
+/* ============================= */
 
-/* .leftpane {
-  width: 20%;
-  background-color: #31363F;
-  border-right: 2px solid;
-  border-color: #76ABAE;
+/* Default (Light Theme) */
+:root {
+  --background: #ffffff;
+  --text-color: #000000;
+  --accent: #76ABAE;
+  --link-color: #007BFF;
+  --button-bg: #76ABAE;
+  --button-text: white;
+  --border-color: #ccc;
+  --font-size: 16px;
 }
 
-.rightpane {
-  flex-grow: 1;
-  background-color: #31363F;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 20px;
-  height: 100%;
-  width: 100%;
-} */
+/* Dark Mode */
+[data-theme="dark"] {
+  --background: #222831;
+  --text-color: #EEEEEE;
+  --accent: #76ABAE;
+  --link-color: #61dafb;
+  --button-bg: #76ABAE;
+  --button-text: white;
+  --border-color: #444;
+}
 
+/* High Contrast Dark */
+[data-theme="high-contrast-dark"] {
+  --background: #000000;
+  --text-color: #FFFF00;
+  --accent: #FF0000;
+  --link-color: #00FFFF;
+  --button-bg: #FF0000;
+  --button-text: #FFFF00;
+  --border-color: #FFFFFF;
+}
+
+/* High Contrast Light */
+[data-theme="high-contrast-light"] {
+  --background: #FFFF00;
+  --text-color: #000000;
+  --accent: #FF0000;
+  --link-color: #0000FF;
+  --button-bg: #FF0000;
+  --button-text: #FFFF00 ;
+  --border-color: #000;
+}
+
+/* Font Sizes controlled by data-font attribute on <html> */
+[data-font="small"]  { --font-size: 12px; }
+[data-font="medium"] { --font-size: 16px; }
+[data-font="large"]  { --font-size: 20px; }
+[data-font="x-large"] { --font-size: 24px; }
+
+/* ============================= */
+/* 🎨 GENERAL PAGE STYLING */
+/* ============================= */
+
+/* Ensure the root element uses the font-size variable */
+html {
+  font-size: var(--font-size);
+  width: 100%;
+  height: 100%;
+}
 
 body {
   margin: 0;
-  overflow-x: hidden; /* Prevents horizontal overflow */
-  overflow-y: auto;   /*Enables vertical scrolling */
-  background-color: #31363F; /* Match this with your desired background color */
+  padding: 0;
+  font-size: var(--font-size);
+  background-color: var(--background);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
 
-.d-flex {
+/* Apply font-size to most elements */
+*,
+p, a, span, button, input, select, textarea, label, li {
+  font-size: var(--font-size);
+  color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  font-size: calc(var(--font-size) + 4px);
+}
+
+p {
+  line-height: 1.5;
+}
+
+/* ============================= */
+/* 📌 NAVIGATION MENU */
+/* ============================= */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 15%;
+  background-color: var(--background);
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  border-right: 2px solid var(--border-color);
+}
+
+li a {
+  display: block;
+  color: var(--text-color);
+  padding: 12px;
+  text-decoration: none;
+  /* Use calc() to slightly adjust if needed */
+  font-size: calc(var(--font-size) + 2px);
+}
+
+li a.active {
+  background-color: var(--accent);
+  color: var(--text-color);
+}
+
+li a:hover:not(.active) {
+  background-color: var(--accent);
+  color: var(--text-color);
+}
+
+/* ============================= */
+/* 📑 PAGE CONTENT AREA */
+/* ============================= */
+#page-content {
+  margin-left: 15%;
+  padding: 16px;
+  background-color: var(--background);
+  color: var(--text-color);
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================= */
+/* 🔘 BUTTONS & INPUTS */
+/* ============================= */
+button, input:not(.text-entry) {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: calc(var(--font-size) + 2px);
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--accent);
+  opacity: 0.9;
+}
+
+input, select, textarea {
+  padding: 8px;
+  font-size: var(--font-size);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--background);
+  color: var(--text-color);
+}
+
+input::placeholder {
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* ============================= */
+/* 🎛️ FILTERS & FORMS */
+/* ============================= */
+#filters-container {
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 5px;
+  background: var(--background);
+}
+
+#filter-rows-container {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* #myChart {
-  width: 20%;
-  height: 20%;
-} */
+#page-content {
+width: 100%;
+height: 100%;
+}
+select, input[type="text"] {
+  padding: 5px;
+  font-size: var(--font-size);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--background);
+  color: var(--text-color);
+}
+
+/* ============================= */
+/* 🔲 TABLE STYLING */
+/* ============================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: var(--font-size);
+}
+
+th, td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--accent);
+  color: var(--background);
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================= */
+/* 🔘 SETTINGS PAGE STYLES */
+/* ============================= */
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.set-option {
+  padding: 10px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: calc(var(--font-size) + 2px);
+}
+
+.set-option:hover {
+  background-color: var(--accent);
+  color: var(--background);
+}
+
+.set-option.active {
+  background-color: var(--accent);
+  color: var(--background);
+  font-weight: bold;
+}
+
+.div1, .div2 {
+  padding: 20px;
+  background: var(--background);
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+/* ============================= */
+/* 📱 RESPONSIVE DESIGN */
+/* ============================= */
+@media (max-width: 768px) {
   ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 15%;
-    background-color: #222831;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
+    width: 100%;
+    position: relative;
   }
   
-  li a {
-    display: block;
-    color: #ffffff;
-    padding: 8px 10px;
-    text-decoration: none;
-  }
-  
-  li a.active {
-    background-color: #76ABAE;
-    color: #31363F
-  }
-  
-  li a:hover:not(.active) {
-    background-color: #76ABAE;
-    color: #31363F
-  }
   #page-content {
-    background-color: #31363F;
-    color: #EEEEEE;
-    margin-left: 15%;
-    padding: 0;
-    /* overflow: auto; */
-    /* width: 100vh; */
-    /* height: 100vh; */
+    margin-left: 0;
   }
+}
 
-  .hidden {
-    display: none;
-  }
+.iframes {
+ width: 100%;
+  height: 100%;
+}
 
 
-  h2 {
-    color: white;
-  }
+/* Modal Background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+}
 
-  button, input:not(.text-entry) {
-    background-color: #76ae84;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-  }
+/* Modal Content */
+.modal-content {
+  background-color: var(--background);
+  color: var(--text-color);
+  margin: 15% auto;
+  padding: 20px;
+  overflow-y: auto;
+  border-radius: 8px;
+  width: 300px;
+  height: 600px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Close Button */
+.close-btn {
+  background-color: transparent;
+  color: var(--text-color);
+  width: 20px;
+  height: 20px;
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: var(--accent);
+}

@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function () {
+
+  
   // Get references to the tabs and content area
   const alertsTab = document.getElementById('ips-alerts');
   const rulesTab = document.getElementById('ips-rules');
@@ -7,6 +9,11 @@ document.addEventListener('DOMContentLoaded', async function () {
   const roleDataResponse = await fetch("/role", { method: "GET" });
   const roleData = await roleDataResponse.json();
   const userRole = roleData.Role;
+
+  const createRuleButton = document.getElementById('create-rules');
+  const createRuleModal = document.getElementById('create-rule-modal');
+  const createRuleCloseButton = document.getElementById('close-create-rule-modal');
+
 
   // Function to clear the content area
   function clearContent() {
@@ -127,11 +134,22 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     });
 
+    createRuleButton.addEventListener('click', function() {
+      // Show the modal
+      createRuleModal.style.display = 'block';
+    });
+    createRuleCloseButton.addEventListener('click', function() {
+      // Hide the modal
+      createRuleModal.style.display = 'none';
+    });
+
     if (userRole === "admin") {  
+      createRuleButton.style.display = "inline-block";
       editButton.style.display = "inline-block";
       createRuleButton.style.display = "inline-block";
       restartSuricataButton.style.display = "inline-block";
     } else {  
+      createRuleButton.style.display = "none";
       editButton.style.display = "none";
       createRuleButton.style.display = "none";
       restartSuricataButton.style.display = "none";
@@ -163,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const ruleContent = document.createElement('div');
       ruleContent.classList.add('rule-content');
       ruleContent.style.display = 'none';
-      fileContainer.appendChild(ruleContent);
+
 
       // Define fileIsEnabled with block scope
       let fileIsEnabled = true;
@@ -203,8 +221,10 @@ document.addEventListener('DOMContentLoaded', async function () {
       checkbox.checked = fileIsEnabled;
       checkbox.style.display = 'none';
       fileContainer.appendChild(checkbox);
+      fileContainer.appendChild(ruleContent);
 
       rulesList.appendChild(fileContainer);
+      
     }
   }
 
@@ -484,4 +504,105 @@ document.addEventListener('DOMContentLoaded', async function () {
     const destPort = parts[6] || 'N/A';
     return `Action:${action}, Protocol:${protocol}, Source Address:${srcAddress}, Source Port:${srcPort}, Destination Address:${destAddress}, Destination Port:${destPort}, Status:${isDisabled ? 'Disabled' : 'Enabled'}`;
   }
+
+  // Define common rule options (excluding 'sid' since it's auto-generated)
+const commonRuleOptions = [
+  { value: 'content', text: 'content (Content)' },
+  { value: 'pcre', text: 'pcre (Regular Expression)' },
+  { value: 'rev', text: 'rev (Revision)' },
+  { value: 'classtype', text: 'classtype (Classification)' }
+];
+
+// Update each dropdown to disable options already selected in other rows
+function updateRuleOptions() {
+  const selects = document.querySelectorAll('.rule-option');
+  const selectedValues = Array.from(selects)
+    .map(select => select.value)
+    .filter(val => val !== "");
+  selects.forEach(select => {
+    Array.from(select.options).forEach(option => {
+      if (option.value === "") return;
+      option.disabled = (selectedValues.includes(option.value) && select.value !== option.value);
+    });
+  });
+  // Disable the "Add Rule Option" button if all options are already added
+  const addBtn = document.getElementById('add-rule-option-btn');
+  addBtn.disabled = (selects.length >= commonRuleOptions.length);
+}
+
+// Add a new rule option row (dropdown + config input + remove button)
+function addRuleOption() {
+  const container = document.getElementById('common-rule-options-container');
+  const existingSelects = container.querySelectorAll('.rule-option');
+  if (existingSelects.length >= commonRuleOptions.length) {
+    alert("All available rule options have been added.");
+    return;
+  }
+  const div = document.createElement('div');
+  div.className = 'rule-option-container';
+
+  // Create the dropdown select element
+  const select = document.createElement('select');
+  select.className = 'rule-option';
+  select.name = 'rule-option[]';
+  const defaultOption = document.createElement('option');
+  defaultOption.value = "";
+  defaultOption.text = "Select an option";
+  select.appendChild(defaultOption);
+  commonRuleOptions.forEach(opt => {
+    const option = document.createElement('option');
+    option.value = opt.value;
+    option.text = opt.text;
+    select.appendChild(option);
+  });
+
+  // Create the text input for the configuration
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.name = 'rule-option-config[]';
+  input.placeholder = 'Enter configuration';
+  input.disabled = true;
+
+  // Create the remove button for this row
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'remove-btn';
+  removeBtn.textContent = '✕';
+  removeBtn.addEventListener('click', function () {
+    div.remove();
+    updateRuleOptions();
+  });
+
+  // Enable the config input when a valid option is selected
+  select.addEventListener('change', function () {
+    if (select.value === "") {
+      input.value = "";
+      input.disabled = true;
+    } else {
+      input.disabled = false;
+    }
+    updateRuleOptions();
+  });
+
+  div.appendChild(select);
+  div.appendChild(input);
+  div.appendChild(removeBtn);
+  container.appendChild(div);
+  updateRuleOptions();
+}
+
+// Attach event listener to the "Add Rule Option" button
+document.getElementById('add-rule-option-btn').addEventListener('click', addRuleOption);
+
+// Advanced Rule Option Toggle
+document.getElementById('advanced-rule-option-btn').addEventListener('click', function () {
+  const advContainer = document.getElementById('advanced-rule-option-container');
+  if (advContainer.style.display === 'none' || advContainer.style.display === '') {
+    advContainer.style.display = 'block';
+  } else {
+    advContainer.style.display = 'none';
+    document.getElementById('advanced-rule-option').value = "";
+  }
+});
+
 });

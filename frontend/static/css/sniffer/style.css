@@ -12,3 +12,9 @@ canvas {
     max-height: 300px; /* Ensure all charts have the same height */
     margin: 10px;
 }
+
+#page-content {
+    margin: 0;
+
+  }
+  

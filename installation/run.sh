@@ -6,4 +6,4 @@ chmod +x ../backend/restartSuricata.sh
 source ./venv/bin/activate  # Ensure the correct path to 'venv/bin/activate'
 cd ../backend
 pwd
-fastapi dev
+fastapi dev --port 8080
