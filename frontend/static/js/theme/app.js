@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    loadNavigation();
+    // loadNavigation();
     loadUserSettings();
 
     // Only add event listeners if the elements exist
@@ -59,6 +59,7 @@ function loadUserSettings() {
 
 // Save user settings (theme & font size) with complete page reload
 function saveUserSettings() {
+    console.log("Saving user settings...");
     const themeSelect = document.getElementById("theme");
     const fontSelect = document.getElementById("font-selector");
 

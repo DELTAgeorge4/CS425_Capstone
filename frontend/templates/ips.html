@@ -1,30 +1,159 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light" data-font="medium">
 <head>
+  <meta charset="UTF-8">
+  <title>IPS Dashboard</title>
   <link rel="icon" type="image/x-icon" href="https://i.ytimg.com/vi/YzabKuRnESo/sddefault.jpg">
   <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/ips/ips.css') }}">
   <style>
     .hidden { display: none; }
+    
+    /* Basic form layout for the IPS modal */
+    #create-rule-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem; /* Space between form elements */
+    }
+    /* Additional rule option row styling */
+    .rule-option-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .rule-option-container select,
+    .rule-option-container input {
+      flex: 1;
+    }
+    .remove-btn, .close {
+      background-color: transparent;
+      border: none;
+      color: red;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    /* Styling for the advanced rule option container */
+    #advanced-rule-option-container {
+      display: none;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
-
-
-<div id="page-content">
-  <div id="left-page-content">
-    <h2>IPS</h2>
-    <div tabindex="11" class="ips-tab" id="ips-alerts">Alerts</div>
-    <div tabindex="12" class="ips-tab" id="ips-rules">Rules</div>
+  <div id="page-content">
+    <div id="left-page-content">
+      <h2>IPS</h2>
+      <div tabindex="11" class="ips-tab" id="ips-alerts">Alerts</div>
+      <div tabindex="12" class="ips-tab" id="ips-rules">Rules</div>
+    </div>
+    <div id="right-page-content">
+      <!-- Your page content here -->
+    </div>
   </div>
-  <div id="right-page-content">
-    <!-- Your IPS content goes here -->
+
+  <div id="create-rule-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-create-rule-modal">&times;</span>
+      <h2>Create Rule</h2>
+      <form id="create-rule-form">
+        <label for="rule-name">Rule Description (Optional)</label>
+        <input class="text-entry" type="text" id="rule-name" name="rule-name">
+
+        <label for="rule-action">Action</label>
+        <select id="rule-action" name="rule-action">
+          <option value="alert" title="generate an alert" selected>Alert</option>
+          <option value="pass" title="stop further inspection of the packet">Pass</option>
+          <option value="drop" title="drop packets and generate alert">Drop</option>
+          <option value="reject" title="send RST/ICMP unreach error to the sender of the matching packet">Reject</option>
+          <option value="rejectsrc" title="same as just reject">Reject Source</option>
+          <option value="rejectdst" title="send RST/ICMP error packet to receiver of the matching packet">Reject Destination</option>
+          <option value="rejectboth" title="send RST/ICMP error packets to both sides of the conversation">Reject Both</option>
+        </select>
+
+        <label for="rule-protocol">Protocol</label>
+        <select id="rule-protocol" name="rule-protocol">
+          <optgroup label="Basic Protocols">
+            <option value="tcp" title="tcp (for tcp-traffic)" selected>tcp</option>
+            <option value="udp" title="udp">udp</option>
+            <option value="icmp" title="icmp">icmp</option>
+            <option value="ip" title="ip (ip stands for 'all' or 'any')">ip</option>
+          </optgroup>
+          <optgroup label="TCP Options">
+            <option value="tcp-pkt" title="tcp-pkt (for matching content in individual tcp packets)">tcp-pkt</option>
+            <option value="tcp-stream" title="tcp-stream (for matching content only in a reassembled tcp stream)">tcp-stream</option>
+          </optgroup>
+          <optgroup label="Application Layer Protocols">
+            <option value="http" title="http (either HTTP1 or HTTP2)">http</option>
+            <option value="http1" title="http1">http1</option>
+            <option value="http2" title="http2">http2</option>
+            <option value="ftp" title="ftp">ftp</option>
+            <option value="tls" title="tls (this includes ssl)">tls</option>
+            <option value="smb" title="smb">smb</option>
+            <option value="dns" title="dns">dns</option>
+            <option value="dcerpc" title="dcerpc">dcerpc</option>
+            <option value="dhcp" title="dhcp">dhcp</option>
+            <option value="ssh" title="ssh">ssh</option>
+            <option value="smtp" title="smtp">smtp</option>
+            <option value="imap" title="imap">imap</option>
+            <option value="pop3" title="pop3">pop3</option>
+            <option value="nfs" title="nfs">nfs</option>
+            <option value="ike" title="ike">ike</option>
+            <option value="krb5" title="krb5">krb5</option>
+            <option value="bittorrent-dht" title="bittorrent-dht">bittorrent-dht</option>
+            <option value="ntp" title="ntp">ntp</option>
+            <option value="rfb" title="rfb">rfb</option>
+            <option value="rdp" title="rdp">rdp</option>
+            <option value="snmp" title="snmp">snmp</option>
+            <option value="tftp" title="tftp">tftp</option>
+            <option value="sip" title="sip">sip</option>
+            <option value="websocket" title="websocket">websocket</option>
+          </optgroup>
+        </select>
+
+        <label for="rule-source-ip">Source IP</label>
+        <input class="text-entry" type="text" id="rule-source-ip" name="rule-source-ip" value="any" required>
+
+        <label for="rule-source-port">Source Port</label>
+        <input class="text-entry" type="text" id="rule-source-port" name="rule-source-port" value="any" required>
+
+        <label for="rule-direction">Direction</label>
+        <select id="rule-direction" name="rule-direction">
+          <option value="->" title="from server to client">To Client</option>
+          <option value="<>" title="both directions">Two-way</option>
+          <option value="both" title="both directions">Both</option>
+        </select>
+
+        <label for="rule-destination-ip">Destination IP</label>
+        <input class="text-entry" type="text" id="rule-destination-ip" name="rule-destination-ip" value="any" required>
+
+        <label for="rule-destination-port">Destination Port</label>
+        <input class="text-entry" type="text" id="rule-destination-port" name="rule-destination-port" value="any" required>
+
+        <label for="rule-message">Message</label>
+        <input class="text-entry" type="text" id="rule-message" name="rule-message" value="IPS Rule" title="Message that will be logged when rule is triggered" required>
+
+        <!-- Additional Rule Options Section -->
+        <label>Additional Rule Options</label>
+        <div id="common-rule-options-container"></div>
+        <button type="button" id="add-rule-option-btn">Add Rule Option</button>
+
+        <!-- Advanced Rule Option Section -->
+        <label>Advanced Rule Option (Custom)</label>
+        <div id="advanced-rule-option-container">
+          <input class="text-entry" type="text" id="advanced-rule-option" name="advanced-rule-option" placeholder="Enter custom rule option">
+        </div>
+        <button type="button" id="advanced-rule-option-btn">Toggle Advanced Rule Option</button>
+
+        <!-- Final Form Buttons -->
+        <button id="create-rule-btn" type="submit">Create Rule</button>
+        <button id="create-rule-cancel-btn" type="button">Cancel</button>
+        <p id="create-rule-status-message"></p>
+      </form>
+    </div>
   </div>
-</div>
 
-
-
-<script src="{{ url_for('static', path='js/ips-settings/app.js') }}" defer></script>
-<script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
+  <!-- External JS files -->
+  <script src="{{ url_for('static', path='js/ips-settings/app.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
 </body>
 </html>
