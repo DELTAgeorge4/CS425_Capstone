@@ -428,11 +428,46 @@ async def get_device_list():
         if exit_code != 0:
             raise HTTPException(status_code=500, detail="Error encountered during device search")
 
-        # Format the devices as a numbered list
-        numbered_devices = "\n".join([f"{i+1}. {device}" for i, device in enumerate(devices)])
+        # Format the devices as a list
+        numbered_devices = "\n".join([f"{device}" for i, device in enumerate(devices)])
 
         # Return the formatted list
         return JSONResponse(content={"devices": numbered_devices})
     
     except subprocess.CalledProcessError:
         raise HTTPException(status_code=500, detail="Compilation failed or process encountered an error")
+
+class DeviceRequest(BaseModel):
+    device: str
+
+@app.post("/device")
+async def get_device_info(request: DeviceRequest):
+    device_name = request.device.strip()
+
+    if not device_name:
+        raise HTTPException(status_code=400, detail="Device name cannot be empty.")
+
+    # Compile the C program
+    compilation_command = ["gcc", "-o", "display_device_info", "../nicks-testing/display_device_info.c", "-lpcap"]
+    compile_process = subprocess.run(compilation_command, capture_output=True, text=True)
+
+    if compile_process.returncode != 0:
+        return {"error": "Compilation failed", "details": compile_process.stderr}
+
+    # Run the compiled executable
+    packet_capture_command = ["sudo", "./display_device_info", device_name]
+    process = subprocess.Popen(packet_capture_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    output_lines = []
+    for line in process.stdout:
+        output_lines.append(line.strip())
+
+    exit_code = process.wait()
+
+    if exit_code != 0:
+        return {
+            "error": "Error encountered while running the process",
+            "details": process.stderr.read().strip()
+        }
+
+    return {"output": "\n".join(output_lines)}

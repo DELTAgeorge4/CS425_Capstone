@@ -6,29 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Packet Capture Utility</title>
-    <style>
-        /* Ensure the chart container stretches the full width */
-        #chart-container {
-            display: flex;
-            justify-content: space-between; 
-            width: 100%; 
-            height: 300px;
-            flex-wrap: wrap;  /* Allow charts to wrap if necessary */
-        }
-
-        canvas {
-            flex: 1;  /* Each canvas will take up equal space */
-            max-width: 300px; /* Set a max width to prevent stretching */
-            margin: 10px;
-        }
-    </style>
 </head>
 <body>
     <div id="nav-placeholder"></div>
 
-    <div id="page-content" style="margin-left:15%;padding:1px 16px;height:1000px;">
-        <input class="text-entry"  type="text" id="device_selection_box" placeholder="Enter the device #" />
-        <button id="get_device_info">Get Device Info</button>
+    <div id="page-content">
+        <label for="device_selection_box">Select a device:</label>
+        <select id="device_selection_box"></select>
+
+        <!-- Panel to show device info -->
+        <div id="device_info_panel" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
+
         <button id="start_capture">Start Capture</button>
         <button id="get_packets">Get Packets</button>
         <br><br>
@@ -49,204 +37,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Fetch navigation data
-        fetch("/nav")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("nav-placeholder").innerHTML = data;
-            const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-            navLinks.forEach(link => {
-                if (link.pathname === window.location.pathname) {
-                    link.classList.add("active");
-                }
-            });
-        })
-        .catch(error => console.error("Error loading navigation:", error));
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const netCtx = document.getElementById('net_chart').getContext('2d');
-            const transportCtx = document.getElementById('transport_chart').getContext('2d');
-            const applicationCtx = document.getElementById('application_chart').getContext('2d');
-
-            // Initialize charts
-            const net_chart = new Chart(netCtx, {
-                type: 'pie',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [],
-                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'pink', 'cyan', 'lime', 'indigo']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: { display: true, text: 'Network Layer Traffic', font: { size: 18 }, color: '#FFF' }
-                    }
-                }
-            });
-
-            const transport_chart = new Chart(transportCtx, {
-                type: 'pie',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [],
-                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'pink', 'cyan', 'lime', 'indigo']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: { display: true, text: 'Transport Layer Traffic', font: { size: 18 }, color: '#FFF' }
-                    }
-                }
-            });
-
-            const application_chart = new Chart(applicationCtx, {
-                type: 'pie',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [],
-                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'pink', 'cyan', 'lime', 'indigo']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: { display: true, text: 'Application Layer Traffic', font: { size: 18 }, color: '#FFF' }
-                    }
-                }
-            });
-            function generateColors(numLabels) {
-                const colors = [];
-                const colorPalette = ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'pink', 'cyan', 'lime', 'indigo'];
-
-                for (let i = 0; i < numLabels; i++) {
-                    colors.push(colorPalette[i % colorPalette.length]); // Cycle through the color palette
-                }
-                return colors;
-            }
-
-            // Function to update chart data and assign colors dynamically
-            function updateChartData(chart, data) {
-                if (!data) return;
-
-                const labels = Object.keys(data);
-                const values = Object.values(data);
-                const colors = generateColors(labels.length); // Generate colors based on number of labels
-
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = values;
-                chart.data.datasets[0].backgroundColor = colors; // Assign dynamic colors
-                chart.update();
-            }
-
-            // Fetch chart data from the server
-            try {
-                const response = await fetch('/get_chart_data');
-                const chartData = await response.json();
-
-                // Ensure data is available
-                if (chartData) {
-                    // Update the charts
-                    updateChartData(net_chart, chartData.net_chart_data);
-                    updateChartData(transport_chart, chartData.transport_chart_data);
-                    updateChartData(application_chart, chartData.application_chart_data);
-                } else {
-                    console.error('Received empty chart data');
-                }
-            } catch (error) {
-                console.error('Error fetching chart data:', error);
-            }
-
-            function updateChartData(chart, data) {
-                if (!data) return;
-
-                const labels = Object.keys(data);
-                const values = Object.values(data);
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = values;
-                chart.update();
-            }
-
-            // Fetch device list on page load
-            const output = document.getElementById('output');
-            let deviceListOutput = '';
-            try {
-                const response = await fetch('/get_device_list');
-                const data = await response.json();
-
-                // Extract the 'devices' string from the response
-                const devices = data.devices;
-
-                // Split the string into an array by line breaks
-                const deviceList = devices.split('\n');
-
-                // Clear any previous output
-                output.textContent = "Device List:\n";
-
-                // Iterate through the list and display the devices
-                deviceList.forEach(device => {
-                    output.textContent += device + "\n";
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                output.textContent = 'Error fetching devices';
-            }
-
-            // Function to send a POST request with data
-            const executeScript = async (endpoint, body = null) => {
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(body)
-                    });
-                    const result = await response.text();
-                    output.textContent = `${deviceListOutput}\n\n${result}`;
-                } catch (error) {
-                    console.error('Error:', error);
-                    output.textContent = `${deviceListOutput}\n\nError sending request`;
-                }
-            };
-
-            // Handle device info button click
-            document.getElementById('get_device_info').addEventListener('click', () => {
-                const deviceNumber = document.getElementById('device_selection_box').value;
-                if (!deviceNumber || isNaN(deviceNumber)) {
-                    output.textContent = `${deviceListOutput}\n\nPlease enter a valid device number.`;
-                    return;
-                }
-                executeScript('/device', { deviceNumber: parseInt(deviceNumber, 10) });
-            });
-
-            // Handle capture button click
-            document.getElementById('start_capture').addEventListener('click', () => {
-                const deviceNumber = document.getElementById('device_selection_box').value;
-                if (!deviceNumber || isNaN(deviceNumber)) {
-                    output.textContent = `${deviceListOutput}\n\nPlease enter a valid device number.`;
-                    return;
-                }
-                executeScript('/packet_capture', { deviceNumber: parseInt(deviceNumber, 10) });
-            });
-
-            // Handle get packets button click
-            document.getElementById('get_packets').addEventListener('click', () => {
-                const startTime = document.getElementById('start_time').value || 'None';
-                const endTime = document.getElementById('end_time').value || 'None';
-                const protocol = document.getElementById('protocol').value || 'None';
-                executeScript('/packets', { startTime, endTime, protocol });
-            });
-        });
-    </script>
+    <script src="{{ url_for('static', path='js/sniffer/app.js') }}"></script>
 </body>
 </html>

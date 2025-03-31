@@ -1,5 +1,14 @@
-pre {
-    background-color: blue;
-    padding: 10px;
+#chart-container {
+    display: flex;
+    justify-content: space-between; 
+    width: 100%; 
+    height: auto;
+    flex-wrap: wrap; /* Allow wrapping if necessary */
+}
+
+canvas {
+    flex: 1;
+    max-width: 300px; /* Ensure all charts have the same width */
+    max-height: 300px; /* Ensure all charts have the same height */
     margin: 10px;
 }
