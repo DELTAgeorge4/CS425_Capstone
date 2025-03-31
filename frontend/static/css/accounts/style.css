@@ -56,3 +56,8 @@ form {
 .close-btn:hover {
     color: red;
 }
+#page-content {
+    margin: 0;
+
+  }
+  

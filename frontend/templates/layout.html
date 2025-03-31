@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-font="medium">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Security Dashboard</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/nav/styles.css') }}">
+
+</head>
+<body>
+    <!-- Navigation Menu -->
+    <nav>
+        <ul id="nav-menu">
+            <li><a href="/dashboard" data-target="dashboard-frame" data-path="dashboard">Dashboard</a></li>
+            <li><a href="/topology" data-target="topology-frame" data-path="topology">Topology</a></li>
+            <li><a href="/honeypot-page" data-target="honeypot-frame" data-path="honeypot-page">Honeypot</a></li>
+            <li><a href="/devices" data-target="devices-frame" data-path="devices">Devices</a></li>
+            <li><a href="/ips" data-target="ips-frame" data-path="ips">IPS</a></li>
+            <li><a href="/sniffer" data-target="sniffer-frame" data-path="sniffer">Packet Sniffer</a></li>
+            <li><a href="/settings" data-target="settings-frame" data-path="settings">Settings</a></li>
+            <li><a href="/accounts" data-target="accounts-frame" data-path="accounts">Accounts</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="container" id="main-page-content" style="margin-left:15%;">
+        <!-- Each iframe loads direct content -->
+        <iframe id="dashboard-frame" src="/f/dashboard"></iframe>
+        <iframe id="topology-frame" src="/f/topology"></iframe>
+        <iframe id="honeypot-frame" src="/f/honeypot-page"></iframe>
+        <iframe id="devices-frame" src="/f/devices"></iframe>
+        <iframe id="ips-frame" src="/f/ips"></iframe>
+        <iframe id="sniffer-frame" src="/f/sniffer"></iframe>
+        <iframe id="settings-frame" src="/f/settings"></iframe>
+        <iframe id="accounts-frame" src="/f/accounts"></iframe>
+    </div>
+
+    <!-- Script for routing and navigation -->
+    <script src="{{ url_for('static', path='js/nav/app.js') }}" defer></script>
+</body>
+</html>

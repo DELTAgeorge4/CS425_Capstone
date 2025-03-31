@@ -1,11 +1,38 @@
 <ul>
-  <li><a href="{{ url_for('home') }}" data-page="{{ url_for('home') }}">Dashboard</a></li>
-  <li><a href="{{ url_for('topology') }}" data-page="{{ url_for('topology') }}">Topology</a></li>
-  <li><a href="{{ url_for('honeypot-page') }}" data-page="{{ url_for('honeypot-page') }}">Honeypot</a></li>
-  <li><a href="{{ url_for('devices') }}" data-page="{{ url_for('devices') }}">Devices</a></li>
-  <li><a href="{{ url_for('ips') }}" data-page="{{ url_for('ips') }}">IPS</a></li>
-  <li><a href="{{ url_for('sniffer') }}" data-page="{{url_for('sniffer')}}">Packet Sniffer</a></li>
-  <li><a href="{{ url_for('settings') }}" data-page="{{ url_for('settings') }}">Settings</a></li>
-  <li><a href="{{ url_for('accounts') }}" data-page="{{ url_for('accounts') }}">Accounts</a></li>
-  <li><a href="{{ url_for('logout') }}">Logout</a></li>
+  <li><a href="{{ url_for('home') }}">Dashboard</a></li>
+  <li><a href="{{ url_for('topology') }}">Topology</a></li>
+  <li><a href="{{ url_for('honeypot-page') }}">Honeypot</a></li>
+  <li><a href="{{ url_for('devices') }}">Devices</a></li>
+  <li><a href="{{ url_for('ips') }}">IPS</a></li>
+  <li><a href="{{ url_for('sniffer') }}">Packet Sniffer</a></li>
+  <li><a href="{{ url_for('settings') }}">Settings</a></li>
+  <li><a href="{{ url_for('accounts') }}">Accounts</a></li>
+  <li><a href="{{ url_for('logout') }}">Logout</a></li> 
 </ul>
+
+<!-- Load CSS -->
+<link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+
+<!-- JavaScript -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Highlight active link
+    const navLinks = document.querySelectorAll("ul li a");
+    navLinks.forEach(link => {
+      if (link.getAttribute("href") === window.location.pathname) {
+        link.classList.add("active");
+      }
+    });
+
+    // Load user settings (theme & font)
+    fetch("/user-settings")
+      .then(response => response.json())
+      .then(data => {
+        document.documentElement.setAttribute("data-theme", data.theme);
+        document.documentElement.setAttribute("data-font", data.font_size);
+      })
+      .catch(error => console.error("Error loading user settings:", error));
+  });
+</script>
+
+<script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>

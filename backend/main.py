@@ -13,13 +13,16 @@ import sys
 
 
 sys.path.append("..")
-from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers
+from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers, getUserID
 from .login.signUp import create_user, check_role_exists
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
 from .DB_To_GUI import Get_Suricata_Info
 from .DB_To_GUI import Sniffer
 from .DB_To_GUI import protocol_counter
+from .theme.DB_theme import get_theme, set_theme, set_font_size, get_font_size
+
+
 
 #res = Get_Honeypot_Info()
 #print(res)
@@ -64,6 +67,12 @@ def verify_admin(request: Request):
     if request.session.get("role") != "admin":
         raise HTTPException(status_code=403, detail="forbidden")
     
+@app.get("/user_id", dependencies=[Depends(verify_user)])
+async def get_user_id(request: Request):
+    username = request.session.get("username")
+    user_id = getUserID(username)
+    return {"user_id": user_id}
+
 
 @app.get("/")
 async def root(request: Request):
@@ -86,42 +95,116 @@ async def logout(request: Request):
     print(request.session["role"])
     request.session.clear()
     return RedirectResponse(url="/")
-@app.get("/accounts", dependencies=[Depends(verify_user)])
+
+
+# ======================== Pages ========================
+
+@app.get("/f/accounts", dependencies=[Depends(verify_user)])
 async def accounts(request: Request):
     return templates.TemplateResponse("accounts.html", {"request": request})
 
-@app.get("/honeypot-page",name="honeypot-page")
+@app.get("/f/honeypot-page", dependencies=[Depends(verify_user)], name="honeypot-page")
 async def honeypotPage(request: Request):
     return templates.TemplateResponse("honeypot-page.html", {"request": request})
 
-@app.get("/home", dependencies=[Depends(verify_user)])
+@app.get("/f/dashboard", dependencies=[Depends(verify_user)])
 async def home(request: Request):
     # return templates.TemplateResponse("base.html", {"request": request})
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
-@app.get("/topology", dependencies=[Depends(verify_user)])
+@app.get("/f/layout", dependencies=[Depends(verify_user)])
+async def layout(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+
+@app.get("/f/topology", dependencies=[Depends(verify_user)])
 async def topology(request: Request):
     return templates.TemplateResponse("topology.html", {"request": request})
 
-@app.get("/devices", dependencies=[Depends(verify_user)])
+@app.get("/f/devices", dependencies=[Depends(verify_user)])
 async def devices(request: Request):
     return templates.TemplateResponse("devices.html", {"request": request})
 
-@app.get("/ips", dependencies=[Depends(verify_user)])
+@app.get("/f/ips", dependencies=[Depends(verify_user)])
 async def ips(request: Request):
     return templates.TemplateResponse("ips.html", {"request": request})
 
-@app.get("/settings", dependencies=[Depends(verify_user)])
+@app.get("/f/settings", dependencies=[Depends(verify_user)])
 async def settings(request: Request):
     return templates.TemplateResponse("settings.html", {"request": request})
+
+@app.get("/f/sniffer", dependencies=[Depends(verify_user)])
+async def sniffer(request: Request):
+    return templates.TemplateResponse("sniffer.html", {"request": request})
+
+
+
+@app.get("/accounts", dependencies=[Depends(verify_user)])
+async def accounts(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/honeypot-page", dependencies=[Depends(verify_user)], name="honeypot-page")
+async def honeypotPage(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/dashboard", dependencies=[Depends(verify_user)])
+async def home(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/layout", dependencies=[Depends(verify_user)])
+async def layout(request: Request):
+    # return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+
+@app.get("/topology", dependencies=[Depends(verify_user)])
+async def topology(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/devices", dependencies=[Depends(verify_user)])
+async def devices(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/ips", dependencies=[Depends(verify_user)])
+async def ips(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/settings", dependencies=[Depends(verify_user)])
+async def settings(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+@app.get("/sniffer", dependencies=[Depends(verify_user)])
+async def sniffer(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
+
+
+@app.get("/user-settings", dependencies=[Depends(verify_user)])
+async def theme(request: Request):
+    username = request.session.get("username")
+    userID = getUserID(username)
+    userTheme = get_theme(userID)
+    userFontSize = get_font_size(userID)
+    return {"theme": userTheme, "font_size": userFontSize}
+
+class UserSettings(BaseModel):
+    theme: str
+    font_size: str
+    
+@app.post("/set-user-settings", dependencies=[Depends(verify_user)])
+async def set_user_settings(data: UserSettings, request: Request):
+    username = request.session.get("username")
+    userID = getUserID(username)
+    set_theme(userID, data.theme)
+    set_font_size(userID, data.font_size)
+    return {"message": "Settings updated successfully"}
+
 
 @app.get("/nav", dependencies=[Depends(verify_user)])
 async def nav(request: Request):
     return templates.TemplateResponse("nav.html", {"request": request})
 
-@app.get("/sniffer", dependencies=[Depends(verify_user)])
-async def sniffer(request: Request):
-    return templates.TemplateResponse("sniffer.html", {"request": request})
 
 @app.get("/fart")
 async def fart():

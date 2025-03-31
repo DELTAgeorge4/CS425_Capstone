@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const ruleContent = document.createElement('div');
       ruleContent.classList.add('rule-content');
       ruleContent.style.display = 'none';
-      fileContainer.appendChild(ruleContent);
+
 
       // Define fileIsEnabled with block scope
       let fileIsEnabled = true;
@@ -203,8 +203,10 @@ document.addEventListener('DOMContentLoaded', async function () {
       checkbox.checked = fileIsEnabled;
       checkbox.style.display = 'none';
       fileContainer.appendChild(checkbox);
+      fileContainer.appendChild(ruleContent);
 
       rulesList.appendChild(fileContainer);
+      
     }
   }
 
