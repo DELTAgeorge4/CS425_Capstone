@@ -26,8 +26,8 @@
 <body>
 
 
-    <div id="page-content" style="padding:1px 16px;height:1000px;">
-        <input type="text" id="device_selection_box" placeholder="Enter the device #" />
+    <div id="page-content" style="margin:0;padding:1px 16px;height:1000px;">
+        <input class="text-entry"  type="text" id="device_selection_box" placeholder="Enter the device #" />
         <button id="get_device_info">Get Device Info</button>
         <button id="start_capture">Start Capture</button>
         <button id="get_packets">Get Packets</button>
@@ -50,7 +50,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-
+      
         document.addEventListener('DOMContentLoaded', async () => {
             const netCtx = document.getElementById('net_chart').getContext('2d');
             const transportCtx = document.getElementById('transport_chart').getContext('2d');
@@ -236,6 +236,5 @@
         });
     </script>
     <script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
-
 </body>
 </html>
