@@ -523,6 +523,17 @@ async def get_device_list():
 class DeviceRequest(BaseModel):
     device: str
 
+def is_service_running(service_name):
+    try:
+        result = subprocess.run(
+            ["systemctl", "is-active", "--quiet", service_name],
+            check=False
+        )
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Error checking service status: {e}")
+        return False
+
 @app.post("/device")
 async def get_device_info(request: DeviceRequest):
     device_name = request.device.strip()
@@ -542,6 +553,12 @@ async def get_device_info(request: DeviceRequest):
     process = subprocess.Popen(packet_capture_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     output_lines = []
+    service = "nss_sniffer_" + device_name
+
+    if is_service_running(service):
+        output_lines.append("Packet sniffer status: Active")
+    else:
+        output_lines.append("Packet sniffer status: Inactive")
     for line in process.stdout:
         output_lines.append(line.strip())
 
@@ -554,3 +571,6 @@ async def get_device_info(request: DeviceRequest):
         }
 
     return {"output": "\n".join(output_lines)}
+
+#@app.post("/packet_capture")
+#async def start_capture(request: DeviceRequest):

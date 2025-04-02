@@ -1,4 +1,5 @@
 from backend.db.main import connect, close
+import psycopg2
 
 def get_theme(user_id):
     conn, cur = connect()

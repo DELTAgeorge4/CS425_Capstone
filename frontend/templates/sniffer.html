@@ -14,19 +14,18 @@
         <label for="device_selection_box">Select a device:</label>
         <select id="device_selection_box"></select>
 
+        <button id="start_capture">Start Capture</button>
+        <button id="get_packets">Get Packets</button>
+        
         <!-- Panel to show device info -->
         <div id="device_info_panel" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
 
-        <button id="start_capture">Start Capture</button>
-        <button id="get_packets">Get Packets</button>
         <br><br>
         <label for="start_time">Start Time:</label>
         <input type="datetime-local" id="start_time" />
         <label for="end_time">End Time:</label>
         <input type="datetime-local" id="end_time" />
         <br><br>
-        <label for="protocol">Protocol:</label>
-        <input type="text" id="protocol" placeholder="Enter a protocol (e.g., TCP)" />
         <pre id="output"></pre>
 
         <div id="chart-container">

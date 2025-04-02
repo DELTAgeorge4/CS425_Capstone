@@ -2,6 +2,17 @@
 import sys
 import subprocess
 
+def is_service_running(service_name):
+    try:
+        result = subprocess.run(
+            ["systemctl", "is-active", "--quiet", service_name],
+            check=False
+        )
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Error checking service status: {e}")
+        return False
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Not enough arguments provided.")
@@ -38,3 +49,10 @@ if __name__ == "__main__":
         print("Error encountered. Process is still running")
         print("Process is being forcibly terminated")
         process.terminate()
+
+    service = "nss_sniffer_" + device_name
+
+    if is_service_running(service):
+        print("Packet sniffer status: Active")
+    else:
+        print("Packet sniffer status: Inactive")

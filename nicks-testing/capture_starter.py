@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     subprocess.run(compilation_command, text=True)
 
-    packet_capture_command = ["sudo", "./capture_packets", device]
+    packet_capture_command = ["./capture_packets", device]
 
     process = subprocess.Popen(
         packet_capture_command,
@@ -37,9 +37,11 @@ if __name__ == "__main__":
     line = process.stdout.readline()# packet capture length
     line = process.stdout.readline()# packet total length
 
-    for i in range(2): # 2 is arbitrary, this should eventually be an infinite loop
-        packet = {}
+    while True:
         line = process.stdout.readline()
+        if not line:
+            continue
+        packet = {}
         print(line.strip()) # Should be destination MAC
         packet['destination_mac'] = line.strip()[-17:]
 

@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const dropdown = document.getElementById("device_selection_box");
     const infoPanel = document.getElementById("device_info_panel");
-    const output = document.getElementById("output");
 
     try {
         // Fetch available devices
@@ -11,10 +10,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Extract devices and split into an array
         const devices = data.devices.split('\n').filter(device => device.trim() !== "");
 
-        // Add "All Network Interfaces" option
-        devices.push("All Network Interfaces");
+        // Add "No device selected" as the default option
+        const defaultOption = document.createElement("option");
+        defaultOption.textContent = "No device selected";
+        defaultOption.value = "";
+        dropdown.appendChild(defaultOption);
 
-        // Populate the dropdown
+        // Populate the dropdown with device options
         devices.forEach(device => {
             const option = document.createElement("option");
             option.textContent = device;
@@ -42,8 +44,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Show device info when a new device is selected
         dropdown.addEventListener("change", async () => {
             const deviceName = dropdown.value;
-
-            if (deviceName !== "All Network Interfaces") {
+            const firstOption = dropdown.options[0]; // Get "No device selected" option
+        
+            if (deviceName) {
+                firstOption.disabled = true; // Disable "No device selected"
                 infoPanel.innerHTML = "Loading...";
                 infoPanel.style.display = "block";
                 infoPanel.innerHTML = await fetchDeviceInfo(deviceName);
@@ -144,14 +148,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     // Handle capture button click
-    document.getElementById('start_capture').addEventListener('click', () => {
-        const deviceNumber = dropdown.value;
-        if (!deviceNumber) {
+    document.getElementById('start_capture').addEventListener('click', async () => {
+        const dropdown = document.getElementById("device_selection_box");
+        const deviceName = dropdown.value;
+        const output = document.getElementById("output");
+    
+        if (!deviceName) {
             output.textContent = "Please select a device.";
             return;
         }
-        executeScript('/packet_capture', { device: deviceNumber });
+    
+        try {
+            const response = await fetch('/packet_capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device: deviceName }) // Sending the dropdown value
+            });
+    
+            const data = await response.json();
+            output.textContent = data.output || data.detail || "Unknown error";
+        } catch (error) {
+            console.error('Fetch error:', error);
+            output.textContent = "Error sending request";
+        }
     });
+    
 
     // Handle get packets button click
     document.getElementById('get_packets').addEventListener('click', () => {

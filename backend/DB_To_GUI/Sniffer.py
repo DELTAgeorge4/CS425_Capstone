@@ -108,7 +108,7 @@ class ethernet_packet:
 
     def delete_all_packets(self):
         query = """
-        DELETE FROM "link_layer_packet;
+        DELETE FROM "link_layer_packet"S;
         """
 
         self.database.execute(query)
@@ -195,3 +195,7 @@ def clear_packets_before(time):
     packet_table = ethernet_packet(database=database)
     packet_table.delete_all_packets_before(time=time)
     database.close_connection()
+
+
+if __name__ == "__main__":
+    print(get_packets())
