@@ -24,22 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             dropdown.appendChild(option);
         });
 
-        // Function to fetch device info
-        const fetchDeviceInfo = async (deviceName) => {
-            try {
-                const response = await fetch('/device', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ device: deviceName })
-                });
-
-                const result = await response.json();
-                return result.output ? result.output.replace(/\n/g, "<br>") : "No data available";
-            } catch (error) {
-                console.error("Error fetching device info:", error);
-                return "Error fetching data";
-            }
-        };
+        
 
         // Show device info when a new device is selected
         dropdown.addEventListener("change", async () => {
@@ -59,6 +44,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("Error loading devices:", error);
     }
+    // Function to fetch device info
+    const fetchDeviceInfo = async (deviceName) => {
+        try {
+            const response = await fetch('/device', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device: deviceName })
+            });
+
+            const result = await response.json();
+            return result.output ? result.output.replace(/\n/g, "<br>") : "No data available";
+        } catch (error) {
+            console.error("Error fetching device info:", error);
+            return "Error fetching data";
+        }
+    };
 
     // Fetch navigation data
     fetch("/nav")
@@ -152,6 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const dropdown = document.getElementById("device_selection_box");
         const deviceName = dropdown.value;
         const output = document.getElementById("output");
+        const infoPanel = document.getElementById("device_info_panel"); // Get device info panel
     
         if (!deviceName) {
             output.textContent = "Please select a device.";
@@ -162,16 +164,63 @@ document.addEventListener("DOMContentLoaded", async () => {
             const response = await fetch('/packet_capture', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ device: deviceName }) // Sending the dropdown value
+                body: JSON.stringify({ device: deviceName })
             });
     
             const data = await response.json();
-            output.textContent = data.output || data.detail || "Unknown error";
+    
+            if (!response.ok) {
+                throw new Error(data.detail || "Unknown error");
+            }
+    
+            output.textContent = data.message; // Ensure correct output message
+    
+            // Update device info panel
+            infoPanel.innerHTML = "Updating device info...";
+            infoPanel.innerHTML = await fetchDeviceInfo(deviceName);
+    
         } catch (error) {
             console.error('Fetch error:', error);
-            output.textContent = "Error sending request";
+            output.textContent = `Error: ${error.message}`;
         }
     });
+    
+    document.getElementById('stop_capture').addEventListener('click', async () => {
+        const dropdown = document.getElementById("device_selection_box");
+        const deviceName = dropdown.value;
+        const output = document.getElementById("output");
+        const infoPanel = document.getElementById("device_info_panel"); // Get device info panel
+    
+        if (!deviceName) {
+            output.textContent = "Please select a device.";
+            return;
+        }
+    
+        try {
+            const response = await fetch('/stop_capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device: deviceName })
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.detail || "Unknown error");
+            }
+    
+            output.textContent = data.message; // Show success message
+    
+            // Update device info panel
+            infoPanel.innerHTML = "Updating device info...";
+            infoPanel.innerHTML = await fetchDeviceInfo(deviceName);
+    
+        } catch (error) {
+            console.error('Fetch error:', error);
+            output.textContent = `Error: ${error.message}`;
+        }
+    });
+    
     
 
     // Handle get packets button click

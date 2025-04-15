@@ -3,6 +3,13 @@
 # Change to path where .json logs get placed from suricata, typically /ver/logs/suricata/eve.json
 SURICATA_LOG_FILE = "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs/eve.json"
 
+# Topology config
+# Network topology discovery settings
+TOPOLOGY_HOSTS = ['192.168.14.1']  # Add your router/switch IP here
+TOPOLOGY_COMMUNITY = 'public'
+TOPOLOGY_SNMP_VERSION = 1  # 0 for v1, 1 for v2c
+
+
 # Honeypot config
 HONEYPOT_TARGET_IPS = "192.168.14.14"
 HONEYPOT_TARGET_PORTS = [443, 8080, 223]

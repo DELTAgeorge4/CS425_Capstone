@@ -10,6 +10,7 @@ import subprocess
 from fastapi.responses import JSONResponse
 
 import sys
+import json
 
 
 sys.path.append("..")
@@ -276,7 +277,16 @@ def getRole(request:Request):
     role = getUserRole(request.session.get("username"))
     return {"Role": role, "Username": request.session.get("username")}
 
-
+@app.get("/network-topology", dependencies=[Depends(verify_user)])
+def get_network_topology(request: Request):
+    file_path = os.path.join(os.path.dirname(__file__), "../Georges_Scripts/network_topology.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Network topology file not found.")
+    
+    with open(file_path, "r") as file:
+        data = json.load(file)  # ✅ Parse JSON into dict
+    
+    return JSONResponse(content=data)  # ✅ Pass dict as content
 @app.post("/checkboxes", dependencies=[Depends(verify_admin)])
 async def checkboxes(data: CheckBoxData, request:Request):
     ruleCheckboxChanged = True
@@ -572,5 +582,69 @@ async def get_device_info(request: DeviceRequest):
 
     return {"output": "\n".join(output_lines)}
 
-#@app.post("/packet_capture")
-#async def start_capture(request: DeviceRequest):
+def create_service(interface):
+    try:
+        SERVICE_NAME = f"nss_sniffer_{interface}"
+        SERVICE_FILE = f"/etc/systemd/system/{SERVICE_NAME}.service"
+        SCRIPT_PATH = "/home/CS425_Capstone/nicks-testing/capture_starter.py"
+
+        SERVICE_CONTENT = f"""[Unit]
+Description=NSS Packet Sniffer
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 {SCRIPT_PATH} {interface}
+WorkingDirectory=/home/CS425_Capstone/nicks-testing
+Restart=always
+User=root
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+        # Write temp file and move it with sudo
+        temp_service_path = "/tmp/temp_service.service"
+        with open(temp_service_path, "w") as f:
+            f.write(SERVICE_CONTENT)
+
+        subprocess.run(["sudo", "mv", temp_service_path, SERVICE_FILE], check=True)
+        subprocess.run(["sudo", "chmod", "644", SERVICE_FILE], check=True)
+        subprocess.run(["sudo", "chown", "root:root", SERVICE_FILE], check=True)
+        subprocess.run(["sudo", "systemctl", "daemon-reload"], check=True)
+        subprocess.run(["sudo", "systemctl", "enable", SERVICE_NAME], check=True)
+        subprocess.run(["sudo", "systemctl", "start", SERVICE_NAME], check=True)
+
+        return {"status": "success", "message": f"Service '{SERVICE_NAME}' started successfully."}
+
+    except subprocess.CalledProcessError as e:
+        return {"status": "error", "message": f"Command failed: {e}"}
+    except Exception as e:
+        return {"status": "error", "message": f"Unexpected error: {str(e)}"}
+
+@app.post("/packet_capture")
+async def start_capture(request: DeviceRequest):
+    device = request.device.strip()
+    
+    if not device:
+        raise HTTPException(status_code=400, detail="No device selected")
+
+    result = create_service(device)
+
+    if result["status"] == "error":
+        raise HTTPException(status_code=500, detail=result["message"])
+
+    return result
+
+@app.post("/stop_capture")
+def stop_capture(request: DeviceRequest):
+    device = request.device
+    service_name = f"nss_sniffer_{device}"
+    
+    # Stop and disable the service
+    stop_command = f"sudo systemctl stop {service_name}"
+    disable_command = f"sudo systemctl disable {service_name}"
+    os.system(stop_command)
+    os.system(disable_command)
+
+    return {"message": f"Packet capture stopped and disabled for {device}."}

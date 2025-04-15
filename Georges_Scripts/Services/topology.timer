@@ -1,0 +1,10 @@
+[Unit]
+Description=Run topology script every hour
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=60min
+Unit=topology.service
+
+[Install]
+WantedBy=timers.target
