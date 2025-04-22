@@ -13,6 +13,72 @@
   --border-color: #ccc;
   --font-size: 16px;
 }
+/* Sepia - Warm, paper-like theme */
+[data-theme="sepia"] {
+  --background: #f1e7d0;
+  --text-color: #5f4b32;
+  --accent: #b56b45;
+  --link-color: #07889b;
+  --button-bg: #b56b45;
+  --button-text: #f1e7d0;
+  --border-color: #aa8976;
+}
+
+/* Midnight Blue - Deep blue dark theme */
+[data-theme="midnight-blue"] {
+  --background: #0f2027;
+  --text-color: #e0e0e0;
+  --accent: #4da8da;
+  --link-color: #66c7f4;
+  --button-bg: #203a43;
+  --button-text: #ffffff;
+  --border-color: #2c5364;
+}
+
+/* Forest - Calming green theme */
+[data-theme="forest"] {
+  --background: #2c3e50;
+  --text-color: #ecf0f1;
+  --accent: #27ae60;
+  --link-color: #3dc7ff;
+  --button-bg: #27ae60;
+  --button-text: #ffffff;
+  --border-color: #1e8449;
+}
+
+/* Lavender - Soft purple theme */
+[data-theme="lavender"] {
+  --background: #f5f0ff;
+  --text-color: #333333;
+  --accent: #9370db;
+  --link-color: #8a2be2;
+  --button-bg: #9370db;
+  --button-text: #ffffff;
+  --border-color: #c8b6e2;
+}
+
+/* Sunset - Warm evening colors */
+[data-theme="sunset"] {
+  --background: #ff7e5f;
+  --text-color: #ffffff;
+  --accent: #feb47b;
+  --link-color: #4a154b;
+  --button-bg: #feb47b;
+  --button-text: #4a154b;
+  --border-color: #ffffff;
+}
+
+/* Mint - Fresh, cool light theme */
+[data-theme="mint"] {
+  --background: #e4f5e8;
+  --text-color: #2d3436;
+  --accent: #39b385;
+  --link-color: #0984e3;
+  --button-bg: #39b385;
+  --button-text: #ffffff;
+  --border-color: #b8e3c9;
+}
+
 
 /* Dark Mode */
 [data-theme="dark"] {
@@ -27,26 +93,84 @@
 
 /* High Contrast Dark */
 [data-theme="high-contrast-dark"] {
-  --background: #000000;
-  --text-color: #FFFF00;
-  --accent: #FF0000;
-  --link-color: #00FFFF;
-  --button-bg: #FF0000;
-  --button-text: #FFFF00;
+  --background: #121212;
+  --text-color: #FFFFFF;
+  --accent: #FFD700; /* Gold */
+  --link-color: #00FFFF; /* Cyan */
+  --button-bg: #FF4500; /* Orange-Red */
+  --button-text: #FFFFFF;
   --border-color: #FFFFFF;
 }
 
+[data-theme="high-contrast-yellow-black"] {
+  --background: #000000;
+  --text-color: #FFFF00; /* Yellow */
+  --accent: #00FF00; /* Lime */
+  --link-color: #FF00FF; /* Magenta */
+  --button-bg: #FFFF00; /* Yellow */
+  --button-text: #000000;
+  --border-color: #FFFF00;
+}
+
+[data-theme="high-contrast-blue-white"] {
+  --background: #FFFFFF;
+  --text-color: #00008B; /* Dark Blue */
+  --accent: #FF0000; /* Red */
+  --link-color: #8B0000; /* Dark Red */
+  --button-bg: #0000CD; /* Medium Blue */
+  --button-text: #FFFFFF;
+  --border-color: #000080; /* Navy */
+}
+
+[data-theme="high-contrast-green"] {
+  --background: #000000;
+  --text-color: #00FF00; /* Lime Green */
+  --accent: #FFFFFF;
+  --link-color: #00FFFF; /* Cyan */
+  --button-bg: #32CD32; /* Lime Green */
+  --button-text: #000000;
+  --border-color: #00FF00;
+}
+
+[data-theme="high-contrast-orange"] {
+  --background: #000000;
+  --text-color: #FFA500; /* Orange */
+  --accent: #FFFFFF;
+  --link-color: #00FFFF; /* Cyan */
+  --button-bg: #FF8C00; /* Dark Orange */
+  --button-text: #000000;
+  --border-color: #FFA500;
+}
 /* High Contrast Light */
 [data-theme="high-contrast-light"] {
-  --background: #FFFF00;
-  --text-color: #000000;
-  --accent: #FF0000;
+  --background: #ABDDF6;
+  --text-color: #2e2e2e;
+  --accent: #994ff3;
   --link-color: #0000FF;
-  --button-bg: #FF0000;
-  --button-text: #FFFF00 ;
+  --button-bg: #5ECFD7;
+  --button-text: #181818 ;
   --border-color: #000;
 }
 
+[data-theme="high-contrast-purple"] {
+  --background: #FFFFFF;
+  --text-color: #4B0082; /* Indigo */
+  --accent: #FF4500; /* Orange-Red */
+  --link-color: #0000FF; /* Blue */
+  --button-bg: #800080; /* Purple */
+  --button-text: #FFFFFF;
+  --border-color: #4B0082;
+}
+
+[data-theme="high-contrast-blue-yellow"] {
+  --background: #00008B; /* Dark Blue */
+  --text-color: #FFFF00; /* Yellow */
+  --accent: #FF00FF; /* Magenta */
+  --link-color: #FFFFFF;
+  --button-bg: #FFFF00; /* Yellow */
+  --button-text: #000080; /* Navy */
+  --border-color: #FFFF00;
+}
 /* Font Sizes controlled by data-font attribute on <html> */
 [data-font="small"]  { --font-size: 12px; }
 [data-font="medium"] { --font-size: 16px; }
@@ -122,6 +246,12 @@ li a.active {
 li a:hover:not(.active) {
   background-color: var(--accent);
   color: var(--text-color);
+}
+
+.textarea {
+  color: var(--text-color);
+  background-color: var(--background);
+  border: 1px solid var(--border-color);
 }
 
 /* ============================= */

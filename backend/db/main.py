@@ -1,6 +1,7 @@
 #db.main
 import psycopg2
 
+
 # Function to check if a username exists
 def usernameExists(username):
     conn, cur = connect()

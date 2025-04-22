@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-font="medium">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme Settings</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/settings/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+
+</head>
+<body>
+  <div id="page-content">
+    <div class="content-wrapper">
+      <div class="div2">
+        <div>
+          <label for="theme">Theme:</label>
+          <select id="theme">
+            <!-- Standard Themes -->
+            <optgroup label="Standard Themes">
+              <option value="light">Regular Light Mode</option>
+              <option value="dark">Regular Dark Mode</option>
+              <option value="sepia">Sepia</option>
+              <option value="midnight-blue">Midnight Blue</option>
+              <option value="forest">Forest</option>
+              <option value="lavender">Lavender</option>
+              <option value="sunset">Sunset</option>
+              <option value="mint">Mint</option>
+            </optgroup>
+            
+            <!-- High Contrast Themes -->
+            <optgroup label="High Contrast (Accessibility) Themes">
+              <option value="high-contrast-light">High Contrast Light Mode</option>
+              <option value="high-contrast-dark">High Contrast Dark Mode</option>
+              <option value="high-contrast-yellow-black">High Contrast Yellow/Black</option>
+              <option value="high-contrast-blue-white">High Contrast Blue/White</option>
+              <option value="high-contrast-green">High Contrast Green</option>
+              <option value="high-contrast-orange">High Contrast Orange</option>
+              <option value="high-contrast-purple">High Contrast Purple/White</option>
+              <option value="high-contrast-blue-yellow">High Contrast Blue/Yellow</option>
+            </optgroup>
+          </select>
+          
+          <label for="font-selector">Font Size:</label>
+          <select id="font-selector">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+            <option value="x-large">Extra Large</option>
+          </select>
+          
+          <button id="save-settings">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', path='js/theme/app.js') }}" defer></script>
+</body>
+</html>

@@ -1,49 +1,65 @@
 #page-content {
-   margin: 0;
-    /* padding: 1px 16px; */
-    
+    margin: 0;
     height: 100vh;
-}
-
-.content-wrapper {
-    display: flex;
-}
-
-#right-page-content {
-    width: 90%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-.div1 {
-    /* background-color: #31363F; */
-    text-align: center;
-    width: 20%; /* Adjust as needed */
-    /* padding: 10px; */
-    height: 100vh;
-    box-sizing: border-box;
-    /* border-right: 2px solid #76ABAE; */
-}
-
-.div2 {
-    /* background-color: #31363F; */
-    width: 80%; /* Adjust as needed */
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-.set-option {
-    /* border: 2px solid #76ABAE; */
-    padding: 10px;
-    margin: -1px; 
-    cursor: pointer;
-}
-
-.set-option:hover {
-    background-color: var(--accent);
-    color: var(--button-text);
-}
-
-.set-option.active {
-    background-color: var(--accent);
-    color: var(--button-text);
-}
+    overflow: hidden; /* Prevent scrolling on the main container */
+ }
+ 
+ .content-wrapper {
+     display: flex;
+     height: 100vh;
+ }
+ 
+ .div1 {
+     text-align: center;
+     width: 20%;
+     height: 100%;
+     box-sizing: border-box;
+     overflow-y: auto; /* Allow scrolling if many options */
+ }
+ 
+ .div2 {
+     width: 80%;
+     padding: 10px;
+     box-sizing: border-box;
+     height: 100%;
+     overflow-y: auto; /* Allow scrolling for content */
+     display: flex;
+     flex-direction: column;
+ }
+ 
+ .set-option {
+     padding: 10px;
+     margin: -1px;
+     cursor: pointer;
+ }
+ 
+ .set-option:hover {
+     background-color: var(--accent);
+     color: var(--button-text);
+ }
+ 
+ .set-option.active {
+     background-color: var(--accent);
+     color: var(--button-text);
+ }
+ 
+ #theme-settings-container, 
+ #config-settings-container {
+     display: flex;
+     flex-direction: column;
+     height: 100%;
+     width: 100%;
+ }
+ 
+ iframe {
+     flex: 1;
+     width: 100%;
+     height: calc(100vh - 100px); /* Adjust based on your header size */
+     border: none;
+ }
+ 
+ #config-file, 
+ #config-file-input {
+     width: 100%;
+     height: 100%;
+ }

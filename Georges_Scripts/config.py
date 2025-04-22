@@ -1,43 +1,83 @@
 # config.py
 
-# Change to path where .json logs get placed from suricata, typically /ver/logs/suricata/eve.json
-SURICATA_LOG_FILE = "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs/eve.json"
+import os
+import json
+from pydantic import BaseSettings
+from typing import List, Optional
 
-# Topology config
-# Network topology discovery settings
-TOPOLOGY_HOSTS = ['192.168.14.1']  # Add your router/switch IP here
-TOPOLOGY_COMMUNITY = 'public'
-TOPOLOGY_SNMP_VERSION = 1  # 0 for v1, 1 for v2c
+class Settings(BaseSettings):
+    # Suricata Log File
+    SURICATA_LOG_FILE: str = "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs/eve.json"
+
+    # Topology Configuration
+    TOPOLOGY_HOSTS: List[str] = ['192.168.14.1']  # Router/switch IP(s)
+    TOPOLOGY_COMMUNITY: str = 'public'
+    TOPOLOGY_SNMP_VERSION: int = 1  # 0 for v1, 1 for v2c
+
+    # Honeypot Configuration
+    HONEYPOT_TARGET_IPS: str = "192.168.14.14"
+    HONEYPOT_TARGET_PORTS: List[int] = [443, 8080, 223]
+
+    # SNMP Clients Configuration
+    SNMP_HOSTS: List[str] = ["192.168.14.14", "192.168.14.11"]
+    SNMP_WORKERS: int = 4
+
+    # Testing Tables
+    TESTING_TABLES: List[str] = ["snmp_metrics", "suricata", "honeypot"]
+
+    # Database Configuration (using plain string for password)
+    DB_HOST: str = "localhost"
+    DB_NAME: str = "nss"
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "password123"  # Plain string password
+
+    # SNMP Email Alert Settings (using plain string for password)
+    SMTP_SERVER: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    EMAIL_USER: str = "your_email@example.com"
+    EMAIL_PASSWORD: str = "your_email_password"  # Plain string password
+    EMAIL_RECIPIENTS: List[str] = ["recipient1@example.com", "recipient2@example.com"]
+
+    # Email Alert Thresholds
+    RAM_USAGE_THRESHOLD: Optional[int] = 90
+    DISK_USAGE_THRESHOLD: Optional[int] = 75
+
+    # Debug Mode
+    DEBUG_MODE: bool = True
+
+    class Config:
+        env_file = ".env"
+        case_sensitive = False
 
 
-# Honeypot config
-HONEYPOT_TARGET_IPS = "192.168.14.14"
-HONEYPOT_TARGET_PORTS = [443, 8080, 223]
+# Create the settings instance
+settings: Settings = Settings()
 
-# SNMP Clients formatable via 192.168.1.1 or 192.168.1.1/24
-SNMP_HOSTS = ["192.168.14.14", "192.168.14.11"]
 
-# Secify the amount of threads you want snmp to use.
-SNMP_WORKERS = 4
+def load_config_file(filepath: str) -> None:
+    """
+    Load configuration values from a JSON file and update the settings instance.
+    """
+    global settings
+    if os.path.exists(filepath):
+        with open(filepath, "r") as f:
+            config_data = json.load(f)
+            settings = Settings(**config_data)
+    else:
+        raise FileNotFoundError(f"Config file '{filepath}' not found.")
 
-# Define tables you want to incude in INTERACT_W_TABLES.PY script
-TESTING_TABLES = ["snmp_metrics", "suricata", "honeypot"]
 
-# Preconfigured Database Info, SHOULD NOT TOUCH UNLESS MANUALLY CHANGED
-DB_HOST = "localhost"
-DB_NAME = "nss"
-DB_USER = "postgres"
-DB_PASSWORD = "password123" # Update with password set up by Make_Tables.py
+def load_default_config() -> None:
+    """
+    Reload the default configuration values.
+    """
+    global settings
+    settings = Settings()
 
-# SNMP Settings for email alerts
-SMTP_SERVER = "smtp.gmail.com"  # Use email SMTP server
-SMTP_PORT = 587
-EMAIL_USER = "your_email@example.com"  # Your email address
-EMAIL_PASSWORD = "your_email_password"  # Email password
-EMAIL_RECIPIENTS = ["recipient1@example.com", "recipient2@example.com"]  # Recipients of emails
 
-# More values for email alerts
-RAM_USAGE_THRESHOLD = 90 # Set to None to disable RAM alerts
-DISK_USAGE_THRESHOLD = 75 # Set to None to disable disk alerts
-
-DEBUG_MODE = True
+# Module-level __getattr__ to forward attribute accesses to the settings instance.
+def __getattr__(name: str):
+    try:
+        return getattr(settings, name)
+    except AttributeError as exc:
+        raise AttributeError(f"module {__name__} has no attribute {name}") from exc

@@ -6,6 +6,21 @@ import matplotlib.pyplot as plt
 import time
 import sys
 
+# Load configuration from JSON
+def load_config():
+    try:
+        with open('config.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print("Error: config.json file not found.")
+        sys.exit(1)
+    except json.JSONDecodeError:
+        print("Error: config.json is not valid JSON.")
+        sys.exit(1)
+
+# Global config
+config = load_config()
+
 def run_snmp_command(command, timeout=2):
     """Run an SNMP command and return the output with timeout"""
     try:
@@ -411,10 +426,14 @@ def extend_topology_with_pve(G, pve_nodes, community="public", version=1):
     return G
 
 def main():
-    # Router IP - update this to your network's gateway
-    router_ip = "192.168.14.1"
-    community = "public"
-    version = 1  # 0 for SNMP v1, 1 for SNMP v2c
+    # Get topology configuration from JSON config
+    topology_config = config.get('TOPOLOGY', {})
+    router_ips = topology_config.get('HOSTS', ['192.168.14.1'])
+    community = topology_config.get('COMMUNITY', 'public')
+    version = topology_config.get('SNMP_VERSION', 1)  # 0 for SNMP v1, 1 for SNMP v2c
+    
+    # For simplicity, we'll use the first router IP in the list
+    router_ip = router_ips[0] if router_ips else '192.168.14.1'
     
     print(f"Creating network topology based on ARP table from {router_ip}")
     
@@ -436,6 +455,13 @@ def main():
     # Extend the topology with ARP data from each discovered PVE node
     if pve_nodes:
         G = extend_topology_with_pve(G, pve_nodes, community, version)
+    
+    # Check if debug mode is enabled
+    debug_mode = config.get('DEBUG_MODE', False)
+    if debug_mode:
+        print("\nDebug information:")
+        print(f"- Number of nodes after PVE extension: {len(G.nodes())}")
+        print(f"- Number of edges after PVE extension: {len(G.edges())}")
     
     # Visualize and export the extended topology
     topology_image = visualize_arp_topology(G)

@@ -61,19 +61,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // Fetch navigation data
-    fetch("/nav")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("nav-placeholder").innerHTML = data;
-            const navLinks = document.querySelectorAll("#nav-placeholder ul li a");
-            navLinks.forEach(link => {
-                if (link.pathname === window.location.pathname) {
-                    link.classList.add("active");
-                }
-            });
-        })
-        .catch(error => console.error("Error loading navigation:", error));
 
     // Initialize charts
     const netCtx = document.getElementById('net_chart').getContext('2d');

@@ -56,6 +56,9 @@
           <label for="createAccountUsername">Username: </label>
           <input class="text-entry" type="text" id="createAccountUsername" name="createAccountUsername" required>
 
+          <label for="createAccountEmail">Email: </label>
+          <input class="text-entry" type="email" id="createAccountEmail" name="createAccountEmail" required>
+
           <label for="createAccountPassword">New Password:</label>
           <input class="text-entry" type="password" id="createAccountPassword" name="newPassword" required>
 
@@ -66,6 +69,7 @@
           <select name="roles" id="roles">
             <option value="admin">admin</option>
             <option value="guest">guest</option>
+            <option value="moderator">moderator</option>
           </select>
 
           <button type="submit">Create Account</button>

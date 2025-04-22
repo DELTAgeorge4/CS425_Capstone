@@ -140,8 +140,3 @@ function saveFirewallSettings() {
     alert("Firewall settings saved successfully!");
 }
 
-// Highlight active settings tab
-function setActive(element) {
-    document.querySelectorAll(".set-option").forEach(option => option.classList.remove("active"));
-    element.classList.add("active");
-}

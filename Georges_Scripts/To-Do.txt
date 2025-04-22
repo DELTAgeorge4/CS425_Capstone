@@ -3,3 +3,8 @@ fix topology
 make siem
 make systemd services viewable and editable from gui
 make config.py editable from gui
+update website
+update install script
+X new user group thats guest + packet capture
+fix firewall settings looks
+Last user login & password attempts

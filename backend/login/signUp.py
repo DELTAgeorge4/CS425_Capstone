@@ -4,13 +4,13 @@ from backend.passwordHashing.hashmypassword import hash_password
 from backend.theme.DB_theme import set_default_settings
 from backend.login.loginScript import getUserID
 
-def create_user(username, password, role):
+def create_user(username, email, password, role):
     if usernameExists(username):
         print(f"Username '{username}' already exists.")
         return False
     conn, cur = connect()
     hashed_password, salty = hash_password(password)
-    cur.execute("INSERT INTO users (username, password_hash, salt, role) VALUES (%s, %s, %s,%s)", (username, hashed_password, salty, role))
+    cur.execute("INSERT INTO users (username, password_hash, salt, role, email) VALUES (%s, %s, %s,%s, %s)", (username, hashed_password, salty, role, email))
 
     
     conn.commit()

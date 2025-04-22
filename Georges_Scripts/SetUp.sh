@@ -7,7 +7,7 @@ source ~/.bashrc
 
 # Update and install dependancys
 sudo apt update
-sudo apt install fping python3-scapy snmp snmpd libsnmp-dev python3-pysnmp4 postgresql suricata python3-psycopg2 python3-watchdog -y
+sudo apt install fping python3-scapy snmp snmpd libsnmp-dev python3-pysnmp4 postgresql suricata python3-pydantic python3-psycopg2 python3-watchdog -y
 sudo apt full-upgrade -y
 
 # Run python script to set up databases

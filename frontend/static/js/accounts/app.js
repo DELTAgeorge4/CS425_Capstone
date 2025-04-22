@@ -98,7 +98,7 @@ async function loadAccountInfo() {
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Delete";
                 const resetPasswordButton = document.createElement("button");
-                resetPasswordButton.textContent = "Reset Password";
+                resetPasswordButton.textContent = "Change Password";
                 actions.appendChild(deleteButton);
                 actions.appendChild(resetPasswordButton);
                 row.appendChild(actions);
@@ -302,6 +302,7 @@ async function loadAccountInfo() {
                 event.preventDefault();
 
                 const username = document.getElementById("createAccountUsername").value;
+                const newEmail = document.getElementById("createAccountEmail").value;
                 const newPassword = document.getElementById("createAccountPassword").value;
                 const confirmPassword = document.getElementById("createAccountConfirmPassword").value;
                 const newUserRole = document.getElementById("roles").value;
@@ -315,6 +316,18 @@ async function loadAccountInfo() {
                     message.style.color = "red";
                     return;
                 }
+                
+                function validateEmail(email) {
+                    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return re.test(String(email).toLowerCase());
+                }
+                if (!validateEmail(newEmail)) {
+                    message.textContent = "Invalid email format!";
+                    message.style.color = "red";
+                    return;
+                }
+
+
 
                 if (newPassword.length < 8) {
                     message.textContent = "New password must be at least 8 characters long!";
@@ -331,6 +344,7 @@ async function loadAccountInfo() {
                     },
                     body: JSON.stringify({
                         username,
+                        newEmail,
                         newPassword,
                         newUserRole,
                     }),

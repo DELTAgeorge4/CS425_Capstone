@@ -1,0 +1,44 @@
+{
+    "SURICATA_LOG_FILE": "/home/CS425_Capstone/Georges_Scripts/Suricata/Suricata_Logs/eve.json",
+    
+    "TOPOLOGY": {
+      "HOSTS": ["192.168.14.1"],
+      "COMMUNITY": "public",
+      "SNMP_VERSION": 1
+    },
+    
+    "HONEYPOT": {
+      "TARGET_IPS": "192.168.14.14",
+      "TARGET_PORTS": [443, 8080, 223]
+    },
+    
+    "SNMP": {
+      "HOSTS": ["192.168.14.14", "192.168.14.11"],
+      "WORKERS": 4
+    },
+    
+    "TESTING": {
+      "TABLES": ["snmp_metrics", "suricata", "honeypot"]
+    },
+    
+    "DATABASE": {
+      "HOST": "localhost",
+      "NAME": "nss",
+      "USER": "postgres",
+      "PASSWORD": "password123"
+    },
+    
+    "EMAIL_ALERTS": {
+      "SMTP_SERVER": "smtp.gmail.com",
+      "SMTP_PORT": 587,
+      "EMAIL_USER": "your_email@example.com",
+      "EMAIL_PASSWORD": "your_email_password",
+      "EMAIL_RECIPIENTS": ["recipient1@example.com", "recipient2@example.com"],
+      "THRESHOLDS": {
+        "RAM_USAGE": 90,
+        "DISK_USAGE": 75
+      }
+    },
+    
+    "DEBUG_MODE": true
+  }

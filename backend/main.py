@@ -14,7 +14,7 @@ import json
 
 
 sys.path.append("..")
-from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers, getUserID
+from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers, getUserID, log_to_db, fetch_all_login_logs, get_recent_failed_attempts
 from .login.signUp import create_user, check_role_exists
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
@@ -27,14 +27,16 @@ from .theme.DB_theme import get_theme, set_theme, set_font_size, get_font_size
 
 #res = Get_Honeypot_Info()
 #print(res)
-# create_user("admin", "admin", "admin")
-# create_user("guest", "guest", "guest")
+
+# create_user("george", "gkokkinis2015@gmail.com ", "password123", "admin")
+# create_user("nick", "katsarosnicholas01@gmail.com", "password123", "admin")
+# create_user("james", "jamesdak231@gmail.com", "password123", "admin")
 # changePassword("admin", "admin", "password123")
 
-# create_user("nick", "password123", "admin")
+
 
 app = FastAPI(docs_url=None)
-#create_user("admin","admin","admin")
+
 # Serve static files
 static_dir = os.path.join(os.path.dirname(__file__), "../frontend/static")
 templates_dir = os.path.join(os.path.dirname(__file__), "../frontend/templates")
@@ -67,6 +69,12 @@ def verify_user(request: Request):
 def verify_admin(request: Request):
     if request.session.get("role") != "admin":
         raise HTTPException(status_code=403, detail="forbidden")
+
+def verify_moderator_or_admin(request: Request):
+    if request.session.get("role") not in ["admin", "moderator"]:
+        raise HTTPException(status_code=403, detail="forbidden")
+    
+    
     
 @app.get("/user_id", dependencies=[Depends(verify_user)])
 async def get_user_id(request: Request):
@@ -83,6 +91,8 @@ async def root(request: Request):
 async def loginf(request: Request, data: LoginData):
     # Replace with real user validation
     successfully_authenticated = login(data.username, data.password)
+    print(get_recent_failed_attempts(data.username))
+
     # print(successfully_authenticated)
     if successfully_authenticated:
         request.session["authenticated"] = True
@@ -91,9 +101,17 @@ async def loginf(request: Request, data: LoginData):
         return {"message": "Login successful"}  # JSON response instead of redirect
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
+@app.get("/login-logs", dependencies=[Depends(verify_user)])
+async def login_logs(request: Request):
+    logs = fetch_all_login_logs()
+    print(logs)
+    return JSONResponse(content={"logs": logs})
+
+
 @app.get("/logout", dependencies=[Depends(verify_user)])
 async def logout(request: Request):
     print(request.session["role"])
+    log_to_db(request.session["username"], "LOGGED_OUT")
     request.session.clear()
     return RedirectResponse(url="/")
 
@@ -123,6 +141,19 @@ async def layout(request: Request):
 async def topology(request: Request):
     return templates.TemplateResponse("topology.html", {"request": request})
 
+@app.get("/f/theme-settings", dependencies=[Depends(verify_user)])
+async def theme_settings(request: Request):
+    return templates.TemplateResponse("settings_theme.html", {"request": request})
+
+
+
+
+
+@app.get("/f/config-settings", dependencies=[Depends(verify_user)])
+async def theme_settings(request: Request):
+    return templates.TemplateResponse("settings_configuration.html", {"request": request})
+
+
 @app.get("/f/devices", dependencies=[Depends(verify_user)])
 async def devices(request: Request):
     return templates.TemplateResponse("devices.html", {"request": request})
@@ -135,7 +166,7 @@ async def ips(request: Request):
 async def settings(request: Request):
     return templates.TemplateResponse("settings.html", {"request": request})
 
-@app.get("/f/sniffer", dependencies=[Depends(verify_user)])
+@app.get("/f/sniffer", dependencies=[Depends(verify_moderator_or_admin)])
 async def sniffer(request: Request):
     return templates.TemplateResponse("sniffer.html", {"request": request})
 
@@ -227,6 +258,7 @@ class changePasswordData (BaseModel):
     
 class createUserData (BaseModel):
     username: str
+    newEmail: str
     newPassword: str
     newUserRole: str
     
@@ -238,7 +270,7 @@ async def fcreate_user(data: createUserData, request: Request, dependencies=[Dep
     if not check_role_exists(role):
         raise HTTPException(status_code=401, detail="Role does not exist")
     
-    successful = create_user(data.username, data.newPassword, data.newUserRole)
+    successful = create_user(data.username, data.newEmail, data.newPassword, data.newUserRole)
     if not successful:
         raise HTTPException(status_code=401, detail="User creation unsuccessful")
     return {"message": "User creation successful"}
@@ -648,3 +680,157 @@ def stop_capture(request: DeviceRequest):
     os.system(disable_command)
 
     return {"message": f"Packet capture stopped and disabled for {device}."}
+
+class ConfigUpdate(BaseModel):
+    config: str
+
+@app.post("/update-config-file", dependencies=[Depends(verify_admin)])
+async def update_config_file(update: ConfigUpdate):
+    # Define the config file path relative to this file
+    file_path = os.path.join(os.path.dirname(__file__), "../Georges_Scripts/config.py")
+    
+    try:
+        # Write the new configuration to the file
+        with open(file_path, "w") as f:
+            f.write(update.config)
+        
+        # Optionally reload the configuration in your app.
+        # For instance, if you want changes to be reflected immediately,
+        # you might call your load_default_config() or load_config_file() function:
+        from config import load_default_config
+        load_default_config()
+
+        return JSONResponse(content={"message": "Configuration updated successfully."})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating config file: {str(e)}")
+
+@app.get("/config-file", dependencies=[Depends(verify_moderator_or_admin)])
+async def get_config_file(request: Request):
+    file_path = os.path.join(os.path.dirname(__file__), "../Georges_Scripts/config copy.py")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Config file not found.")
+    
+    with open(file_path, "r") as file:
+        data = file.read()
+    
+    return JSONResponse(content={"config": data})
+
+@app.post("/restart-suricata-db", dependencies=[Depends(verify_admin)])
+async def restart_suricata_to_db():
+    """
+    Restart the Suricata_to_DB service and timer.
+    """
+    try:
+        # restart both the service and its timer
+        subprocess.run(
+            ["sudo", "systemctl", "restart", "Suricata_to_DB.service",
+                       "Suricata_to_DB.timer"],
+            check=True
+        )
+        return JSONResponse(content={"message": "Suricata_to_DB restarted"}, status_code=200)
+    except subprocess.CalledProcessError as e:
+        # capture stderr if you want more detail
+        return JSONResponse(content={"detail": f"Failed to restart: {e}"}, status_code=500)
+
+@app.get("/status-suricata-db", dependencies=[Depends(verify_admin)])
+async def status_suricata_to_db():
+    """
+    Check whether the Suricata_to_DB service is active.
+    """
+    try:
+        # Query systemd
+        proc = subprocess.run(
+            ["systemctl", "is-active", "Suricata_to_DB.service"],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        state = proc.stdout.strip()  # "active", "inactive", "failed", etc.
+        return JSONResponse(content={"status": state})
+    except Exception as e:
+        return JSONResponse(content={"status": "error", "detail": str(e)}, status_code=500)
+
+@app.get(
+    "/status-snmp-collector",
+    dependencies=[Depends(verify_user)]
+)
+async def status_snmp_collector():
+    """
+    Return the active/inactive/failed state of the snmp_collector.service.
+    """
+    try:
+        proc = subprocess.run(
+            ["systemctl", "is-active", "snmp_collector.service"],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        state = proc.stdout.strip()  # e.g. "active", "inactive", "failed"
+        return JSONResponse(content={"status": state})
+    except Exception as e:
+        # unexpected errors
+        return JSONResponse(
+            content={"status": "error", "detail": str(e)},
+            status_code=500
+        )
+
+# 2) Restart endpoint — admin only
+@app.post(
+    "/restart-snmp-collector",
+    dependencies=[Depends(verify_admin)]
+)
+async def restart_snmp_collector():
+    """
+    Restart both snmp_collector.service and its timer.
+    """
+    try:
+        # If your FastAPI runs as root you can drop "sudo"
+        subprocess.run(
+            ["sudo", "systemctl", "restart",
+             "snmp_collector.service", "snmp_collector.timer"],
+            check=True
+        )
+        return JSONResponse(content={"message": "SNMP collector restarted"})
+    except subprocess.CalledProcessError as e:
+        return JSONResponse(
+            content={"detail": f"Failed to restart: {e}"},
+            status_code=500
+        )
+    
+@app.get(
+    "/status-py-honeypot",
+    dependencies=[Depends(verify_user)]
+)
+async def status_py_honeypot():
+    try:
+        proc = subprocess.run(
+            ["systemctl", "is-active", "py_honeypot.service"],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        state = proc.stdout.strip()  # e.g. "active", "inactive", "failed"
+        return JSONResponse(content={"status": state})
+    except Exception as e:
+        return JSONResponse(
+            content={"status": "error", "detail": str(e)},
+            status_code=500
+        )
+
+# 2) Restart endpoint — admin only
+@app.post(
+    "/restart-py-honeypot",
+    dependencies=[Depends(verify_admin)]
+)
+async def restart_py_honeypot():
+    try:
+        subprocess.run(
+            ["sudo", "systemctl", "restart", "py_honeypot.service"],
+            check=True
+        )
+        return JSONResponse(content={"message": "py_honeypot restarted"})
+    except subprocess.CalledProcessError as e:
+        return JSONResponse(
+            content={"detail": f"Failed to restart: {e}"},
+            status_code=500
+        )
