@@ -1,0 +1,75 @@
+2025-04-22 16:48:49,697 - ERROR - Error registering device: value too long for type character varying(50)
+
+2025-04-22 16:48:49,697 - ERROR - Failed to register device. Exiting.
+2025-04-22 16:49:52,930 - ERROR - Error registering device: value too long for type character varying(50)
+
+2025-04-22 16:49:52,930 - ERROR - Failed to register device. Exiting.
+2025-04-22 16:49:56,854 - ERROR - Error registering device: value too long for type character varying(50)
+
+2025-04-22 16:49:56,854 - ERROR - Failed to register device. Exiting.
+2025-04-22 16:49:57,599 - ERROR - Error registering device: value too long for type character varying(50)
+
+2025-04-22 16:49:57,600 - ERROR - Failed to register device. Exiting.
+2025-04-22 16:49:58,526 - ERROR - Error registering device: value too long for type character varying(50)
+
+2025-04-22 16:49:58,527 - ERROR - Failed to register device. Exiting.
+2025-04-22 16:55:05,215 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-22 16:58:57,263 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-22 16:59:10,112 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-22 16:59:12,113 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.1
+2025-04-22 16:59:12,114 - INFO - File size: 308 bytes
+2025-04-22 16:59:12,114 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-22 16:59:12,379 - INFO - File already analyzed previously
+2025-04-22 16:59:12,379 - INFO - Detection stats: {'malicious': 58, 'suspicious': 0, 'undetected': 9, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 9}
+2025-04-22 16:59:12,379 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-22 16:59:12,379 - WARNING - Malicious: 58, Suspicious: 0
+2025-04-22 16:59:12,380 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.1: Potentially malicious file: 58 detections
+2025-04-22 16:59:12,380 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.1
+2025-04-22 16:59:20,638 - INFO - New file detected: /home/james/Downloads/harmless_test444.txt
+2025-04-22 16:59:22,639 - INFO - Scanning file: /home/james/Downloads/harmless_test444.txt
+2025-04-22 16:59:22,639 - INFO - File size: 54 bytes
+2025-04-22 16:59:22,639 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-22 16:59:22,967 - INFO - File already analyzed previously
+2025-04-22 16:59:22,967 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-22 16:59:22,967 - INFO - File appears safe: /home/james/Downloads/harmless_test444.txt
+2025-04-22 17:02:50,804 - ERROR - Error registering device: value too long for type character varying(50)
+
+2025-04-22 17:02:50,806 - ERROR - Failed to register device. Exiting.
+2025-04-22 17:05:25,659 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-22 17:05:32,716 - INFO - New file detected: /home/james/Downloads/harmless_test44ew4.txt
+2025-04-22 17:05:34,717 - INFO - Scanning file: /home/james/Downloads/harmless_test44ew4.txt
+2025-04-22 17:05:34,717 - INFO - File size: 54 bytes
+2025-04-22 17:05:34,718 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-22 17:05:34,940 - INFO - File already analyzed previously
+2025-04-22 17:05:34,940 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-22 17:05:34,965 - INFO - File appears safe: /home/james/Downloads/harmless_test44ew4.txt
+2025-04-22 17:05:37,829 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-22 17:05:39,829 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.1
+2025-04-22 17:05:39,830 - INFO - File size: 308 bytes
+2025-04-22 17:05:39,830 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-22 17:05:40,150 - INFO - File already analyzed previously
+2025-04-22 17:05:40,150 - INFO - Detection stats: {'malicious': 58, 'suspicious': 0, 'undetected': 9, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 9}
+2025-04-22 17:05:40,172 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-22 17:05:40,173 - WARNING - Malicious: 58, Suspicious: 0
+2025-04-22 17:05:40,173 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.1: Potentially malicious file: 58 detections
+2025-04-22 17:05:40,173 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.1
+2025-04-23 13:23:08,636 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 13:23:48,257 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-23 13:23:50,258 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.1
+2025-04-23 13:23:50,259 - INFO - File size: 308 bytes
+2025-04-23 13:23:50,259 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-23 13:23:50,695 - INFO - File already analyzed previously
+2025-04-23 13:23:50,695 - INFO - Detection stats: {'malicious': 58, 'suspicious': 0, 'undetected': 9, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 9}
+2025-04-23 13:23:50,717 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-23 13:23:50,717 - WARNING - Malicious: 58, Suspicious: 0
+2025-04-23 13:23:50,718 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.1: Potentially malicious file: 58 detections
+2025-04-23 13:23:50,719 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.1
+2025-04-23 13:29:16,529 - INFO - Starting file monitor for directory: /home/*/Downloads
+2025-04-23 13:29:40,969 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 13:33:33,212 - INFO - Starting file monitor for directory: /home/$USER/Downloads
+2025-04-23 13:35:29,883 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 13:38:36,704 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 13:38:52,300 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 13:57:24,931 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 13:58:26,896 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-23 14:02:53,529 - INFO - Starting file monitor for directory: /home/james/Downloads

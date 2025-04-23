@@ -1,6 +1,7 @@
 #db.main
 import psycopg2
-
+import Georges_Scripts.config as config
+import backend.db.main as db
 
 # Function to check if a username exists
 def usernameExists(username):
@@ -18,10 +19,10 @@ def usernameExists(username):
 def connect():
     try:
         conn = psycopg2.connect(
-            dbname="nss",  # Ensure this matches your database name
-            user="postgres",
-            password="password123",  # Use the password you set
-            host="localhost"
+            dbname= config.DB_NAME,  # Ensure this matches your database name
+            user= config.DB_USER,  # Use the user from your config
+            password= config.DB_PASSWORD,  # Use the password you set
+            host=config.DB_HOST,  # Use the host from your config
         )
         cur = conn.cursor()
         return conn, cur

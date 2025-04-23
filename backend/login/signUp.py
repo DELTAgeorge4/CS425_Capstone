@@ -30,6 +30,30 @@ def check_role_exists(role):
     close(conn, cur)
     return result is not None
 
+def delete_user(username):
+    conn, cur = connect()
+    try:
+        cur.execute("DELETE FROM users WHERE username = %s", (username,))
+        conn.commit()
+        print(f"User '{username}' deleted successfully!")
+    except psycopg2.Error as e: 
+        print(f"Error deleting user '{username}': {e}")
+    finally:
+        close(conn, cur)
+        
+def change_user_role(username, new_role):
+    conn, cur = connect()
+    try:
+        cur.execute("UPDATE users SET role = %s WHERE username = %s", (new_role, username))
+        conn.commit()
+        print(f"User '{username}' role changed to '{new_role}' successfully!")
+    except psycopg2.Error as e:
+        print(f"Error changing role for user '{username}': {e}")
+    finally:
+        close(conn, cur)
+        
+        
+
 
     
 

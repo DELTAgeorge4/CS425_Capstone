@@ -198,4 +198,4 @@ def clear_packets_before(time):
 
 
 if __name__ == "__main__":
-    print(get_packets())
+    print([row[4] for row in get_packets()])

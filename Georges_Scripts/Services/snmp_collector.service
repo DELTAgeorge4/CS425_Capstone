@@ -1,10 +1,13 @@
 [Unit]
 Description=SNMP Collector Script
 After=network.target
+StartLimitBurst=0
+StartLimitIntervalSec=0
 
 [Service]
 ExecStart=/usr/bin/python3 /home/CS425_Capstone/Georges_Scripts/snmp_collector.py
 Restart=always
+RestartSec=60
 User=root
 
 [Install]

@@ -43,6 +43,7 @@ function loadUserSettings() {
                 const themeSelect = document.getElementById("theme");
                 if (themeSelect) {
                     themeSelect.value = data.theme;
+                    console.log("Theme select value set to:", data.theme);
                 }
             }
             if (data.font_size) {
@@ -69,6 +70,8 @@ function saveUserSettings() {
     const theme = themeSelect.value;
     const fontSize = fontSelect.value;
 
+    console.log("Selected theme:", theme);
+    console.log("Selected font size:", fontSize);
     fetch("/set-user-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

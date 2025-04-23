@@ -25,8 +25,8 @@ fetch('/network-topology')
     console.error('Error fetching data:', error);
   });
   function drawChart({ nodes, links }) {
-    const width = 1200;
-    const height = 600;
+    const width  = window.innerWidth;
+    const height = window.innerHeight;
   
     const color = d3.scaleOrdinal()
       .domain(["router", "switche", "server", "endpoint"])
@@ -123,5 +123,3 @@ fetch('/network-topology')
       event.subject.fy = null;
     }
   }
-m  
-

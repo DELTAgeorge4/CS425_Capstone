@@ -8,6 +8,8 @@ from typing import List
 import os
 import subprocess
 from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
+
 
 import sys
 import json
@@ -230,6 +232,7 @@ async def set_user_settings(data: UserSettings, request: Request):
     userID = getUserID(username)
     set_theme(userID, data.theme)
     set_font_size(userID, data.font_size)
+    print(f"Theme: {data.theme}, Font Size: {data.font_size}")
     return {"message": "Settings updated successfully"}
 
 
@@ -262,12 +265,16 @@ class createUserData (BaseModel):
     newPassword: str
     newUserRole: str
     
+def check_role_exists2(role):
+    roles = ["admin", "moderator", "guest"]
+    return role in roles
+    
 @app.post("/create-user")
 async def fcreate_user(data: createUserData, request: Request, dependencies=[Depends(verify_admin)]):
     # print("create_user called", data)
     
     role = data.newUserRole
-    if not check_role_exists(role):
+    if not check_role_exists2(role):
         raise HTTPException(status_code=401, detail="Role does not exist")
     
     successful = create_user(data.username, data.newEmail, data.newPassword, data.newUserRole)
@@ -684,35 +691,43 @@ def stop_capture(request: DeviceRequest):
 class ConfigUpdate(BaseModel):
     config: str
 
-@app.post("/update-config-file", dependencies=[Depends(verify_admin)])
+
+@app.post(
+    "/update-config-file",
+    dependencies=[Depends(verify_admin)]
+)
 async def update_config_file(update: ConfigUpdate):
-    # Define the config file path relative to this file
-    file_path = os.path.join(os.path.dirname(__file__), "../Georges_Scripts/config.py")
-    
+    # Same file you GET in /config-file
+    file_path = os.path.join(
+        os.path.dirname(__file__),
+        "../Georges_Scripts/config.py"
+    )
+
     try:
-        # Write the new configuration to the file
         with open(file_path, "w") as f:
             f.write(update.config)
-        
-        # Optionally reload the configuration in your app.
-        # For instance, if you want changes to be reflected immediately,
-        # you might call your load_default_config() or load_config_file() function:
-        from config import load_default_config
-        load_default_config()
-
-        return JSONResponse(content={"message": "Configuration updated successfully."})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error updating config file: {str(e)}")
+        # Return the actual exception message so you can debug
+        raise HTTPException(status_code=500,
+            detail=f"Error writing config file: {e}"
+        )
 
-@app.get("/config-file", dependencies=[Depends(verify_moderator_or_admin)])
+    return JSONResponse(content={"message": "Configuration updated successfully."})
+
+
+@app.get(
+    "/config-file",
+    dependencies=[Depends(verify_moderator_or_admin)]
+)
 async def get_config_file(request: Request):
-    file_path = os.path.join(os.path.dirname(__file__), "../Georges_Scripts/config copy.py")
+    file_path = os.path.join(
+        os.path.dirname(__file__),
+        "../Georges_Scripts/config.py"
+    )
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Config file not found.")
-    
-    with open(file_path, "r") as file:
-        data = file.read()
-    
+    with open(file_path, "r") as f:
+        data = f.read()
     return JSONResponse(content={"config": data})
 
 @app.post("/restart-suricata-db", dependencies=[Depends(verify_admin)])
@@ -834,3 +849,21 @@ async def restart_py_honeypot():
             content={"detail": f"Failed to restart: {e}"},
             status_code=500
         )
+
+@app.post("/generate_and_download_pcap")
+def generate_and_download_pcap():
+    try:
+        result = subprocess.run(["python", "DB_To_GUI/make_pcap.py"], capture_output=True, text=True)
+        if result.returncode != 0:
+            return {"status": "error", "stderr": result.stderr}
+        pcap_path = "full_output.pcap"
+        if os.path.exists(pcap_path):
+            return FileResponse(
+                path=pcap_path,
+                filename="capture.pcap",
+                media_type="application/vnd.tcpdump.pcap"
+            )
+        else:
+            return {"status": "error", "message": "PCAP file not found"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

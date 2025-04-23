@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     newRuleBtn.type = 'button';
     newRuleBtn.id = 'create-rules';
     newRuleBtn.value = 'Create New Rule';
-    rightPageContent.appendChild(newRuleBtn);
+    // rightPageContent.appendChild(newRuleBtn);
 
     // Status message area
     const statusMessage = document.createElement('p');
@@ -166,6 +166,14 @@ document.addEventListener('DOMContentLoaded', async function () {
       cb.style.display = 'none';
       fileContainer.appendChild(cb);
 
+      if (enabled) {
+        fileContainer.style.backgroundColor = 'var(--rule-enabled-bg)';
+        fileContainer.style.color = 'var(--rule-enabled-text)';
+      } else {
+        fileContainer.style.backgroundColor = 'var(--rule-disabled-bg)';
+        fileContainer.style.color = 'var(--rule-disabled-text)';
+        // fileContainer.style.color = '#721c24';
+      }
       fileContainer.appendChild(contentDiv);
       rulesList.appendChild(fileContainer);
     }

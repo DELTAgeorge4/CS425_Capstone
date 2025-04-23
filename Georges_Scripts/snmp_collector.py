@@ -10,6 +10,7 @@ import signal
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Event
+import time
 
 # Database connection details
 DB_HOST = config.DB_HOST
@@ -158,7 +159,7 @@ def get_host_data(host):
 def insert_into_postgres(data):
     # Check if the data is valid
     if not data or any(value is None for key, value in data.items() if key != "timestamp"):
-        #print("Invalid or incomplete data. Skipping insertion for this host.")
+        print("Invalid or incomplete data. Skipping insertion for this host.")
         return
 
     try:
@@ -187,20 +188,36 @@ def insert_into_postgres(data):
 
 # Main block with multithreading
 if __name__ == "__main__":
+    import time
+    import sys
+
+    # If you haven’t defined SNMP_INTERVAL in your config, add it there (e.g. SNMP_INTERVAL = 300)
+    interval = getattr(config, "SNMP_INTERVAL", 300)
+
     if not HOSTS:
         print("No valid hosts to process. Please check the HOST_CONFIG value.")
-    else:
-        try:
+        sys.exit(1)
+
+    print(f"Starting SNMP collector loop (interval = {interval}s). Press Ctrl+C to stop.")
+
+    try:
+        while not shutdown_event.is_set():
+            # Submit a batch of SNMP collection tasks
             with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                 futures = {executor.submit(process_host, host): host for host in HOSTS}
-
-                # Process futures as they complete
                 for future in as_completed(futures):
                     if shutdown_event.is_set():
-                        break  # Stop processing if shutdown is signaled
+                        break
                     try:
                         future.result()
                     except Exception as e:
                         print(f"Error processing host {futures[future]}: {e}")
-        except KeyboardInterrupt:
-            print("\nScanning interrupted by user. Exiting gracefully.")
+
+            # Sleep until next poll
+            print(f"Sleeping for {interval} seconds before next run...")
+            time.sleep(interval)
+
+    except KeyboardInterrupt:
+        print("\nCtrl+C received, shutting down collector...")
+
+    print("SNMP collector stopped.")

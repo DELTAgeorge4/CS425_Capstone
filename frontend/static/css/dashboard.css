@@ -2,6 +2,7 @@
 /* 🌎 GLOBAL THEME & FONT SETTINGS */
 /* ============================= */
 
+
 /* Default (Light Theme) */
 :root {
   --background: #ffffff;
@@ -12,8 +13,13 @@
   --button-text: white;
   --border-color: #ccc;
   --font-size: 16px;
+  --rule-enabled-bg: #d4edda;
+  --rule-enabled-text: #155724;
+  --rule-disabled-bg: #f8d7da;
+  --rule-disabled-text: #721c24;
 }
-/* Sepia - Warm, paper-like theme */
+
+/* Sepia */
 [data-theme="sepia"] {
   --background: #f1e7d0;
   --text-color: #5f4b32;
@@ -22,9 +28,13 @@
   --button-bg: #b56b45;
   --button-text: #f1e7d0;
   --border-color: #aa8976;
+  --rule-enabled-bg: #e8d5b7;
+  --rule-enabled-text: #3c2f1d;
+  --rule-disabled-bg: #e8c4b7;
+  --rule-disabled-text: #8c3d28;
 }
 
-/* Midnight Blue - Deep blue dark theme */
+/* Midnight Blue */
 [data-theme="midnight-blue"] {
   --background: #0f2027;
   --text-color: #e0e0e0;
@@ -33,9 +43,13 @@
   --button-bg: #203a43;
   --button-text: #ffffff;
   --border-color: #2c5364;
+  --rule-enabled-bg: #1a3c47;
+  --rule-enabled-text: #4dd0e1;
+  --rule-disabled-bg: #47242a;
+  --rule-disabled-text: #ef5350;
 }
 
-/* Forest - Calming green theme */
+/* Forest */
 [data-theme="forest"] {
   --background: #2c3e50;
   --text-color: #ecf0f1;
@@ -44,9 +58,13 @@
   --button-bg: #27ae60;
   --button-text: #ffffff;
   --border-color: #1e8449;
+  --rule-enabled-bg: #1e854f;
+  --rule-enabled-text: #e8f5e9;
+  --rule-disabled-bg: #6e2c2c;
+  --rule-disabled-text: #ffcdd2;
 }
 
-/* Lavender - Soft purple theme */
+/* Lavender */
 [data-theme="lavender"] {
   --background: #f5f0ff;
   --text-color: #333333;
@@ -55,9 +73,13 @@
   --button-bg: #9370db;
   --button-text: #ffffff;
   --border-color: #c8b6e2;
+  --rule-enabled-bg: #d1c4e9;
+  --rule-enabled-text: #4a148c;
+  --rule-disabled-bg: #f8bbd0;
+  --rule-disabled-text: #880e4f;
 }
 
-/* Sunset - Warm evening colors */
+/* Sunset */
 [data-theme="sunset"] {
   --background: #ff7e5f;
   --text-color: #ffffff;
@@ -66,9 +88,13 @@
   --button-bg: #feb47b;
   --button-text: #4a154b;
   --border-color: #ffffff;
+  --rule-enabled-bg: #ffab91;
+  --rule-enabled-text: #4a1414;
+  --rule-disabled-bg: #ff8a65;
+  --rule-disabled-text: #bf360c;
 }
 
-/* Mint - Fresh, cool light theme */
+/* Mint */
 [data-theme="mint"] {
   --background: #e4f5e8;
   --text-color: #2d3436;
@@ -77,8 +103,11 @@
   --button-bg: #39b385;
   --button-text: #ffffff;
   --border-color: #b8e3c9;
+  --rule-enabled-bg: #c8e6c9;
+  --rule-enabled-text: #1b5e20;
+  --rule-disabled-bg: #ffcdd2;
+  --rule-disabled-text: #b71c1c;
 }
-
 
 /* Dark Mode */
 [data-theme="dark"] {
@@ -89,58 +118,83 @@
   --button-bg: #76ABAE;
   --button-text: white;
   --border-color: #444;
+  --rule-enabled-bg: #2e7d32;
+  --rule-enabled-text: #e8f5e9;
+  --rule-disabled-bg: #c62828;
+  --rule-disabled-text: #ffcdd2;
 }
 
 /* High Contrast Dark */
 [data-theme="high-contrast-dark"] {
   --background: #121212;
   --text-color: #FFFFFF;
-  --accent: #FFD700; /* Gold */
-  --link-color: #00FFFF; /* Cyan */
-  --button-bg: #FF4500; /* Orange-Red */
-  --button-text: #FFFFFF;
+  --accent: #FFD700;
+  --link-color: #00FFFF;
+  --button-bg: #FF4500;
+  --button-text: #000000;
   --border-color: #FFFFFF;
+  --rule-enabled-bg: #00FF00;
+  --rule-enabled-text: #000000;
+  --rule-disabled-bg: #FF0000;
+  --rule-disabled-text: #FFFFFF;
 }
 
 [data-theme="high-contrast-yellow-black"] {
   --background: #000000;
-  --text-color: #FFFF00; /* Yellow */
-  --accent: #00FF00; /* Lime */
-  --link-color: #FF00FF; /* Magenta */
-  --button-bg: #FFFF00; /* Yellow */
+  --text-color: #FFFF00;
+  --accent: #00FF00;
+  --link-color: #FF00FF;
+  --button-bg: #FFFF00;
   --button-text: #000000;
   --border-color: #FFFF00;
+  --rule-enabled-bg: #00FF00;
+  --rule-enabled-text: #000000;
+  --rule-disabled-bg: #FF0000;
+  --rule-disabled-text: #FFFF00;
 }
 
 [data-theme="high-contrast-blue-white"] {
   --background: #FFFFFF;
-  --text-color: #00008B; /* Dark Blue */
-  --accent: #FF0000; /* Red */
-  --link-color: #8B0000; /* Dark Red */
-  --button-bg: #0000CD; /* Medium Blue */
+  --text-color: #00008B;
+  --accent: #FF0000;
+  --link-color: #8B0000;
+  --button-bg: #0000CD;
   --button-text: #FFFFFF;
-  --border-color: #000080; /* Navy */
+  --border-color: #000080;
+  --rule-enabled-bg: #e8f5e9;
+  --rule-enabled-text: #004d40;
+  --rule-disabled-bg: #ffebee;
+  --rule-disabled-text: #b71c1c;
 }
 
 [data-theme="high-contrast-green"] {
   --background: #000000;
-  --text-color: #00FF00; /* Lime Green */
+  --text-color: #00FF00;
   --accent: #FFFFFF;
-  --link-color: #00FFFF; /* Cyan */
-  --button-bg: #32CD32; /* Lime Green */
+  --link-color: #00FFFF;
+  --button-bg: #32CD32;
   --button-text: #000000;
   --border-color: #00FF00;
+  --rule-enabled-bg: #00FF00;
+  --rule-enabled-text: #000000;
+  --rule-disabled-bg: #FF0000;
+  --rule-disabled-text: #FFFFFF;
 }
 
 [data-theme="high-contrast-orange"] {
   --background: #000000;
-  --text-color: #FFA500; /* Orange */
+  --text-color: #FFA500;
   --accent: #FFFFFF;
-  --link-color: #00FFFF; /* Cyan */
-  --button-bg: #FF8C00; /* Dark Orange */
+  --link-color: #00FFFF;
+  --button-bg: #FF8C00;
   --button-text: #000000;
   --border-color: #FFA500;
+  --rule-enabled-bg: #32CD32;
+  --rule-enabled-text: #000000;
+  --rule-disabled-bg: #FF4500;
+  --rule-disabled-text: #FFFFFF;
 }
+
 /* High Contrast Light */
 [data-theme="high-contrast-light"] {
   --background: #ABDDF6;
@@ -148,28 +202,40 @@
   --accent: #994ff3;
   --link-color: #0000FF;
   --button-bg: #5ECFD7;
-  --button-text: #181818 ;
+  --button-text: #181818;
   --border-color: #000;
+  --rule-enabled-bg: #81c784;
+  --rule-enabled-text: #1b5e20;
+  --rule-disabled-bg: #e57373;
+  --rule-disabled-text: #b71c1c;
 }
 
 [data-theme="high-contrast-purple"] {
   --background: #FFFFFF;
-  --text-color: #4B0082; /* Indigo */
-  --accent: #FF4500; /* Orange-Red */
-  --link-color: #0000FF; /* Blue */
-  --button-bg: #800080; /* Purple */
+  --text-color: #4B0082;
+  --accent: #FF4500;
+  --link-color: #0000FF;
+  --button-bg: #800080;
   --button-text: #FFFFFF;
   --border-color: #4B0082;
+  --rule-enabled-bg: #ce93d8;
+  --rule-enabled-text: #4a148c;
+  --rule-disabled-bg: #ff8a65;
+  --rule-disabled-text: #bf360c;
 }
 
 [data-theme="high-contrast-blue-yellow"] {
-  --background: #00008B; /* Dark Blue */
-  --text-color: #FFFF00; /* Yellow */
-  --accent: #FF00FF; /* Magenta */
+  --background: #00008B;
+  --text-color: #FFFF00;
+  --accent: #FF00FF;
   --link-color: #FFFFFF;
-  --button-bg: #FFFF00; /* Yellow */
-  --button-text: #000080; /* Navy */
+  --button-bg: #FFFF00;
+  --button-text: #000080;
   --border-color: #FFFF00;
+  --rule-enabled-bg: #00FF00;
+  --rule-enabled-text: #000080;
+  --rule-disabled-bg: #FF0000;
+  --rule-disabled-text: #FFFF00;
 }
 /* Font Sizes controlled by data-font attribute on <html> */
 [data-font="small"]  { --font-size: 12px; }
@@ -408,6 +474,8 @@ tr:nth-child(even) {
  width: 100%;
   height: 100%;
 }
+
+
 
 
 /* Modal Background */

@@ -60,26 +60,46 @@ document.addEventListener("DOMContentLoaded", async () => {
             return "Error fetching data";
         }
     };
-
-
+    
+    const getDefaultTextColor = () => {
+        return getComputedStyle(document.body).color;
+    };
+    
+    
     // Initialize charts
     const netCtx = document.getElementById('net_chart').getContext('2d');
     const transportCtx = document.getElementById('transport_chart').getContext('2d');
     const applicationCtx = document.getElementById('application_chart').getContext('2d');
 
     const createChart = (ctx, title) => {
+        const textColor = getDefaultTextColor();
+    
         return new Chart(ctx, {
             type: 'pie',
-            data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+            data: {
+                labels: [],
+                datasets: [{ data: [], backgroundColor: [] }]
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
-                    title: { display: true, text: title, font: { size: 18 }, color: '#FFF' }
+                    title: {
+                        display: true,
+                        text: title,
+                        font: { size: 18 },
+                        color: textColor
+                    },
+                    legend: {
+                        labels: {
+                            color: textColor // makes legend match text too
+                        }
+                    }
                 }
             }
         });
     };
+    
 
     const net_chart = createChart(netCtx, 'Network Layer Traffic');
     const transport_chart = createChart(transportCtx, 'Transport Layer Traffic');
@@ -207,15 +227,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             output.textContent = `Error: ${error.message}`;
         }
     });
-    
-    
 
-    // Handle get packets button click
-    document.getElementById('get_packets').addEventListener('click', () => {
-        const startTime = document.getElementById('start_time').value || 'None';
-        const endTime = document.getElementById('end_time').value || 'None';
-        const protocol = document.getElementById('protocol').value || 'None';
-        executeScript('/packets', { startTime, endTime, protocol });
+    // JS
+    document.getElementById('make_pcap').addEventListener('click', () => {
+        document.getElementById('downloadForm').submit();
     });
 
+    
 });

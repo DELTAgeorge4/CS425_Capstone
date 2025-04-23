@@ -2,9 +2,14 @@
 .container {
   width: 100%;
   display: flex;
-  height: 100vh; /* Ensures it takes up the full viewport height */
+  height: 100%; /* Ensures it takes up the full viewport height */
 }
 
+.d-flex {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
 #page-content {
   width: 100%;
   height: 100%;
@@ -13,6 +18,19 @@
   margin: 0; /* Removes default margin */
 }
 
+.leftpane {
+  width: 100%;
+  background-color: var(--background);
+  padding: 20px; /* Adds padding around the content */
+  border-right: 1px solid #ddd; /* Adds a right border for separation */
+  height: 100vh; /* Ensures it takes up the full viewport height */
+}
+.rightpane {
+  width: 100%;
+  background-color: var(--background);
+  padding: 20px; /* Adds padding around the content */
+  height: 100%; /* Ensures it takes up the full viewport height */
+}
 .login-logs-table {
   width: 100%;
   border-collapse: collapse;
@@ -43,7 +61,7 @@
 .status-indicator {
   width: 10px;
   height: 10px;
-  background-color: red;
+  background-color: green;
   border-radius: 50%;
   margin-right: 10px;
   color: red;
@@ -55,6 +73,8 @@
   overflow-y: auto;
   margin-top: 20px;
   padding-right: 10px;
+  width: 100%;
+  height: 100%;
 }
 
 .admin-activity h3 {

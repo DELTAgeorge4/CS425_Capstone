@@ -107,8 +107,10 @@ async function loadAccountInfo() {
 
                 //calls the delete user function still needs to be implemented
                 deleteButton.addEventListener("click", async () => {
-                    console.log("Delete button clicked", user[0]);
-    
+                    if (confirm("Are you sure you want to delete this user?: " + user[0])) {
+                        console.log("Delete button clicked", user[0]);
+
+                    }
                 });
 
                 //calls the reset password function

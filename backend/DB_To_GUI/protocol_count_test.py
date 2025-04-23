@@ -1,56 +1,69 @@
-def identify_application_protocol(packet):
-    """ Identify application-layer protocols using payload signatures. """
-    if Raw in packet and len(packet[Raw].load) > 0:  # Ensure there's a payload
-        raw_data = bytes(packet[Raw].load)
+from scapy.all import Ether, IP, TCP, UDP, Raw
 
-        # 🌐 Web Protocols
-        if raw_data.startswith(b'GET ') or raw_data.startswith(b'POST ') or b'HTTP/' in raw_data:
-            return 'HTTP'
-        if raw_data.startswith(b'\x16\x03') and b'TLS' in raw_data:
-            return 'TLS/SSL'
-        
-        # 📡 Network Services
-        if raw_data.startswith(b'\x00\x01') or b'QUERY' in raw_data:
-            return 'DNS'
-        if raw_data.startswith(b'SSH-2.0') or raw_data.startswith(b'SSH-1.99'):
-            return 'SSH'  # Detect SSH handshake
-        if raw_data[:2] == b'\x00\x00' and len(raw_data) > 20:
-            return 'Encrypted SSH'  # Detect encrypted SSH traffic
-        if raw_data.startswith(b'220') and b'FTP' in raw_data:
-            return 'FTP'
-        if raw_data.startswith(b'\x03\x00') or raw_data.startswith(b'\x03\x01'):
-            return 'SMB'
-        if raw_data.startswith(b'\x17\x03'):
-            return 'TLS Application Data'
-
-        # 📧 Email Protocols
-        if b'SMTP' in raw_data:
-            return 'SMTP'
-        if b'IMAP' in raw_data:
-            return 'IMAP'
-        if b'POP3' in raw_data:
-            return 'POP3'
-        
-        # 🖥️ Remote Access Protocols
-        if raw_data.startswith(b'RFB 003.') or b'VNC' in raw_data:
-            return 'VNC'
-        if raw_data.startswith(b'\x03\x00\x00\x0b\x06\xd0\x00\x00'):
-            return 'RDP'
-
-        # 🔐 Directory Services
-        if b'LDAP' in raw_data:
-            return 'LDAP'
-        
-        # 🔌 IoT/Network Management
-        if b'SNMP' in raw_data:
-            return 'SNMP'
-
-        # 📡 Routing Protocols
-        if b'BGP' in raw_data:
-            return 'BGP'
-
-        # 💾 Database Protocols
-        if b'MySQL' in raw_data:
-            return 'MySQL'
+def analyze_packet(byte_list):
+    # Convert list of ints to bytes
+    raw_bytes = bytes(byte_list)
     
-    return None  # Return None instead of 'Unknown' to avoid unnecessary increments
+    try:
+        pkt = Ether(raw_bytes)
+    except Exception as e:
+        print("Failed to parse packet:", e)
+        return
+
+    print("\n--- Packet Protocol Analysis ---")
+
+    # Layer 2 - Ethernet
+    if pkt.haslayer(Ether):
+        print("L2: Ethernet")
+
+    # Layer 3 - IP
+    if pkt.haslayer(IP):
+        print("L3: IPv4")
+        ip_layer = pkt[IP]
+        print(f"    Source IP: {ip_layer.src}")
+        print(f"    Dest IP:   {ip_layer.dst}")
+    else:
+        print("L3: Not IPv4")
+
+    # Layer 4 - TCP/UDP
+    if pkt.haslayer(TCP):
+        tcp_layer = pkt[TCP]
+        print("L4: TCP")
+        print(f"    Source Port: {tcp_layer.sport}")
+        print(f"    Dest Port:   {tcp_layer.dport}")
+    elif pkt.haslayer(UDP):
+        udp_layer = pkt[UDP]
+        print("L4: UDP")
+        print(f"    Source Port: {udp_layer.sport}")
+        print(f"    Dest Port:   {udp_layer.dport}")
+    else:
+        print("L4: Not TCP/UDP")
+
+    # Layer 7 - Application guess
+    if pkt.haslayer(Raw):
+        l7_guess = "Unknown"
+        if pkt.haslayer(TCP):
+            dport = pkt[TCP].dport
+            if dport == 80 or dport == 8080:
+                l7_guess = "HTTP"
+            elif dport == 443:
+                l7_guess = "HTTPS"
+            elif dport == 22:
+                l7_guess = "SSH"
+            elif dport == 53:
+                l7_guess = "DNS"
+        elif pkt.haslayer(UDP):
+            dport = pkt[UDP].dport
+            if dport == 53:
+                l7_guess = "DNS"
+            elif dport == 123:
+                l7_guess = "NTP"
+
+        print(f"L7: Possibly {l7_guess} (based on port {dport})")
+    else:
+        print("L7: No application data")
+
+# Example usage
+if __name__ == "__main__":
+    packet = [156, 5, 214, 56, 60, 202, 188, 36, 17, 153, 14, 247, 8, 0, 69, 8, 0, 140, 136, 79, 64, 0, 64, 6, 1, 104, 192, 168, 14, 14, 143, 170, 82, 76, 0, 22, 191, 107, 207, 230, 118, 103, 91, 62, 142, 70, 80, 24, 25, 79, 177, 43, 0, 0, 205, 253, 112, 0, 27, 34, 251, 215, 64, 100, 91, 192, 29, 92, 232, 28, 16, 69, 91, 175, 160, 74, 85, 254, 156, 128, 235, 219, 177, 188, 60, 238, 142, 94, 219, 153, 68, 222, 40, 206, 28, 165, 223, 145, 29, 103, 40, 176, 187, 171, 81, 71, 43, 73, 141, 190, 242, 151, 207, 88, 166, 67, 85, 17, 155, 151, 61, 44, 141, 52, 113, 72, 33, 86, 24, 87, 213, 51, 133, 177, 168, 73, 216, 234, 87, 0, 165, 74, 84, 29, 155, 130, 29, 52, 181, 48, 29, 244, 185, 238]
+    analyze_packet(packet)

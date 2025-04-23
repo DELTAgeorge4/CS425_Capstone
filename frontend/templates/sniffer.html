@@ -16,7 +16,10 @@
 
         <button id="start_capture">Start Capture</button>
         <button id="stop_capture">Stop Capture</button>
-        <button id="get_packets">Get Packets</button>
+
+        <button id="make_pcap">Generate and Download PCAP</button>
+        <form id="downloadForm" action="/generate_and_download_pcap" method="post" style="display:none;"></form>
+
         
         <!-- Panel to show device info -->
         <div id="device_info_panel" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
