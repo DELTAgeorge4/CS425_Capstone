@@ -1,0 +1,19 @@
+[Unit]
+Description=TotalVirus File Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/total_virus
+
+# point ExecStart at the wrapper
+ExecStartPre=bash -c "/opt/total_virus/install_dependencies.sh"
+ExecStart=/opt/total_virus/venv/bin/python3 /opt/total_virus/main.py
+
+# restart if it ever dies
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

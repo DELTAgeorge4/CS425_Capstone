@@ -4,6 +4,7 @@ const pathToIframeMap = {
     'topology': 'topology-frame',
     'honeypot-page': 'honeypot-frame',
     'devices': 'devices-frame',
+    'SIEM': 'SIEM-frame',
     'ips': 'ips-frame',
     'sniffer': 'sniffer-frame',
     'settings': 'settings-frame',
@@ -34,6 +35,8 @@ function showIframeForPath(path) {
     const iframe = document.getElementById(iframeId);
     if (iframe) {
         iframe.style.display = 'block';
+        iframe.contentWindow.location.reload();
+        
     }
     
     // Update active nav link
@@ -65,6 +68,7 @@ function showIframe(iframeId) {
     const iframe = document.getElementById(iframeId);
     if (iframe) {
         iframe.style.display = 'block';
+        iframe.contentWindow.location.reload();
     }
 }
 

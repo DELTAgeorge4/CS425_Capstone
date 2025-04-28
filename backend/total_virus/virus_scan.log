@@ -1,1 +1,223 @@
 2025-04-22 16:50:41,936 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 13:11:01,933 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 13:14:39,614 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 13:36:00,623 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 13:56:23,942 - INFO - Starting file monitor for directory: /home/root/Downloads
+2025-04-24 13:59:49,542 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 14:00:18,832 - INFO - Starting file monitor for directory: /home/root/Downloads
+2025-04-24 14:01:39,825 - INFO - Starting file monitor for directory: /home/root/Downloads
+2025-04-24 14:02:01,784 - INFO - Starting file monitor for directory: /home/root/Downloads
+2025-04-24 14:03:10,681 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 14:51:59,612 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 14:52:17,513 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-24 14:52:19,514 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.1
+2025-04-24 14:52:19,514 - INFO - File size: 308 bytes
+2025-04-24 14:52:19,514 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-24 14:52:20,025 - INFO - File already analyzed previously
+2025-04-24 14:52:20,025 - INFO - Detection stats: {'malicious': 59, 'suspicious': 0, 'undetected': 6, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 2, 'type-unsupported': 9}
+2025-04-24 14:52:20,048 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-24 14:52:20,048 - WARNING - Malicious: 59, Suspicious: 0
+2025-04-24 14:52:20,049 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.1: Potentially malicious file: 59 detections
+2025-04-24 14:52:20,049 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.1
+2025-04-24 14:52:20,069 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.2
+2025-04-24 14:52:22,070 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.2
+2025-04-24 14:52:22,070 - INFO - File size: 308 bytes
+2025-04-24 14:52:22,070 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-24 14:52:22,248 - INFO - File already analyzed previously
+2025-04-24 14:52:22,248 - INFO - Detection stats: {'malicious': 59, 'suspicious': 0, 'undetected': 6, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 2, 'type-unsupported': 9}
+2025-04-24 14:52:22,271 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.2
+2025-04-24 14:52:22,272 - WARNING - Malicious: 59, Suspicious: 0
+2025-04-24 14:52:22,272 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.2: Potentially malicious file: 59 detections
+2025-04-24 14:52:22,273 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.2
+2025-04-24 14:52:22,773 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.3
+2025-04-24 14:52:24,774 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.3
+2025-04-24 14:52:24,775 - INFO - File size: 308 bytes
+2025-04-24 14:52:24,775 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-24 14:52:24,966 - INFO - File already analyzed previously
+2025-04-24 14:52:24,967 - INFO - Detection stats: {'malicious': 59, 'suspicious': 0, 'undetected': 6, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 2, 'type-unsupported': 9}
+2025-04-24 14:52:24,988 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.3
+2025-04-24 14:52:24,988 - WARNING - Malicious: 59, Suspicious: 0
+2025-04-24 14:52:24,989 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.3: Potentially malicious file: 59 detections
+2025-04-24 14:52:24,989 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.3
+2025-04-24 15:01:39,389 - INFO - New file detected: /home/james/Downloads/harmless_test44f.txt
+2025-04-24 15:01:41,390 - INFO - Scanning file: /home/james/Downloads/harmless_test44f.txt
+2025-04-24 15:01:41,392 - INFO - File size: 54 bytes
+2025-04-24 15:01:41,392 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:41,697 - INFO - File already analyzed previously
+2025-04-24 15:01:41,698 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:41,717 - INFO - File appears safe: /home/james/Downloads/harmless_test44f.txt
+2025-04-24 15:01:41,962 - INFO - New file detected: /home/james/Downloads/harmless_test4d4f.txt
+2025-04-24 15:01:43,962 - INFO - Scanning file: /home/james/Downloads/harmless_test4d4f.txt
+2025-04-24 15:01:43,963 - INFO - File size: 54 bytes
+2025-04-24 15:01:43,963 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:44,216 - INFO - File already analyzed previously
+2025-04-24 15:01:44,216 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:44,243 - INFO - File appears safe: /home/james/Downloads/harmless_test4d4f.txt
+2025-04-24 15:01:44,244 - INFO - New file detected: /home/james/Downloads/harmless_test4ds4f.txt
+2025-04-24 15:01:46,245 - INFO - Scanning file: /home/james/Downloads/harmless_test4ds4f.txt
+2025-04-24 15:01:46,245 - INFO - File size: 54 bytes
+2025-04-24 15:01:46,245 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:46,473 - INFO - File already analyzed previously
+2025-04-24 15:01:46,473 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:46,493 - INFO - File appears safe: /home/james/Downloads/harmless_test4ds4f.txt
+2025-04-24 15:01:46,493 - INFO - New file detected: /home/james/Downloads/harmless_test4ds4ff.txt
+2025-04-24 15:01:48,494 - INFO - Scanning file: /home/james/Downloads/harmless_test4ds4ff.txt
+2025-04-24 15:01:48,495 - INFO - File size: 54 bytes
+2025-04-24 15:01:48,495 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:48,826 - INFO - File already analyzed previously
+2025-04-24 15:01:48,826 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:48,848 - INFO - File appears safe: /home/james/Downloads/harmless_test4ds4ff.txt
+2025-04-24 15:01:48,849 - INFO - New file detected: /home/james/Downloads/harmless_test4ds4sff.txt
+2025-04-24 15:01:50,850 - INFO - Scanning file: /home/james/Downloads/harmless_test4ds4sff.txt
+2025-04-24 15:01:50,850 - INFO - File size: 54 bytes
+2025-04-24 15:01:50,851 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:51,128 - INFO - File already analyzed previously
+2025-04-24 15:01:51,128 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:51,148 - INFO - File appears safe: /home/james/Downloads/harmless_test4ds4sff.txt
+2025-04-24 15:01:51,149 - INFO - New file detected: /home/james/Downloads/harmless_test4ds4sfgf.txt
+2025-04-24 15:01:53,149 - INFO - Scanning file: /home/james/Downloads/harmless_test4ds4sfgf.txt
+2025-04-24 15:01:53,150 - INFO - File size: 54 bytes
+2025-04-24 15:01:53,151 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:53,456 - INFO - File already analyzed previously
+2025-04-24 15:01:53,456 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:53,475 - INFO - File appears safe: /home/james/Downloads/harmless_test4ds4sfgf.txt
+2025-04-24 15:01:53,475 - INFO - New file detected: /home/james/Downloads/harmless_test4ds4sfgfr.txt
+2025-04-24 15:01:55,476 - INFO - Scanning file: /home/james/Downloads/harmless_test4ds4sfgfr.txt
+2025-04-24 15:01:55,476 - INFO - File size: 54 bytes
+2025-04-24 15:01:55,476 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:55,648 - INFO - File already analyzed previously
+2025-04-24 15:01:55,648 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:55,670 - INFO - File appears safe: /home/james/Downloads/harmless_test4ds4sfgfr.txt
+2025-04-24 15:01:55,670 - INFO - New file detected: /home/james/Downloads/harmless_test4ds4sfagf.txt
+2025-04-24 15:01:57,671 - INFO - Scanning file: /home/james/Downloads/harmless_test4ds4sfagf.txt
+2025-04-24 15:01:57,671 - INFO - File size: 54 bytes
+2025-04-24 15:01:57,672 - INFO - File hash: 75f221f17b8f5cb22f0ca3491be30aa66ee24b06138dbd895a72493caf8fea6e
+2025-04-24 15:01:57,826 - INFO - File already analyzed previously
+2025-04-24 15:01:57,826 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 61, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 15}
+2025-04-24 15:01:57,848 - INFO - File appears safe: /home/james/Downloads/harmless_test4ds4sfagf.txt
+2025-04-24 15:08:59,976 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 15:09:07,814 - INFO - New file detected: /home/james/Downloads/7z2409-x64.exe
+2025-04-24 15:09:09,822 - INFO - Scanning file: /home/james/Downloads/7z2409-x64.exe
+2025-04-24 15:09:09,822 - INFO - File size: 1637343 bytes
+2025-04-24 15:09:09,822 - INFO - File hash: bdd1a33de78618d16ee4ce148b849932c05d0015491c34887846d431d29f308e
+2025-04-24 15:09:10,153 - INFO - File already analyzed previously
+2025-04-24 15:09:10,153 - INFO - Detection stats: {'malicious': 3, 'suspicious': 0, 'undetected': 67, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 1, 'type-unsupported': 5}
+2025-04-24 15:09:10,175 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/7z2409-x64.exe
+2025-04-24 15:09:10,175 - WARNING - Malicious: 3, Suspicious: 0
+2025-04-24 15:09:10,175 - WARNING - Action required for /home/james/Downloads/7z2409-x64.exe: Potentially malicious file: 3 detections
+2025-04-24 15:09:10,176 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/7z2409-x64.exe
+2025-04-24 15:10:13,444 - INFO - New file detected: /home/james/Downloads/7z2409-x64(1).exe
+2025-04-24 15:10:15,452 - INFO - Scanning file: /home/james/Downloads/7z2409-x64(1).exe
+2025-04-24 15:10:15,452 - INFO - File size: 1637343 bytes
+2025-04-24 15:10:15,452 - INFO - File hash: bdd1a33de78618d16ee4ce148b849932c05d0015491c34887846d431d29f308e
+2025-04-24 15:10:17,678 - INFO - File already analyzed previously
+2025-04-24 15:10:17,678 - INFO - Detection stats: {'malicious': 3, 'suspicious': 0, 'undetected': 67, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 1, 'type-unsupported': 5}
+2025-04-24 15:10:17,698 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/7z2409-x64(1).exe
+2025-04-24 15:10:17,698 - WARNING - Malicious: 3, Suspicious: 0
+2025-04-24 15:10:17,699 - WARNING - Action required for /home/james/Downloads/7z2409-x64(1).exe: Potentially malicious file: 3 detections
+2025-04-24 15:10:17,699 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/7z2409-x64(1).exe
+2025-04-24 15:11:01,080 - INFO - New file detected: /home/james/Downloads/iphone-data.zip
+2025-04-24 15:11:03,144 - INFO - Scanning file: /home/james/Downloads/iphone-data.zip
+2025-04-24 15:11:03,144 - INFO - File size: 15728640 bytes
+2025-04-24 15:11:03,144 - INFO - File hash: cb9ab519640d0be53d2f7a3d25c9b22f45d5c92a4c9a0c3b14e952aea67177a3
+2025-04-24 15:11:03,351 - INFO - File not previously analyzed: ('NotFoundError', 'File "cb9ab519640d0be53d2f7a3d25c9b22f45d5c92a4c9a0c3b14e952aea67177a3" not found')
+2025-04-24 15:11:03,352 - INFO - Uploading file for scanning...
+2025-04-24 15:11:04,292 - ERROR - Error uploading file: ('ClientError', 'Missing end boundary in multipart body.')
+2025-04-24 15:13:58,231 - INFO - New file detected: /home/james/Downloads/7z2409-arm64.exe
+2025-04-24 15:14:00,238 - INFO - Scanning file: /home/james/Downloads/7z2409-arm64.exe
+2025-04-24 15:14:00,238 - INFO - File size: 1580077 bytes
+2025-04-24 15:14:00,239 - INFO - File hash: bc7b3a18f218f4916e1c4996751468f96e46eb7e97e91e8c1553d74793037f1a
+2025-04-24 15:14:00,445 - INFO - File already analyzed previously
+2025-04-24 15:14:00,445 - INFO - Detection stats: {'malicious': 1, 'suspicious': 0, 'undetected': 67, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 2, 'type-unsupported': 6}
+2025-04-24 15:14:00,467 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/7z2409-arm64.exe
+2025-04-24 15:14:00,467 - WARNING - Malicious: 1, Suspicious: 0
+2025-04-24 15:14:00,468 - WARNING - Action required for /home/james/Downloads/7z2409-arm64.exe: Potentially malicious file: 1 detections
+2025-04-24 15:14:00,468 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/7z2409-arm64.exe
+2025-04-24 15:29:58,922 - INFO - New file detected: /home/james/Downloads/Linux_Reader.exe
+2025-04-24 15:30:00,983 - INFO - Scanning file: /home/james/Downloads/Linux_Reader.exe
+2025-04-24 15:30:00,984 - INFO - File size: 14155776 bytes
+2025-04-24 15:30:00,984 - INFO - File hash: f165f8254ce4e8dfc72faf09b52c6f5cda2f628e27c5c36397c7fbfa6fc57e91
+2025-04-24 15:30:01,295 - INFO - File not previously analyzed: ('NotFoundError', 'File "f165f8254ce4e8dfc72faf09b52c6f5cda2f628e27c5c36397c7fbfa6fc57e91" not found')
+2025-04-24 15:30:01,295 - INFO - Uploading file for scanning...
+2025-04-24 15:30:02,216 - ERROR - Error uploading file: ('ClientError', 'Missing end boundary in multipart body.')
+2025-04-24 15:32:27,220 - INFO - New file detected: /home/james/Downloads/DB.Browser.for.SQLite-v3.13.1-win64.msi
+2025-04-24 15:32:29,259 - INFO - Scanning file: /home/james/Downloads/DB.Browser.for.SQLite-v3.13.1-win64.msi
+2025-04-24 15:32:29,260 - INFO - File size: 9437184 bytes
+2025-04-24 15:32:29,260 - INFO - File hash: dbc316aeb70fe951b015ba39f922535df8b9af3c3a710e427935a9f5f715cefb
+2025-04-24 15:32:29,481 - INFO - File not previously analyzed: ('NotFoundError', 'File "dbc316aeb70fe951b015ba39f922535df8b9af3c3a710e427935a9f5f715cefb" not found')
+2025-04-24 15:32:29,482 - INFO - Uploading file for scanning...
+2025-04-24 15:32:30,153 - ERROR - Error uploading file: ('ClientError', 'Missing end boundary in multipart body.')
+2025-04-24 15:32:53,400 - INFO - New file detected: /home/james/Downloads/bedrock_server_how_to.html
+2025-04-24 15:32:55,401 - INFO - Scanning file: /home/james/Downloads/bedrock_server_how_to.html
+2025-04-24 15:32:55,401 - INFO - File size: 28195 bytes
+2025-04-24 15:32:55,402 - INFO - File hash: ab079ee6750b073cfdc0b306db6fd8630644c440f0bef0b4d86925ef47f62d7d
+2025-04-24 15:32:55,603 - INFO - File not previously analyzed: ('NotFoundError', 'File "ab079ee6750b073cfdc0b306db6fd8630644c440f0bef0b4d86925ef47f62d7d" not found')
+2025-04-24 15:32:55,603 - INFO - Uploading file for scanning...
+2025-04-24 15:32:57,187 - INFO - Analysis ID: ODI3ZTk1N2Q1YjE0NmRiYTE2ZmQyZWUxZWNkMzc0OGU6MTc0NTUzMzk3Nw==
+2025-04-24 15:32:57,233 - INFO - Attempt 1/12 to check analysis status...
+2025-04-24 15:33:07,467 - INFO - Current status: queued
+2025-04-24 15:33:07,467 - INFO - Attempt 2/12 to check analysis status...
+2025-04-24 15:33:17,601 - INFO - Current status: queued
+2025-04-24 15:33:17,601 - INFO - Attempt 3/12 to check analysis status...
+2025-04-24 15:33:27,754 - INFO - Current status: queued
+2025-04-24 15:33:27,754 - INFO - Attempt 4/12 to check analysis status...
+2025-04-24 15:33:37,919 - INFO - Current status: queued
+2025-04-24 15:33:37,919 - INFO - Attempt 5/12 to check analysis status...
+2025-04-24 15:33:48,052 - INFO - Current status: queued
+2025-04-24 15:33:48,052 - INFO - Attempt 6/12 to check analysis status...
+2025-04-24 15:33:58,185 - INFO - Current status: queued
+2025-04-24 15:33:58,185 - INFO - Attempt 7/12 to check analysis status...
+2025-04-24 15:34:08,323 - INFO - Current status: queued
+2025-04-24 15:34:08,323 - INFO - Attempt 8/12 to check analysis status...
+2025-04-24 15:34:18,445 - INFO - Current status: queued
+2025-04-24 15:34:18,445 - INFO - Attempt 9/12 to check analysis status...
+2025-04-24 15:34:28,587 - INFO - Current status: completed
+2025-04-24 15:34:28,588 - INFO - Scan completed! Malicious: 0, Suspicious: 0
+2025-04-24 15:34:28,608 - INFO - File appears safe: /home/james/Downloads/bedrock_server_how_to.html
+2025-04-24 15:35:07,670 - INFO - New file detected: /home/james/Downloads/harmlessfile.txt
+2025-04-24 15:35:09,671 - INFO - Scanning file: /home/james/Downloads/harmlessfile.txt
+2025-04-24 15:35:09,672 - INFO - File size: 28 bytes
+2025-04-24 15:35:09,672 - INFO - File hash: c3c11fbb6b538d28c6f742b3c8a1429484ba3e64d6c30162660281a89fc3e946
+2025-04-24 15:35:10,046 - INFO - File already analyzed previously
+2025-04-24 15:35:10,046 - INFO - Detection stats: {'malicious': 0, 'suspicious': 0, 'undetected': 62, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 0, 'type-unsupported': 14}
+2025-04-24 15:35:10,066 - INFO - File appears safe: /home/james/Downloads/harmlessfile.txt
+2025-04-24 15:44:23,814 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 15:44:40,610 - INFO - New file detected: /home/james/Downloads/harmlessfile.sh
+2025-04-24 15:44:42,611 - INFO - Scanning file: /home/james/Downloads/harmlessfile.sh
+2025-04-24 15:44:42,612 - INFO - File size: 28 bytes
+2025-04-24 15:44:42,612 - INFO - File hash: c3c11fbb6b538d28c6f742b3c8a1429484ba3e64d6c30162660281a89fc3e946
+2025-04-24 15:44:42,612 - ERROR - Unexpected error scanning /home/james/Downloads/harmlessfile.sh: API key can not be an empty string
+2025-04-25 11:41:47,722 - INFO - Starting file monitor for directories: ['/home/james/Downloads']
+2025-04-25 11:41:47,723 - INFO - Started monitoring: /home/james/Downloads
+2025-04-25 11:42:34,072 - INFO - Starting file monitor for directories: ['/home/administrator/Downloads', '/home/nick/Downloads', '/home/james/Downloads']
+2025-04-25 11:42:34,074 - INFO - Started monitoring: /home/administrator/Downloads
+2025-04-25 11:42:34,075 - INFO - Started monitoring: /home/nick/Downloads
+2025-04-25 11:42:34,076 - INFO - Started monitoring: /home/james/Downloads
+2025-04-25 11:44:05,142 - INFO - New file detected: /home/nick/Downloads/capture (10).pcap
+2025-04-25 11:44:07,144 - INFO - Scanning file: /home/nick/Downloads/capture (10).pcap
+2025-04-25 11:44:07,144 - INFO - File size: 252787 bytes
+2025-04-25 11:44:07,145 - INFO - File hash: ef34ad3149e301e95f9d3dbbb6c49dcd4f0c56c2b8c237a7926e83e0ff78e7e1
+2025-04-25 11:44:07,145 - ERROR - Unexpected error scanning /home/nick/Downloads/capture (10).pcap: API key can not be an empty string
+2025-04-25 11:44:43,788 - INFO - Starting file monitor for directories: ['/home/administrator/Downloads', '/home/nick/Downloads', '/home/james/Downloads']
+2025-04-25 11:44:43,789 - INFO - Started monitoring: /home/administrator/Downloads
+2025-04-25 11:44:43,790 - INFO - Started monitoring: /home/nick/Downloads
+2025-04-25 11:44:43,791 - INFO - Started monitoring: /home/james/Downloads
+2025-04-25 11:45:11,963 - INFO - New file detected: /home/nick/Downloads/capture (1).pcap
+2025-04-25 11:45:13,966 - INFO - Scanning file: /home/nick/Downloads/capture (1).pcap
+2025-04-25 11:45:13,966 - INFO - File size: 468538 bytes
+2025-04-25 11:45:13,967 - INFO - File hash: de5954d3a68cad17309d0fb9280cfdf22fc33456b59bad54f7abfd1690cd5afc
+2025-04-25 11:45:14,389 - INFO - File not previously analyzed: ('NotFoundError', 'File "de5954d3a68cad17309d0fb9280cfdf22fc33456b59bad54f7abfd1690cd5afc" not found')
+2025-04-25 11:45:14,389 - INFO - Uploading file for scanning...
+2025-04-25 11:45:16,058 - INFO - Analysis ID: ZDU5MWE2MDI1NTNjOWIzYWM0ODNhNWVkNjU1ZDVhYjk6MTc0NTYwNjcxNQ==
+2025-04-25 11:45:16,089 - INFO - Attempt 1/12 to check analysis status...
+2025-04-25 11:45:26,339 - INFO - Current status: queued
+2025-04-25 11:45:26,339 - INFO - Attempt 2/12 to check analysis status...
+2025-04-25 11:45:36,508 - INFO - Current status: queued
+2025-04-25 11:45:36,508 - INFO - Attempt 3/12 to check analysis status...
+2025-04-25 11:45:46,683 - INFO - Current status: queued
+2025-04-25 11:45:46,683 - INFO - Attempt 4/12 to check analysis status...
+2025-04-25 11:45:56,819 - INFO - Current status: queued
+2025-04-25 11:45:56,820 - INFO - Attempt 5/12 to check analysis status...
+2025-04-25 11:46:06,975 - INFO - Current status: completed
+2025-04-25 11:46:06,975 - INFO - Scan completed! Malicious: 0, Suspicious: 0
+2025-04-25 11:46:06,990 - INFO - File appears safe: /home/nick/Downloads/capture (1).pcap

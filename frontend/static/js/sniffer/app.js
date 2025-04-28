@@ -3,20 +3,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const infoPanel = document.getElementById("device_info_panel");
 
     try {
-        // Fetch available devices
         const response = await fetch('/get_device_list');
         const data = await response.json();
-        
-        // Extract devices and split into an array
+
         const devices = data.devices.split('\n').filter(device => device.trim() !== "");
 
-        // Add "No device selected" as the default option
         const defaultOption = document.createElement("option");
         defaultOption.textContent = "No device selected";
         defaultOption.value = "";
         dropdown.appendChild(defaultOption);
 
-        // Populate the dropdown with device options
         devices.forEach(device => {
             const option = document.createElement("option");
             option.textContent = device;
@@ -24,15 +20,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             dropdown.appendChild(option);
         });
 
-        
-
-        // Show device info when a new device is selected
         dropdown.addEventListener("change", async () => {
             const deviceName = dropdown.value;
-            const firstOption = dropdown.options[0]; // Get "No device selected" option
-        
+            const firstOption = dropdown.options[0];
+
             if (deviceName) {
-                firstOption.disabled = true; // Disable "No device selected"
+                firstOption.disabled = true;
                 infoPanel.innerHTML = "Loading...";
                 infoPanel.style.display = "block";
                 infoPanel.innerHTML = await fetchDeviceInfo(deviceName);
@@ -44,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("Error loading devices:", error);
     }
-    // Function to fetch device info
+
     const fetchDeviceInfo = async (deviceName) => {
         try {
             const response = await fetch('/device', {
@@ -60,56 +53,95 @@ document.addEventListener("DOMContentLoaded", async () => {
             return "Error fetching data";
         }
     };
-    
-    const getDefaultTextColor = () => {
-        return getComputedStyle(document.body).color;
-    };
-    
-    
-    // Initialize charts
-    const netCtx = document.getElementById('net_chart').getContext('2d');
-    const transportCtx = document.getElementById('transport_chart').getContext('2d');
-    const applicationCtx = document.getElementById('application_chart').getContext('2d');
 
-    const createChart = (ctx, title) => {
-        const textColor = getDefaultTextColor();
-    
-        return new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: [],
-                datasets: [{ data: [], backgroundColor: [] }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: title,
-                        font: { size: 18 },
-                        color: textColor
-                    },
-                    legend: {
-                        labels: {
-                            color: textColor // makes legend match text too
+    function getChartTextColor() {
+        const computedStyle = getComputedStyle(document.documentElement);
+        return computedStyle.getPropertyValue('--text-color').trim() || '#333333';
+    }
+
+    const netCtx = document.getElementById('net_chart');
+    const transportCtx = document.getElementById('transport_chart');
+    const applicationCtx = document.getElementById('application_chart');
+
+    let net_chart, transport_chart, application_chart;
+
+    if (netCtx && transportCtx && applicationCtx) {
+        const textColor = getChartTextColor();
+
+        // Set default colors for all charts
+        Chart.defaults.color = textColor;
+
+        const createChart = (ctx, title) => {
+            return new Chart(ctx.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{ data: [], backgroundColor: [] }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: title,
+                            font: { size: 18 },
+                            color: textColor
+                        },
+                        legend: {
+                            labels: {
+                                color: textColor
+                            }
                         }
                     }
                 }
-            }
-        });
-    };
-    
+            });
+        };
 
-    const net_chart = createChart(netCtx, 'Network Layer Traffic');
-    const transport_chart = createChart(transportCtx, 'Transport Layer Traffic');
-    const application_chart = createChart(applicationCtx, 'Application Layer Traffic');
+        net_chart = createChart(netCtx, 'Network Layer Traffic');
+        transport_chart = createChart(transportCtx, 'Transport Layer Traffic');
+        application_chart = createChart(applicationCtx, 'Application Layer Traffic');
+
+        // Listen for theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    const newTextColor = getChartTextColor();
+                    
+                    // Update chart colors
+                    Chart.defaults.color = newTextColor;
+                    
+                    // Update existing charts
+                    if (net_chart) {
+                        net_chart.options.plugins.title.color = newTextColor;
+                        net_chart.options.plugins.legend.labels.color = newTextColor;
+                        net_chart.update();
+                    }
+                    if (transport_chart) {
+                        transport_chart.options.plugins.title.color = newTextColor;
+                        transport_chart.options.plugins.legend.labels.color = newTextColor;
+                        transport_chart.update();
+                    }
+                    if (application_chart) {
+                        application_chart.options.plugins.title.color = newTextColor;
+                        application_chart.options.plugins.legend.labels.color = newTextColor;
+                        application_chart.update();
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+    }
 
     const generateColors = (numLabels) => {
         const colors = [];
         const colorPalette = ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'pink', 'cyan', 'lime', 'indigo'];
         for (let i = 0; i < numLabels; i++) {
-            colors.push(colorPalette[i % colorPalette.length]); // Cycle through the color palette
+            colors.push(colorPalette[i % colorPalette.length]);
         }
         return colors;
     };
@@ -124,22 +156,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         chart.update();
     };
 
-    try {
-        const response = await fetch('/get_chart_data');
-        const chartData = await response.json();
+    const fetchAndUpdateCharts = async () => {
+        const startInput = document.getElementById("start_time").value;
+        const endInput = document.getElementById("end_time").value;
+        const params = new URLSearchParams();
 
-        if (chartData) {
-            updateChartData(net_chart, chartData.net_chart_data);
-            updateChartData(transport_chart, chartData.transport_chart_data);
-            updateChartData(application_chart, chartData.application_chart_data);
-        } else {
-            console.error('Received empty chart data');
+        if (startInput) params.append("start", startInput);
+        if (endInput) params.append("end", endInput);
+
+        try {
+            const response = await fetch(`/get_chart_data?${params.toString()}`);
+            const chartData = await response.json();
+
+            if (chartData) {
+                updateChartData(net_chart, chartData.net_chart_data);
+                updateChartData(transport_chart, chartData.transport_chart_data);
+                updateChartData(application_chart, chartData.application_chart_data);
+            } else {
+                console.error('Received empty chart data');
+            }
+        } catch (error) {
+            console.error('Error fetching chart data:', error);
         }
-    } catch (error) {
-        console.error('Error fetching chart data:', error);
-    }
+    };
 
-    // Function to send a POST request with data
+    await fetchAndUpdateCharts(); // Initial load
+
+    document.getElementById("start_time").addEventListener("change", fetchAndUpdateCharts);
+    document.getElementById("end_time").addEventListener("change", fetchAndUpdateCharts);
+
     const executeScript = async (endpoint, body = null) => {
         try {
             const response = await fetch(endpoint, {
@@ -155,83 +200,100 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // Handle capture button click
     document.getElementById('start_capture').addEventListener('click', async () => {
         const dropdown = document.getElementById("device_selection_box");
         const deviceName = dropdown.value;
         const output = document.getElementById("output");
-        const infoPanel = document.getElementById("device_info_panel"); // Get device info panel
-    
+        const infoPanel = document.getElementById("device_info_panel");
+
         if (!deviceName) {
             output.textContent = "Please select a device.";
             return;
         }
-    
+
         try {
             const response = await fetch('/packet_capture', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ device: deviceName })
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.detail || "Unknown error");
             }
-    
-            output.textContent = data.message; // Ensure correct output message
-    
-            // Update device info panel
+
+            output.textContent = data.message;
             infoPanel.innerHTML = "Updating device info...";
             infoPanel.innerHTML = await fetchDeviceInfo(deviceName);
-    
+
         } catch (error) {
             console.error('Fetch error:', error);
             output.textContent = `Error: ${error.message}`;
         }
     });
-    
+
     document.getElementById('stop_capture').addEventListener('click', async () => {
         const dropdown = document.getElementById("device_selection_box");
         const deviceName = dropdown.value;
         const output = document.getElementById("output");
-        const infoPanel = document.getElementById("device_info_panel"); // Get device info panel
-    
+        const infoPanel = document.getElementById("device_info_panel");
+
         if (!deviceName) {
             output.textContent = "Please select a device.";
             return;
         }
-    
+
         try {
             const response = await fetch('/stop_capture', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ device: deviceName })
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.detail || "Unknown error");
             }
-    
-            output.textContent = data.message; // Show success message
-    
-            // Update device info panel
+
+            output.textContent = data.message;
             infoPanel.innerHTML = "Updating device info...";
             infoPanel.innerHTML = await fetchDeviceInfo(deviceName);
-    
+
         } catch (error) {
             console.error('Fetch error:', error);
             output.textContent = `Error: ${error.message}`;
         }
     });
 
-    // JS
     document.getElementById('make_pcap').addEventListener('click', () => {
-        document.getElementById('downloadForm').submit();
-    });
-
+        const start = document.getElementById("start_time").value;
+        const end = document.getElementById("end_time").value;
     
+        const form = document.getElementById('downloadForm');
+        
+        // Set form action to include no query string (POST form body will handle the data)
+        form.action = '/generate_and_download_pcap';
+    
+        // Create hidden fields for start and end times
+        const startInput = document.createElement('input');
+        startInput.type = 'hidden';
+        startInput.name = 'start';
+        startInput.value = start;
+    
+        const endInput = document.createElement('input');
+        endInput.type = 'hidden';
+        endInput.name = 'end';
+        endInput.value = end;
+    
+        // Remove any previous hidden fields to avoid duplication
+        form.querySelectorAll('input[name="start"], input[name="end"]').forEach(e => e.remove());
+    
+        form.appendChild(startInput);
+        form.appendChild(endInput);
+    
+        form.submit();
+    });
 });

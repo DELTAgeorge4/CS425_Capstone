@@ -1,8 +1,7 @@
-
 #to run /home/CS425_Capstone$ python3 -m backend.total_virus.main 
 import sys
-# import subprocess
 import os
+import pwd  # Added for user directory iteration
 
 # Add parent directory to path if running directly
 if __name__ == "__main__":
@@ -21,18 +20,36 @@ import socket
 import platform
 import uuid
 import psycopg2
-import Georges_Scripts.config as config
+import config  # Import your config module
 
-# Import database functions
-try:
-    from backend.db.main import connect, close
-except ImportError:
+
+
+def connect():
     try:
-        from db.main import connect, close
-    except ImportError:
-        # If we're running from CS425_Capstone directory
-        from ..db.main import connect, close
+        conn = psycopg2.connect(
+            dbname= config.DB_NAME,  # Ensure this matches your database name
+            user= config.DB_USER,  # Use the user from your config
+            password= config.DB_PASSWORD,  # Use the password you set
+            host=config.DB_HOST,  # Use the host from your config
+        )
+        cur = conn.cursor()
+        return conn, cur
+    except psycopg2.Error as e:
+        print(f"Error connecting to the database: {e}")
+        raise SystemExit("Database connection failed.")
 
+
+# Function to close the database connection
+def close(conn, cur):
+    try:
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error closing the database connection: {e}")
+        
+        
+        
+        
 # Configure logging with both file and console output
 logging.basicConfig(
     level=logging.INFO,
@@ -42,11 +59,6 @@ logging.basicConfig(
         logging.StreamHandler()  # This will print to console
     ]
 )
-
-user = os.environ.get('USER')
-print("The user is : ", user)
-PATH_TO_MONITOR = os.path.join("/home", user, "Downloads")
-print("The path to monitor is : ", PATH_TO_MONITOR)
 
 # Database functions
 def get_device_info():
@@ -384,13 +396,25 @@ class NewFileHandler(FileSystemEventHandler):
 
 # Main function
 def main():
-    # Configuration
-    api_key_path = config.VIRUSTOTAL_API_KEY_PATH  # Path to your API key file
-    downloads_dir = PATH_TO_MONITOR  # Your download directory
+    downloads_dirs = []
     
-    # Read API key
-    with open(api_key_path, "r") as f:
-        api_key = f.read().strip()
+    # Get all users' Download directories
+    try:
+        for user in pwd.getpwall():
+            # Only check real users (typically UID >= 1000 for regular users)
+            if user.pw_uid >= 1000 and user.pw_dir.startswith('/home/'):
+                downloads_path = os.path.join(user.pw_dir, 'Downloads')
+                if os.path.exists(downloads_path):
+                    downloads_dirs.append(downloads_path)
+    except Exception as e:
+        logging.error(f"Error getting user directories: {e}")
+        return
+    
+    if not downloads_dirs:
+        logging.error("No Downloads directories found")
+        return
+    
+    api_key = config.VIRUSTOTAL_API_KEY
     
     # Register or update device
     device_id = register_or_update_device()
@@ -398,25 +422,33 @@ def main():
         logging.error("Failed to register device. Exiting.")
         return
     
-    print(f"Starting file monitor for directory: {downloads_dir}")
+    print(f"Starting file monitor for directories: {downloads_dirs}")
     print(f"Device registered with ID: {device_id}")
     print(f"Waiting for new files to be downloaded...")
     print("Press Ctrl+C to stop monitoring")
-    logging.info(f"Starting file monitor for directory: {downloads_dir}")
+    logging.info(f"Starting file monitor for directories: {downloads_dirs}")
     
-    # Create and start the file system observer
+    # Create and start file system observers for each directory
     event_handler = NewFileHandler(api_key, device_id)
-    observer = Observer()
-    observer.schedule(event_handler, downloads_dir, recursive=False)
-    observer.start()
+    observers = []
+    
+    for downloads_dir in downloads_dirs:
+        observer = Observer()
+        observer.schedule(event_handler, downloads_dir, recursive=False)
+        observer.start()
+        observers.append(observer)
+        logging.info(f"Started monitoring: {downloads_dir}")
     
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        observer.stop()
+        for observer in observers:
+            observer.stop()
         print("\nFile monitoring stopped.")
-    observer.join()
+    
+    for observer in observers:
+        observer.join()
 
 if __name__ == "__main__":
     main()

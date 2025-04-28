@@ -4,28 +4,51 @@ from email.mime.multipart import MIMEMultipart
 import psycopg2
 from psycopg2 import sql
 from datetime import datetime
-import config2
+import config
 import time
-import backend.db.main as backend
+# import backend.db.main as backend
+
+def connect():
+    try:
+        conn = psycopg2.connect(
+            dbname= config.DB_NAME,  # Ensure this matches your database name
+            user= config.DB_USER,  # Use the user from your config
+            password= config.DB_PASSWORD,  # Use the password you set
+            host=config.DB_HOST,  # Use the host from your config
+        )
+        cur = conn.cursor()
+        return conn, cur
+    except psycopg2.Error as e:
+        print(f"Error connecting to the database: {e}")
+        raise SystemExit("Database connection failed.")
 
 
+# Function to close the database connection
+def close(conn, cur):
+    try:
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error closing the database connection: {e}")
+        
+        
 
 # Database connection details
-DB_HOST = config2.DB_HOST
-DB_NAME = config2.DB_NAME
-DB_USER = config2.DB_USER
-DB_PASSWORD = config2.DB_PASSWORD
+DB_HOST = config.DB_HOST
+DB_NAME = config.DB_NAME
+DB_USER = config.DB_USER
+DB_PASSWORD = config.DB_PASSWORD
 
 # Email configuration
-SMTP_SERVER = config2.SMTP_SERVER
-SMTP_PORT = config2.SMTP_PORT
-EMAIL_USER = config2.EMAIL_USER
-EMAIL_PASSWORD = config2.EMAIL_PASSWORD
-RECIPIENTS = config2.EMAIL_RECIPIENTS
+SMTP_SERVER = config.SMTP_SERVER
+SMTP_PORT = config.SMTP_PORT
+EMAIL_USER = config.EMAIL_USER
+EMAIL_PASSWORD = config.EMAIL_PASSWORD
+RECIPIENTS = config.EMAIL_RECIPIENTS
 
 # Global thresholds for RAM and disk usage alerts
-RAM_USAGE_THRESHOLD = config2.RAM_USAGE_THRESHOLD
-DISK_USAGE_THRESHOLD = config2.DISK_USAGE_THRESHOLD
+RAM_USAGE_THRESHOLD = config.RAM_USAGE_THRESHOLD
+DISK_USAGE_THRESHOLD = config.DISK_USAGE_THRESHOLD
 
 # Enable or disable Suricata and Honeypot alerts
 ENABLE_SURICATA_ALERTS = True
@@ -42,7 +65,7 @@ POLL_INTERVAL = 60  # Check for new rows every 60 seconds
 
 
 def fetch_snmp_email_recipients():
-    conn, cur = backend.connect()
+    conn, cur = connect()
     try:
         cur.execute('''SELECT u.email
         FROM users u
@@ -68,7 +91,7 @@ def fetch_ips_email_recipients():
         print(f"Error fetching email recipients: {e}")
         return []
 def fetch_honeypot_email_recipients():
-    conn, cur = backend.connect()
+    conn, cur = connect()
     try:
         cur.execute('''SELECT u.email
         FROM users u
@@ -127,6 +150,7 @@ def fetch_high_usage(metric, threshold):
 # Check and send alerts for high RAM and Disk usage.
 def process_snmp_alerts():
     # Check for high RAM usage
+    snmp_recipient = fetch_snmp_email_recipients()
     if RAM_USAGE_THRESHOLD is not None:
         ram_rows = fetch_high_usage("ram_percent_used", RAM_USAGE_THRESHOLD)
         for row in ram_rows:
@@ -139,7 +163,7 @@ def process_snmp_alerts():
                 f"Timestamp: {timestamp}\n"
             )
             
-            snmp_recipient = fetch_snmp_email_recipients()
+            
             if snmp_recipient:
                 send_email_alert(subject, body, snmp_recipient)
             else:
@@ -158,7 +182,7 @@ def process_snmp_alerts():
                 f"Disk Usage: {usage}%\n"
                 f"Timestamp: {timestamp}\n"
             )
-            send_email_alert(subject, body)
+            send_email_alert(subject, body, snmp_recipient)
 
 # Fetch new rows added to a table since the last ID.
 def fetch_new_rows(table, id_column, last_id):
@@ -251,6 +275,8 @@ def main():
 
 if __name__ == "__main__":
     try:
+        #test email
+        send_email_alert("Test Subject", "Test Body", ["jamesdak231@gmail.com"])
         main()
     except KeyboardInterrupt:
         print("\nScript interrupted. Exiting...")

@@ -73,3 +73,15 @@
 2025-04-23 13:57:24,931 - INFO - Starting file monitor for directory: /home/james/Downloads
 2025-04-23 13:58:26,896 - INFO - Starting file monitor for directory: /home/james/Downloads
 2025-04-23 14:02:53,529 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 12:57:55,466 - INFO - Starting file monitor for directory: /home/james/Downloads
+2025-04-24 12:58:14,105 - INFO - New file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-24 12:58:16,107 - INFO - Scanning file: /home/james/Downloads/eicarcom2.zip.1
+2025-04-24 12:58:16,107 - INFO - File size: 308 bytes
+2025-04-24 12:58:16,107 - INFO - File hash: e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397
+2025-04-24 12:58:16,554 - INFO - File already analyzed previously
+2025-04-24 12:58:16,554 - INFO - Detection stats: {'malicious': 59, 'suspicious': 0, 'undetected': 6, 'harmless': 0, 'timeout': 0, 'confirmed-timeout': 0, 'failure': 2, 'type-unsupported': 9}
+2025-04-24 12:58:16,573 - WARNING - ALERT: Potentially malicious file detected: /home/james/Downloads/eicarcom2.zip.1
+2025-04-24 12:58:16,573 - WARNING - Malicious: 59, Suspicious: 0
+2025-04-24 12:58:16,573 - WARNING - Action required for /home/james/Downloads/eicarcom2.zip.1: Potentially malicious file: 59 detections
+2025-04-24 12:58:16,574 - INFO - Moved suspicious file to quarantine: /home/james/quarantine/eicarcom2.zip.1
+2025-04-24 13:03:34,753 - INFO - Starting file monitor for directory: /home/james/Downloads

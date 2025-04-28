@@ -1,0 +1,13 @@
+pre {
+    background-color: black;
+    padding: 10px;
+    margin: 10px;
+}
+#page-content {
+    margin: 0;
+    width: 95%;
+}
+  
+.table-container {
+    overflow-x: auto;
+}

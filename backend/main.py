@@ -9,6 +9,9 @@ import os
 import subprocess
 from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
+from datetime import datetime
+from typing import Optional
+
 
 
 import sys
@@ -17,14 +20,14 @@ import json
 
 sys.path.append("..")
 from .login.loginScript import login, getUserRole, changePassword, resetPassword, getUsers, getUserID, log_to_db, fetch_all_login_logs, get_recent_failed_attempts
-from .login.signUp import create_user, check_role_exists
+from .login.signUp import create_user, check_role_exists, get_user_notification_preferences, set_user_notification_preferences
 from .DB_To_GUI import Get_Honeypot_Info
 from .DB_To_GUI import Get_SNMP_Info
 from .DB_To_GUI import Get_Suricata_Info
 from .DB_To_GUI import Sniffer
 from .DB_To_GUI import protocol_counter
 from .theme.DB_theme import get_theme, set_theme, set_font_size, get_font_size
-
+from .db_vt.main import get_vt_results
 
 
 #res = Get_Honeypot_Info()
@@ -147,14 +150,29 @@ async def topology(request: Request):
 async def theme_settings(request: Request):
     return templates.TemplateResponse("settings_theme.html", {"request": request})
 
+@app.get("/f/notification-settings", dependencies=[Depends(verify_user)])
+async def notification_settings(request: Request):
+    return templates.TemplateResponse("settings_notification.html", {"request": request})
 
-
+@app.get("/user-notification-settings", dependencies=[Depends(verify_user)])
+async def user_notification_settings(request: Request):
+    username = request.session.get("username")
+    userID = getUserID(username)
+    userNotificationPreferences = get_user_notification_preferences(userID)
+    return {"userNotificationPreferences": userNotificationPreferences}
 
 
 @app.get("/f/config-settings", dependencies=[Depends(verify_user)])
 async def theme_settings(request: Request):
     return templates.TemplateResponse("settings_configuration.html", {"request": request})
 
+@app.get("/f/SIEM", dependencies=[Depends(verify_user)])
+async def SIEM(request: Request):
+    return templates.TemplateResponse("SIEM.html", {"request": request})
+
+@app.get("/SIEM", dependencies=[Depends(verify_user)])
+async def SIEM2(request: Request):
+    return templates.TemplateResponse("layout.html", {"request": request})
 
 @app.get("/f/devices", dependencies=[Depends(verify_user)])
 async def devices(request: Request):
@@ -181,6 +199,8 @@ async def accounts(request: Request):
 @app.get("/honeypot-page", dependencies=[Depends(verify_user)], name="honeypot-page")
 async def honeypotPage(request: Request):
     return templates.TemplateResponse("layout.html", {"request": request})
+
+
 
 @app.get("/dashboard", dependencies=[Depends(verify_user)])
 async def home(request: Request):
@@ -235,7 +255,24 @@ async def set_user_settings(data: UserSettings, request: Request):
     print(f"Theme: {data.theme}, Font Size: {data.font_size}")
     return {"message": "Settings updated successfully"}
 
+class UserNotificationSettings(BaseModel):
+    Honeypot: bool
+    SNMP: bool
+    IPS: bool
 
+@app.post("/set-notification-settings", dependencies=[Depends(verify_user)])
+async def set_notification_settings(data: UserNotificationSettings, request: Request):
+    print("Parsed Data:", data)
+    # Convert the object to a list for your database function
+    notifications_list = [data.Honeypot, data.SNMP, data.IPS]
+    userID = getUserID(request.session.get("username"))
+    for notif in data:
+        print(notif)
+        print(notif[0])
+        print(notif[1])
+        set_user_notification_preferences(userID, notif[0], notif[1])
+    
+    
 @app.get("/nav", dependencies=[Depends(verify_user)])
 async def nav(request: Request):
     return templates.TemplateResponse("nav.html", {"request": request})
@@ -442,6 +479,13 @@ def list_rule_files():
 
 SURICATA_ACTIONS = {"alert", "drop", "pass", "reject", "log", "activate", "dynamic", "monitor"}
 
+@app.get("/vt-results", dependencies=[Depends(verify_user)])
+def get_vt_results_endpoint():
+    results, columns = get_vt_results()
+    print(len(results))
+    print(type(results))
+    return {"header_info": columns, "vt_results": results}
+
 @app.get("/honeypot-logs", dependencies=[Depends(verify_user)])
 def display_honeypot_logs():
      results = Get_Honeypot_Info()
@@ -503,19 +547,22 @@ class ChartData(BaseModel):
     transport_chart_data: dict
     application_chart_data: dict
 
-@app.get("/get_chart_data", response_model=ChartData)
-async def get_chart_data():
-    # Example data with labels as keys
-    protocol_data = protocol_counter.get_protocol_counts()
-    net_data = protocol_data['network_layer']
-    transport_data = protocol_data['transport_layer']
-    application_data = protocol_data['application_layer']
-    
-    return JSONResponse(content={
-        "net_chart_data": net_data,
-        "transport_chart_data": transport_data,
-        "application_chart_data": application_data
-    })
+@app.get("/get_chart_data")
+async def get_chart_data(start: Optional[str] = None, end: Optional[str] = None):
+    try:
+        start_dt = datetime.fromisoformat(start) if start else datetime.min
+        end_dt = datetime.fromisoformat(end) if end else datetime.max
+
+        protocol_data = protocol_counter.get_protocol_counts(start=start_dt, end=end_dt)
+
+        return JSONResponse(content={
+            "net_chart_data": protocol_data['network_layer'],
+            "transport_chart_data": protocol_data['transport_layer'],
+            "application_chart_data": protocol_data['application_layer']
+        })
+    except Exception as e:
+        print("Chart data error:", str(e))
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 def read_until_input_needed(process):
@@ -851,11 +898,23 @@ async def restart_py_honeypot():
         )
 
 @app.post("/generate_and_download_pcap")
-def generate_and_download_pcap():
+async def generate_and_download_pcap(request: Request):
+    form = await request.form()
+    start = form.get("start")
+    end = form.get("end")
+
     try:
-        result = subprocess.run(["python", "DB_To_GUI/make_pcap.py"], capture_output=True, text=True)
+        args = ["python", "DB_To_GUI/make_pcap.py"]
+        if start:
+            args += ["--start", start]
+        if end:
+            args += ["--end", end]
+
+        result = subprocess.run(args, capture_output=True, text=True)
+
         if result.returncode != 0:
             return {"status": "error", "stderr": result.stderr}
+
         pcap_path = "full_output.pcap"
         if os.path.exists(pcap_path):
             return FileResponse(
@@ -865,5 +924,6 @@ def generate_and_download_pcap():
             )
         else:
             return {"status": "error", "message": "PCAP file not found"}
+
     except Exception as e:
         return {"status": "error", "message": str(e)}

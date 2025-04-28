@@ -46,12 +46,16 @@ function setActiveAndShowContent(element) {
     // Hide all settings containers
     document.getElementById("theme-settings-container").style.display = "none";
     document.getElementById("config-settings-container").style.display = "none";
+    document.getElementById("notifications-settings-container").style.display = "none";
+    
    
     // Show the appropriate container based on which option was clicked
     if (element.id === "settings_appearance") {
         document.getElementById("theme-settings-container").style.display = "block";
     } else if (element.id === "settings_configuration") {
         document.getElementById("config-settings-container").style.display = "block";
+    } else if (element.id === "settings_notifications") {
+        document.getElementById("notifications-settings-container").style.display = "block";
     }
 
     // Readjust iframe heights after showing the container

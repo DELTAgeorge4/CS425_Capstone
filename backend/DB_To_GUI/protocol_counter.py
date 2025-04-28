@@ -1,7 +1,8 @@
-from collections import defaultdict
+from collections import defaultdict 
 from scapy.all import *
 import sys
 import os
+from datetime import datetime
 
 sys.path.append(os.path.dirname(__file__))
 import Sniffer
@@ -35,19 +36,22 @@ def analyze_packets(packets_list):
 
     for packet_data in packets_list:
         try:
-            raw_bytes = bytes(packet_data)  # Convert list of integers to bytes
-            packet = Ether(raw_bytes)  # Parse packet
+            raw_bytes = bytes(packet_data)
+            packet = Ether(raw_bytes)
         except Exception:
             continue  # Skip malformed packets
 
         # Network Layer Recognition
         if packet.haslayer(Ether) and hasattr(packet, "type"):
-            network_protocols[ethertype_map.get(packet.type, f'Unknown({hex(packet.type)})')] += 1
+            net_proto = ethertype_map.get(packet.type)
+            if net_proto:
+                network_protocols[net_proto] += 1
 
         # Transport Layer Recognition
         if packet.haslayer(IP):
-            proto_name = proto_map.get(packet[IP].proto, f'Unknown({packet[IP].proto})')
-            transport_protocols[proto_name] += 1
+            proto_name = proto_map.get(packet[IP].proto)
+            if proto_name:
+                transport_protocols[proto_name] += 1
 
             # Application Layer Recognition (Based on Ports)
             if packet.haslayer(TCP):
@@ -61,8 +65,7 @@ def analyze_packets(packets_list):
                 application_protocols[app_protocols[src_port]] += 1
             elif dest_port in app_protocols:
                 application_protocols[app_protocols[dest_port]] += 1
-            else:
-                application_protocols[f'Unknown({src_port}-{dest_port})'] += 1  # Unrecognized port
+            # Otherwise, skip application layer count
 
     return {
         'network_layer': dict(network_protocols),
@@ -70,12 +73,10 @@ def analyze_packets(packets_list):
         'application_layer': dict(application_protocols)
     }
 
-
-def get_protocol_counts():
-    packets = Sniffer.get_packets()
-    raw_packet_data = [row[4] for row in packets]  # Assuming row[4] is a list of integers
+def get_protocol_counts(start: datetime = datetime.min, end: datetime = datetime.max):
+    packets = Sniffer.get_packets(start_time=start, end_time=end)
+    raw_packet_data = [row[4] for row in packets]
     return analyze_packets(raw_packet_data)
-
 
 if __name__ == '__main__':
     print(get_protocol_counts())

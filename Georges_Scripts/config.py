@@ -32,14 +32,14 @@ DB_PASSWORD = "password123" # Update with password set up by Make_Tables.py
 # SNMP Settings for email alerts
 SMTP_SERVER = "smtp.gmail.com"  # Use email SMTP server
 SMTP_PORT = 587
-EMAIL_USER = "anemail@email.com"  # Your email address
+EMAIL_USER = "email123@email.com"  # Your email address
 EMAIL_PASSWORD = "password123"  # Email password
 EMAIL_RECIPIENTS = ["recipient1@example.com", "recipient2@example.com"]  # Recipients of emails
 
 #SEIM settings
-DEFAULT_DIRECTORY = "/home/james/Downloads"  # Default directory to monitor
+#DEFAULT_DIRECTORY = "/home/james/Downloads"  # Default directory to monitor
 VIRUSTOTAL_API_KEY_PATH = "/home/API_KEY/api_key.txt"  # Replace
-
+VIRUSTOTAL_API_KEY = ""
 # More values for email alerts
 RAM_USAGE_THRESHOLD = 90 # Set to None to disable RAM alerts
 DISK_USAGE_THRESHOLD = 75 # Set to None to disable disk alerts
